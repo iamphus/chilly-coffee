@@ -97,12 +97,13 @@
       "button": "Toggle rain",
       "on": "It's raining",
       "off": "Rain stopped"
-    }
+    },
+    "openLaptop": "Open laptop",
+    "standUp": "Stand up"
   },
   "laptop": {
     "label": "Laptop screen",
     "appsLabel": "Apps",
-    "standUp": "Stand up",
     "apps": {
       "pomodoro": "Pomodoro",
       "todo": "To-dos",
@@ -134,7 +135,8 @@
     "notes": {
       "label": "Notes",
       "autosave": "Saved on this device"
-    }
+    },
+    "close": "Close laptop"
   },
   "error": {
     "title": "Something went wrong in the café",
