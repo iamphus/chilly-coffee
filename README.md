@@ -30,6 +30,7 @@ chilly-coffee/
 ├── src/
 │   ├── main.jsx, App.jsx      khởi động app, Canvas 3D
 │   ├── scene/                 cảnh 3D: quán, đèn ngày/đêm, sương, người đi đường, khách
+│   │   └── surroundings/      bên ngoài: công viên đài phun nước, vườn hồ sen, cây hoa, đèn, đồi, bầu trời (bố cục ở layout.js)
 │   ├── player/                nhân vật người chơi: di chuyển, ngồi, hành động, tìm đường (nav.js), va chạm (colliders.js), camera
 │   ├── focus/                 Pomodoro, việc cần làm, ghi chú (focusStore.js lưu localStorage), thông báo khi hết giờ
 │   ├── characters/Character.jsx  một nhân vật chibi + hoạt ảnh (từ assets/characters/*.glb)

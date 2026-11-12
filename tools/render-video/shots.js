@@ -18,7 +18,7 @@ export const SUPERSAMPLE = 1.5 // render ở 3840×2160 rồi thu nhỏ để c�
 export const CROSSFADE = 0.8 // giây
 export const WARM_UP = 2 // giây chạy trước khi quay để hoạt ảnh và bóng đổ ổn định
 
-const STREET_FOG = [14, 30]
+const STREET_FOG = [24, 78] // giống sương trong app (Fog.jsx)
 const NO_FOG = [60, 120]
 
 // Góc máy ngồi đối diện nhân vật chính, nhìn qua bàn

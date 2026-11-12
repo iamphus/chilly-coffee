@@ -40,17 +40,26 @@ const HEMI_SKY = linear(0xffe9cc)
 const HEMI_GROUND = linear(0x4a4038)
 const SUN_COLOR = linear(0xfff4e0)
 const SPOT_COLOR = linear(0xffd9a8)
+const MOON_COLOR = linear(0x9fb2ff)
+const MOON = { position: [-14, 18, 20], target: [-2, 0, 6] }
 
 export default function Lighting({ preset = LIGHTING_PRESETS.day, shadows = true }) {
   const envMap = useRoomEnvironmentMap()
 
   // Đèn hướng và đèn spot chiếu về "target"; target phải nằm trong cảnh mới cập nhật vị trí.
   const sunTarget = useMemo(() => new Object3D(), [])
+  const moonTarget = useMemo(() => new Object3D(), [])
   const spotTargets = useMemo(() => SPOTS.map(() => new Object3D()), [])
 
   return (
     <>
-      <color attach="background" args={[preset.sky]} />
+      <color attach="background" args={[preset.skyHorizon ?? preset.sky]} />
+
+      {/* Ánh trăng: đèn hướng rẻ, không đổ bóng, để công viên buổi tối không tối đen */}
+      <primitive object={moonTarget} position={MOON.target} />
+      {preset.moon > 0 && (
+        <directionalLight color={MOON_COLOR} intensity={preset.moon * LEGACY_SCALE} position={MOON.position} target={moonTarget} />
+      )}
       <Environment map={envMap} environmentIntensity={preset.environment} />
 
       <hemisphereLight args={[HEMI_SKY, HEMI_GROUND, preset.hemisphere * LEGACY_SCALE]} />

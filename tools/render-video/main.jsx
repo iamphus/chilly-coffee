@@ -13,6 +13,7 @@ import Guests from '../../src/scene/Guests.jsx'
 import Laptop from '../../src/scene/Laptop.jsx'
 import Lighting from '../../src/scene/Lighting.jsx'
 import Passersby from '../../src/scene/Passersby.jsx'
+import Surroundings from '../../src/scene/surroundings/Surroundings.jsx'
 import { LIGHTING_PRESETS } from '../../src/scene/lightingPresets.js'
 import { laptopPoses, seatPose } from '../../src/scene/seating.js'
 import { HERO_ID, HERO_SEAT, heroAt } from './hero.js'
@@ -75,8 +76,9 @@ function Studio() {
   return (
     <>
       <Lighting preset={PRESET} />
-      <fog attach="fog" args={[PRESET.sky, fog[0], fog[1]]} />
+      <fog attach="fog" args={[PRESET.skyHorizon, fog[0], fog[1]]} />
       <Cafe showCeiling={ceiling} />
+      <Surroundings preset={PRESET} />
       <Guests exclude={EXCLUDE} />
       <Passersby exclude={EXCLUDE} />
       {hero === 'walk' ? <WalkingHero /> : <SeatedHero />}

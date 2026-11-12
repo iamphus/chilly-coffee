@@ -9,6 +9,14 @@ export const LIGHTING_PRESETS = {
     lampMultiplier: 1,
     lampGlow: 0.18, // độ sáng quầng đèn giả
     dust: 0.35, // độ sáng hạt bụi bay
+    // Bên ngoài (src/scene/surroundings/)
+    skyTop: '#7fb2e5',
+    skyHorizon: '#f1e3c8', // cũng là màu sương: cảnh xa hoà vào chân trời
+    moon: 0, // ánh trăng (đèn hướng xanh nhạt) cho công viên buổi tối
+    stars: 0,
+    clouds: 0.95,
+    lampHead: 0.5, // độ sáng bóng đèn công viên
+    fireflies: 0,
   },
   night: {
     sky: '#15171c',
@@ -19,6 +27,13 @@ export const LIGHTING_PRESETS = {
     lampMultiplier: 1.35,
     lampGlow: 0.55,
     dust: 0.75,
+    skyTop: '#0a0f24',
+    skyHorizon: '#3a3560',
+    moon: 0.32,
+    stars: 1,
+    clouds: 0,
+    lampHead: 3,
+    fireflies: 0.9,
   },
 }
 
