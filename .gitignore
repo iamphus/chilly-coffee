@@ -1,0 +1,16 @@
+node_modules/
+
+# File sinh ra
+prototype/demo/model.js
+# ảnh chụp test, nav.png xem trước
+tmp/
+
+# Môi trường / editor
+.env
+.env.local
+.env.*.local
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+__pycache__/
