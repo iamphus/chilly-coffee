@@ -9,7 +9,7 @@ import { useCafeStore } from '../store.js'
 const LEAVE_DURATION_MS = 700 // khớp với transition của .landing--leaving trong styles.css
 const PREFETCH_IDLE_TIMEOUT_MS = 4000
 
-// Bản 2K (~14 MB) chỉ cho màn hình rộng hoặc màn hình độ phân giải cao; còn lại dùng 1080p (~9 MB)
+// Bản 2K (~16 MB) chỉ cho màn hình rộng hoặc màn hình độ phân giải cao; còn lại dùng 1080p (~11 MB)
 const VIDEO_2K_MEDIA = '(min-width: 1600px), (min-width: 1000px) and (min-resolution: 1.5dppx)'
 
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches

@@ -11,7 +11,7 @@
 import { SEATS, seatYaw } from '../../src/scene/seating.js'
 import { HERO_SEAT } from './hero.js'
 
-export const FPS = 30
+export const FPS = 60
 export const WIDTH = 2560 // video xuất ra 2K (2560×1440)
 export const HEIGHT = 1440
 export const SUPERSAMPLE = 1.5 // render ở 3840×2160 rồi thu nhỏ để cạnh mịn, không răng cưa
