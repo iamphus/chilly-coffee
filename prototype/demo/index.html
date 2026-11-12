@@ -127,7 +127,7 @@ button.on{background:#c9773a;border-color:#c9773a;color:#fff}
 </div></div><div class="base"></div></div>
 <div id="st">Kéo để xoay, cuộn để phóng to. Bấm vào một bàn để ngồi xuống.</div>
 <script src="model.js"></script>
-<script src="characters.js"></script>
+<script src="../../src/characters/characters.js"></script>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.module.js"}}</script>
 <script type="module">
 import * as THREE from 'three';
@@ -135,7 +135,7 @@ import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.149.0/examples/
 import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.149.0/examples/jsm/controls/OrbitControls.js';
 import { RoomEnvironment } from 'https://cdn.jsdelivr.net/npm/three@0.149.0/examples/jsm/environments/RoomEnvironment.js';
 import { CSS3DRenderer, CSS3DObject } from 'https://cdn.jsdelivr.net/npm/three@0.149.0/examples/jsm/renderers/CSS3DRenderer.js';
-const OCC={Ban_02:['khach_cardigan','Uong',0.16],Ban_04:['khach_hoodie','Ngoi_Go_Phim',0.16],Ban_06:['khach_kinh','Ngoi_Go_Phim',0],Ban_08:['khach_quan_yem','Uong',0],Ban_09:['khach_ao_len','Uong',-0.08],Ban_12:['khach_tai_nghe','Uong',0],Ban_16:['di_duong_balo','Ngoi_Go_Phim',0],Ban_19:['khach_cardigan','Ngoi_Go_Phim',0],Ban_22:['khach_hoodie','Ngoi_Go_Phim',0.02],Ban_26:['di_duong_cong_so','Ngoi_Go_Phim',0],Ban_28:['khach_quan_yem','Uong',-0.08]};
+const OCC={Ban_02:['guest_cardigan','Uong',0.16],Ban_04:['guest_hoodie','Ngoi_Go_Phim',0.16],Ban_06:['guest_glasses','Ngoi_Go_Phim',0],Ban_08:['guest_overalls','Uong',0],Ban_09:['guest_sweater','Uong',-0.08],Ban_12:['guest_headphones','Uong',0],Ban_16:['passerby_backpack','Ngoi_Go_Phim',0],Ban_19:['guest_cardigan','Ngoi_Go_Phim',0],Ban_22:['guest_hoodie','Ngoi_Go_Phim',0.02],Ban_26:['passerby_office','Ngoi_Go_Phim',0],Ban_28:['guest_overalls','Uong',-0.08]};
 const ALLSEATS=window.CAFE_SEATS||[];const SEATS=ALLSEATS.filter(s=>!OCC[s.n]);const LABEL={};SEATS.forEach(s=>LABEL[s.n]=s.label||s.n);
 const sel=document.getElementById('sSeat');SEATS.forEach(s=>{const o=document.createElement('option');o.value=s.n;o.textContent=LABEL[s.n];sel.appendChild(o);});
 const cv=document.getElementById('c'),st=document.getElementById('st');
@@ -304,9 +304,9 @@ function spawnAll(){
  Object.entries(OCC).forEach(([n,[id,clip,dy]])=>{const s=ALLSEATS.find(x=>x.n===n);if(!s)return;const yaw=Math.atan2(s.l[0]-s.c[0],s.l[2]-s.c[2]);const seatH=0.46+dy;spawn(id,clip,[s.c[0]+Math.sin(yaw)*0.06,seatH-0.47*CHAR_SCALE+0.02,s.c[2]+Math.cos(yaw)*0.06],yaw);if(clip==='Ngoi_Go_Phim'){const lx=s.c[0]+Math.sin(yaw)*0.42,lz=s.c[2]+Math.cos(yaw)*0.42;const L=makeLaptop(true);L.g.position.set(lx,tableTopAt(lx,lz,null),lz);L.g.rotation.y=yaw+Math.PI;S.add(L.g);}});
  spawn('barista_1','Pha_Che',[-1.8,0.45,-2.55],0);spawn('barista_2','Pha_Che',[-0.65,0.45,-2.55],0.2,{ts:0.85});
  const A=[[7.5,6.0],[-6.4,6.0],[-6.4,-15.5]];
- spawn('di_duong_balo','Di_Bo',[0,0,0],0,{path:A,speed:1.0,s0:3});spawn('di_duong_cong_so','Di_Bo',[0,0,0],0,{path:A,speed:1.15,s0:16});
- spawn('di_duong_o','Di_Bo',[0,0,0],0,{path:A,speed:0.8,s0:25});spawn('di_duong_chay_bo','Di_Bo',[0,0,0],0,{path:A,speed:2.3,s0:9,ts:1.9});
- spawn('khach_tai_nghe','Di_Bo',[0,0,0],0,{path:[[5.5,6.6],[-7.2,6.6]],speed:0.9,s0:4});
+ spawn('passerby_backpack','Di_Bo',[0,0,0],0,{path:A,speed:1.0,s0:3});spawn('passerby_office','Di_Bo',[0,0,0],0,{path:A,speed:1.15,s0:16});
+ spawn('passerby_umbrella','Di_Bo',[0,0,0],0,{path:A,speed:0.8,s0:25});spawn('passerby_jogger','Di_Bo',[0,0,0],0,{path:A,speed:2.3,s0:9,ts:1.9});
+ spawn('guest_headphones','Di_Bo',[0,0,0],0,{path:[[5.5,6.6],[-7.2,6.6]],speed:0.9,s0:4});
 }
 function stepNpc(dt){npcs.forEach(n=>{n.m.update(dt);if(!n.segs)return;n.s+=n.speed*dt;const u=n.s%(2*n.L),fw=u<n.L,d=fw?u:2*n.L-u;const sg=n.segs.find(g=>d>=g[2]&&d<=g[2]+g[3])||n.segs[n.segs.length-1];const t=(d-sg[2])/sg[3];n.root.position.lerpVectors(sg[0],sg[1],t);const dir=sg[1].clone().sub(sg[0]);if(!fw)dir.negate();const yaw=Math.atan2(dir.x,dir.z);let dy=yaw-n.root.rotation.y;dy=Math.atan2(Math.sin(dy),Math.cos(dy));n.root.rotation.y+=dy*Math.min(1,dt*8);});}
 let target=null;

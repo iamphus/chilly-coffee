@@ -5,10 +5,12 @@
   "description": "Bản thử Chilly Coffee: quán cafe 3D để học và làm việc",
   "scripts": {
     "serve": "npx http-server -p 8765 -c-1 .",
-    "build:cafe": "node tools/run.js \"[]\" cafe3.glb",
-    "build:nav": "python tools/nav.py",
+    "start": "npm run build:pack && npm run serve",
+    "build:cafe": "node tools/export-cafe/run.js \"[]\" assets/cafe/cafe.glb",
+    "build:nav": "python tools/build_nav.py",
     "build:pack": "python tools/pack_model.py",
-    "build:chars": "node tools/chars_run.js export"
+    "build:chars": "node tools/export-characters/run.js export",
+    "screenshot": "node tools/screenshot.js"
   },
   "dependencies": {
     "three": "0.149.0"

@@ -1,7 +1,9 @@
+import os
 import trimesh, numpy as np, json, base64
 from PIL import Image, ImageDraw
 from scipy import ndimage
-sc = trimesh.load('cafe3.glb')
+os.makedirs('tmp', exist_ok=True)
+sc = trimesh.load('assets/cafe/cafe.glb')
 SKIP = ('Tran', 'San', 'Mat_Duong', 'Via_He', 'Nha_Doi', 'Cua_Ra_Vao', 'Cua_Ra_San', 'Kinh_Phong_Lon', 'Co')
 meshes = []
 for node in sc.graph.nodes_geometry:
@@ -27,6 +29,6 @@ a = ndimage.binary_dilation(a, structure=np.array([[0,1,0],[1,1,1],[0,1,0]]))
 # ngoài phạm vi khu đất = chặn
 bits = np.packbits(a.astype(np.uint8).flatten())
 out = {'x0': X0, 'z0': Z0, 'cell': CELL, 'w': W, 'h': Hh, 'data': base64.b64encode(bits.tobytes()).decode()}
-json.dump(out, open('nav.json', 'w'))
-Image.fromarray((~a * 255).astype(np.uint8)).resize((W * 3, Hh * 3), Image.NEAREST).save('nav.png')
+json.dump(out, open('assets/cafe/nav.json', 'w'))
+Image.fromarray((~a * 255).astype(np.uint8)).resize((W * 3, Hh * 3), Image.NEAREST).save('tmp/nav.png')
 print(W, Hh, a.mean())
