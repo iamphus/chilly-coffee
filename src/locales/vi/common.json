@@ -57,8 +57,6 @@
     "room": "Chilly Coffee 02",
     "exit": "Rời quán",
     "map": "Bản đồ (sắp có)",
-    "sound": "Âm thanh (sắp có)",
-    "music": "Nhạc quán (sắp có)",
     "musicShort": "Nhạc quán",
     "changeCharacter": "Đổi nhân vật",
     "sit": "Ngồi xuống",
@@ -85,8 +83,16 @@
         "auto": "Theo giờ",
         "day": "Ngày",
         "night": "Tối"
-      }
-    }
+      },
+      "musicVolume": "Âm lượng nhạc quán",
+      "ambienceVolume": "Âm lượng tiếng phố"
+    },
+    "mute": "Tắt tiếng",
+    "unmute": "Bật tiếng",
+    "musicOn": "Bật nhạc quán",
+    "musicOff": "Tắt nhạc quán",
+    "nowPlaying": "Nhạc quán · {{title}}",
+    "trackNumber": "Bài {{number}}"
   },
   "laptop": {
     "label": "Màn hình laptop",

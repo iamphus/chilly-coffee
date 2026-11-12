@@ -15,3 +15,7 @@ Thumbs.db
 .vscode/
 .idea/
 __pycache__/
+
+# Nhạc quán: chỉ commit khi có giấy phép CC0 / CC BY (xem docs/project-plan.md, mục giấy phép nhạc)
+assets/music/*
+!assets/music/README.md

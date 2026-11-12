@@ -28,6 +28,9 @@ const HIDE_WHEN_CAMERA_CLOSER = 0.6 // m: camera sát hơn thì ẩn nhân vật
 const SEAT_REACH = 1.2 // m: đứng gần ghế trống hơn thế này thì hiện nút "Ngồi xuống"
 const SEAT_CLICK_RADIUS = 0.65 // m: bấm vào ghế/bàn trong bán kính này thì đi tới ngồi
 const SIT_DURATION = 0.45 // giây lướt vào ghế
+// Phạm vi trong quán (gồm phòng chính, phòng sau, sân vườn, phòng lớn) để đổi âm thanh trong / ngoài
+const CAFE_BOUNDS = { xMin: -3.95, xMax: 3.75, zMin: -13.3, zMax: 3.15 }
+const isInside = ({ x, z }) => x > CAFE_BOUNDS.xMin && x < CAFE_BOUNDS.xMax && z > CAFE_BOUNDS.zMin && z < CAFE_BOUNDS.zMax
 
 const smoothstep = (t) => t * t * (3 - 2 * t)
 
@@ -303,6 +306,8 @@ export default function Player({ gameRef, colliders }) {
     }
 
     state.moving = speed !== 0
+    const inside = Boolean(store.seat) || isInside(position)
+    if (inside !== store.inside) useCafeStore.setState({ inside })
 
     // Hoạt ảnh: ngồi gõ phím / đi / hành động / đứng
     const anim = animation.current

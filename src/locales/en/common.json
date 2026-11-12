@@ -57,8 +57,6 @@
     "room": "Chilly Coffee 02",
     "exit": "Leave the café",
     "map": "Map (coming soon)",
-    "sound": "Sound (coming soon)",
-    "music": "Café radio (coming soon)",
     "musicShort": "Café radio",
     "changeCharacter": "Change character",
     "sit": "Sit down",
@@ -85,8 +83,16 @@
         "auto": "Local time",
         "day": "Day",
         "night": "Night"
-      }
-    }
+      },
+      "musicVolume": "Café radio volume",
+      "ambienceVolume": "Street sounds volume"
+    },
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "musicOn": "Turn café radio on",
+    "musicOff": "Turn café radio off",
+    "nowPlaying": "Café radio · {{title}}",
+    "trackNumber": "Track {{number}}"
   },
   "laptop": {
     "label": "Laptop screen",

@@ -41,3 +41,13 @@ export const LIGHTING_PRESETS = {
 export function presetForHour(hour) {
   return hour >= 18 || hour < 6 ? 'night' : 'day'
 }
+
+// Thêm ?time=day hoặc ?time=night vào URL để xem thử
+const requestedTime = new URLSearchParams(window.location.search).get('time')
+
+/** 'day' | 'night' theo URL, rồi tới cài đặt (store.timeOfDay), cuối cùng theo giờ máy. */
+export function effectiveTimeOfDay(setting) {
+  if (LIGHTING_PRESETS[requestedTime]) return requestedTime
+  if (LIGHTING_PRESETS[setting]) return setting
+  return presetForHour(new Date().getHours())
+}

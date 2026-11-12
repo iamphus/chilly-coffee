@@ -9,6 +9,7 @@ const CHARACTER_KEY = 'chilly.character'
 const NICKNAME_KEY = 'chilly.nickname'
 const LITE_KEY = 'chilly.lite'
 const TIME_KEY = 'chilly.timeOfDay'
+const SOUND_KEY = 'chilly.sound'
 export const TIME_OPTIONS = ['auto', 'day', 'night']
 
 // localStorage có thể bị chặn (chế độ ẩn danh…): đọc lỗi thì dùng mặc định, ghi lỗi thì bỏ qua
@@ -41,6 +42,21 @@ function loadNickname() {
   return nickname
 }
 
+const SOUND_DEFAULTS = { muted: false, musicOn: true, musicVolume: 0.8, ambienceVolume: 0.8 }
+
+function loadSound() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(SOUND_KEY))
+    return { ...SOUND_DEFAULTS, ...(saved && typeof saved === 'object' ? saved : {}) }
+  } catch {
+    return SOUND_DEFAULTS
+  }
+}
+
+function saveSound(state) {
+  save(SOUND_KEY, JSON.stringify({ muted: state.muted, musicOn: state.musicOn, musicVolume: state.musicVolume, ambienceVolume: state.ambienceVolume }))
+}
+
 const toast = (key, params = {}) => ({ toast: { key, params, id: Date.now() } })
 
 /**
@@ -63,6 +79,10 @@ export const useCafeStore = create((set, get) => ({
   lite: load(LITE_KEY, ['1', '0'], '0') === '1', // chế độ nhẹ: tắt bóng, độ phân giải 1×
   timeOfDay: load(TIME_KEY, TIME_OPTIONS, 'auto'),
   headphones: false,
+  // Âm thanh (src/audio/): tắt tiếng, bật/tắt nhạc quán, âm lượng nhạc / tạp âm phố (0–1)
+  ...loadSound(),
+  inside: false, // nhân vật đang ở trong quán (Player cập nhật) → nhạc to, tạp âm phố nhỏ
+  nowPlaying: null, // bài nhạc quán đang phát { index, title?, artist? }
 
   openCharacterSelect: () => set({ choosing: true }),
   finishChoosing: () => set({ choosing: false }), // màn chọn nhân vật lúc vào quán đã mờ hẳn
@@ -88,6 +108,10 @@ export const useCafeStore = create((set, get) => ({
   setLite: (lite) => {
     save(LITE_KEY, lite ? '1' : '0')
     set({ lite })
+  },
+  setSound: (changes) => {
+    set(changes)
+    saveSound(get())
   },
   setTimeOfDay: (timeOfDay) => {
     save(TIME_KEY, timeOfDay)

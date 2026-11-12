@@ -5,6 +5,7 @@ import landingVideo1440 from '../../assets/video/landing-1440p.mp4'
 import landingPoster from '../../assets/video/landing-poster.jpg'
 import { loadCafeCanvas } from '../scene/loadCafeCanvas.js'
 import { loadCharacterSelect } from './characterSelect/loadCharacterSelect.js'
+import { audioEngine } from '../audio/audioEngine.js'
 import { useCafeStore } from '../store.js'
 
 const LEAVE_DURATION_MS = 700 // khớp với transition của .landing--leaving trong styles.css
@@ -150,7 +151,15 @@ export default function Landing() {
         <p className="landing__lead">{t('landing.lead')}</p>
 
         <div className="landing__cta">
-          <button type="button" className="btn-enter" onClick={openCharacterSelect} disabled={choosing}>
+          <button
+            type="button"
+            className="btn-enter"
+            onClick={() => {
+              audioEngine.unlock() // trình duyệt chỉ cho phát âm thanh sau một lần bấm
+              openCharacterSelect()
+            }}
+            disabled={choosing}
+          >
             {t('landing.enter')}
           </button>
           <p className="landing__note">{t('landing.note')}</p>

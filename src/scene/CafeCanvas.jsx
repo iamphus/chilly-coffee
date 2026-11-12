@@ -4,6 +4,7 @@ import { useProgress } from '@react-three/drei'
 import { useTranslation } from 'react-i18next'
 import { useCafeStore } from '../store.js'
 import { SPAWN } from '../player/gameState.js'
+import AudioController from '../audio/AudioController.jsx'
 import FocusTimer from '../focus/FocusTimer.jsx'
 import GameHud from '../ui/GameHud.jsx'
 import Scene from './Scene.jsx'
@@ -97,6 +98,7 @@ export default function CafeCanvas() {
       </Canvas>
       {sceneReady && <GameHud />}
       {sceneReady && <FocusTimer />}
+      {sceneReady && <AudioController />}
     </>
   )
 }
