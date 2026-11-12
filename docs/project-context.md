@@ -3,6 +3,7 @@
 File này tóm tắt những gì đã làm và đã chốt trong các buổi làm việc với Claude trên claude.ai, để làm tiếp ở IDE khác (Antigravity, VS Code, Claude Code…). Nếu bạn là AI agent: đọc hết file này trước, rồi hỏi người dùng muốn làm bước nào trong mục "Việc còn lại".
 
 Kế hoạch đầy đủ (bản online): https://claude.ai/artifact/AyMbj8iRAfxRn2iqsb7s7s
+Bản lưu trong repo: [docs/project-plan.md](project-plan.md)
 
 ## 1. Ý tưởng
 
