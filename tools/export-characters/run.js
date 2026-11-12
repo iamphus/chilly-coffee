@@ -1,5 +1,5 @@
 const {chromium}=require('playwright');const fs=require('fs');const OUT='assets/characters';fs.mkdirSync('tmp',{recursive:true});
-(async()=>{const b=await chromium.launch({args:['--use-angle=swiftshader','--enable-unsafe-swiftshader']});
+(async()=>{const b=await chromium.launch({channel:process.env.PW_CHANNEL,args:['--use-angle=swiftshader','--enable-unsafe-swiftshader']});
 const p=await b.newPage({viewport:{width:1400,height:520}});p.on('pageerror',e=>console.log('PAGEERR',e.message));p.on('console',m=>{if(m.type()==='error')console.log('ERR',m.text())});
 await p.goto('http://localhost:8765/tools/export-characters/index.html');await p.waitForFunction('window.ready===true',{timeout:60000});
 console.log(JSON.stringify(await p.evaluate('stats()')));

@@ -2,7 +2,7 @@
 
 Quán cafe 3D "chill" để học và làm việc: chọn nhân vật chibi, vào quán, ngồi bàn và làm việc trên chiếc laptop 3D (Pomodoro, việc cần làm, ghi chú, nhạc).
 
-Đây là **bản thử** viết bằng Three.js r149 thuần. Bối cảnh, quyết định đã chốt và việc còn lại: [docs/boi-canh-du-an.md](docs/boi-canh-du-an.md) — đọc file này trước khi làm tiếp.
+Đây là **bản thử** viết bằng Three.js r149 thuần. Bối cảnh, quyết định đã chốt và việc còn lại: [docs/project-context.md](docs/project-context.md) — đọc file này trước khi làm tiếp.
 
 ## Chạy nhanh
 

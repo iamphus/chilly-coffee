@@ -1,7 +1,7 @@
 const { chromium } = require('playwright');
 const fs=require('fs');
 (async()=>{
- const b=await chromium.launch({args:['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
+ const b=await chromium.launch({channel:process.env.PW_CHANNEL,args:['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
  const p=await b.newPage({viewport:{width:1200,height:800}});
  p.on('console',m=>{if(m.type()==='error')console.log('ERR',m.text())});p.on('pageerror',e=>console.log('PAGEERR',e.message));
  await p.goto('http://localhost:8765/tools/export-cafe/index.html');await p.waitForFunction('window.ready===true',{timeout:60000});

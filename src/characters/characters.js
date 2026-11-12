@@ -4,18 +4,18 @@
 // Tỷ lệ so với đồ đạc trong quán: 0.65 => cao khoảng 1,07 m.
 const CHAR_SCALE = 0.65;
 const CHAR_PRESETS = [
-  { id: 'khach_hoodie', ten: 'Khách – hoodie', hair: 'short', hc: 0x2c211b, top: 0x5dcaa5, pants: 0x444441, shoe: 0xf1efe8, outfit: 'hoodie', skin: 0xf0be96 },
-  { id: 'khach_cardigan', ten: 'Khách – cardigan', hair: 'bun', hc: 0x1f1a17, top: 0xf5c4b3, pants: 0x85b7eb, shoe: 0xf1efe8, outfit: 'cardigan', skin: 0xf3c9a4 },
-  { id: 'khach_quan_yem', ten: 'Khách – quần yếm', hair: 'pony', hc: 0x6b3e26, top: 0xfac775, pants: 0x185fa5, shoe: 0xe24b4a, outfit: 'overalls', skin: 0xe8b08a },
-  { id: 'khach_ao_len', ten: 'Khách – áo len, khăn', hair: 'bob', hc: 0x4a2c1e, top: 0xafa9ec, pants: 0x5f5e5a, shoe: 0xf1efe8, outfit: 'sweater', skin: 0xf0be96 },
-  { id: 'khach_kinh', ten: 'Khách – đeo kính', hair: 'curly', hc: 0x3b2a20, top: 0xf8f5ee, pants: 0x2c2c2a, shoe: 0x5f5e5a, outfit: 'shirt', acc: ['glasses'], skin: 0xd9a27a },
-  { id: 'khach_tai_nghe', ten: 'Khách – tai nghe', hair: 'twin', hc: 0x2a1c16, top: 0xed93b1, pants: 0x3c3489, shoe: 0xffffff, outfit: 'tee', acc: ['headphones'], skin: 0xf3c9a4 },
+  { id: 'guest_hoodie', ten: 'Khách – hoodie', hair: 'short', hc: 0x2c211b, top: 0x5dcaa5, pants: 0x444441, shoe: 0xf1efe8, outfit: 'hoodie', skin: 0xf0be96 },
+  { id: 'guest_cardigan', ten: 'Khách – cardigan', hair: 'bun', hc: 0x1f1a17, top: 0xf5c4b3, pants: 0x85b7eb, shoe: 0xf1efe8, outfit: 'cardigan', skin: 0xf3c9a4 },
+  { id: 'guest_overalls', ten: 'Khách – quần yếm', hair: 'pony', hc: 0x6b3e26, top: 0xfac775, pants: 0x185fa5, shoe: 0xe24b4a, outfit: 'overalls', skin: 0xe8b08a },
+  { id: 'guest_sweater', ten: 'Khách – áo len, khăn', hair: 'bob', hc: 0x4a2c1e, top: 0xafa9ec, pants: 0x5f5e5a, shoe: 0xf1efe8, outfit: 'sweater', skin: 0xf0be96 },
+  { id: 'guest_glasses', ten: 'Khách – đeo kính', hair: 'curly', hc: 0x3b2a20, top: 0xf8f5ee, pants: 0x2c2c2a, shoe: 0x5f5e5a, outfit: 'shirt', acc: ['glasses'], skin: 0xd9a27a },
+  { id: 'guest_headphones', ten: 'Khách – tai nghe', hair: 'twin', hc: 0x2a1c16, top: 0xed93b1, pants: 0x3c3489, shoe: 0xffffff, outfit: 'tee', acc: ['headphones'], skin: 0xf3c9a4 },
   { id: 'barista_1', ten: 'Barista – mũ lưỡi trai', hair: 'short', hc: 0x1f1a17, top: 0xf2ede1, pants: 0x2c2c2a, shoe: 0x2c2c2a, outfit: 'apron', acc: ['cap', 'tag'], skin: 0xe8b08a },
   { id: 'barista_2', ten: 'Barista – tóc đuôi ngựa', hair: 'pony', hc: 0x3b2a20, top: 0x2c2c2a, pants: 0x2c2c2a, shoe: 0x2c2c2a, outfit: 'apron', acc: ['tag'], skin: 0xf0be96 },
-  { id: 'di_duong_balo', ten: 'Người đi đường – sinh viên balo', hair: 'short', hc: 0x2c211b, top: 0x378add, pants: 0x444441, shoe: 0xf1efe8, outfit: 'tee', acc: ['backpack'], skin: 0xe8b08a },
-  { id: 'di_duong_cong_so', ten: 'Người đi đường – công sở', hair: 'buzz', hc: 0x1f1a17, top: 0xffffff, pants: 0x2c2c3a, shoe: 0x1f1a17, outfit: 'shirt', acc: ['tie', 'bag'], skin: 0xd9a27a },
-  { id: 'di_duong_o', ten: 'Người đi đường – cầm ô', hair: 'bob', hc: 0x1f1a17, top: 0xd85a30, pants: 0x444441, shoe: 0x5f5e5a, outfit: 'coat', acc: ['umbrella'], skin: 0xf3c9a4 },
-  { id: 'di_duong_chay_bo', ten: 'Người đi đường – chạy bộ', hair: 'short', hc: 0x4a2c1e, top: 0x97c459, pants: 0x2c2c2a, shoe: 0xe24b4a, outfit: 'tee', pantsKind: 'shorts', acc: ['cap'], skin: 0xd9a27a }
+  { id: 'passerby_backpack', ten: 'Người đi đường – sinh viên balo', hair: 'short', hc: 0x2c211b, top: 0x378add, pants: 0x444441, shoe: 0xf1efe8, outfit: 'tee', acc: ['backpack'], skin: 0xe8b08a },
+  { id: 'passerby_office', ten: 'Người đi đường – công sở', hair: 'buzz', hc: 0x1f1a17, top: 0xffffff, pants: 0x2c2c3a, shoe: 0x1f1a17, outfit: 'shirt', acc: ['tie', 'bag'], skin: 0xd9a27a },
+  { id: 'passerby_umbrella', ten: 'Người đi đường – cầm ô', hair: 'bob', hc: 0x1f1a17, top: 0xd85a30, pants: 0x444441, shoe: 0x5f5e5a, outfit: 'coat', acc: ['umbrella'], skin: 0xf3c9a4 },
+  { id: 'passerby_jogger', ten: 'Người đi đường – chạy bộ', hair: 'short', hc: 0x4a2c1e, top: 0x97c459, pants: 0x2c2c2a, shoe: 0xe24b4a, outfit: 'tee', pantsKind: 'shorts', acc: ['cap'], skin: 0xd9a27a }
 ];
 
 function buildCharacter(THREE, spec) {

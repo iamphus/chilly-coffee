@@ -39,7 +39,7 @@ docs/       tài liệu
 | `assets/cafe/cafe.glb` | Mô hình quán đã xuất (~9 MB). (Trước đây là `cafe3.glb`.) |
 | `assets/cafe/cafe.meta.json` | 28 chỗ ngồi (`n`, `label`, `c` = vị trí đầu người ngồi, `l` = điểm nhìn) và đèn. (Trước đây là `cafe3.glb.json`.) |
 | `assets/cafe/nav.json` | Lưới đi lại 0.1 m (bit 1 = bị chặn), tạo từ GLB bằng `tools/build_nav.py`. |
-| `assets/characters/*.glb` | 12 nhân vật đã xuất riêng, có hoạt ảnh. (Trước đây là `nhan-vat/`.) |
+| `assets/characters/*.glb` | 12 nhân vật đã xuất riêng, có hoạt ảnh. Tên file = `id` trong `CHAR_PRESETS`: `guest_*` (khách), `barista_*`, `passerby_*` (người đi đường). (Trước đây là `nhan-vat/` với id tiếng Việt, xem bảng đổi tên ở mục 5.) |
 | `prototype/demo/index.html` | Bản thử chạy được: tham quan, NPC, chế độ "Chơi thử" (bấm hoặc WASD để đi, ngồi bàn trống), góc nhìn thứ nhất với laptop kiểu MacBook (giao diện là HTML thật gắn lên nắp máy qua CSS3DRenderer), Pomodoro, to-do, ghi chú, nhạc, tai nghe. |
 | `prototype/demo/model.js` | GLB + chỗ ngồi + lưới đi lại đóng gói base64 cho demo. **File sinh ra, không commit** — tạo bằng `npm run build:pack`. |
 | `prototype/gallery/index.html` | Trang xem 12 nhân vật và hoạt ảnh. |
@@ -56,6 +56,15 @@ docs/       tài liệu
 - Khu vực: phòng chính (bàn 1–10), phòng sau (bàn 11), sân vườn (bàn 12–14), phòng lớn (bàn 15–28).
 - Tìm đường: Dijkstra 8 hướng trên `nav.json`, có phạt khi sát vật cản để nhân vật đi giữa lối; rút gọn đường bằng line-of-sight nhưng không cho sát hơn đường gốc.
 - Lối đi đã được dọn (12/11/2026): bỏ hoặc dời quạt cây, chậu cây, ghế chắn lối. Đường từ cửa tới 26/28 bàn đều rộng ≥ 0.2 m tính từ vật cản đã nới; 2 bàn sofa (9, 28) hẹp hơn nhưng vẫn ngồi được.
+- Tên file và id nhân vật dùng tiếng Anh (đổi ngày 12/11/2026). `id` vừa là tên file GLB vừa là tiền tố tên node bên trong (`<id>_Dau`…), nên đổi id thì phải chạy lại `npm run build:chars`.
+
+  | Id cũ | Id mới |
+  |---|---|
+  | `khach_hoodie`, `khach_cardigan`, `khach_quan_yem`, `khach_ao_len`, `khach_kinh`, `khach_tai_nghe` | `guest_hoodie`, `guest_cardigan`, `guest_overalls`, `guest_sweater`, `guest_glasses`, `guest_headphones` |
+  | `di_duong_balo`, `di_duong_cong_so`, `di_duong_o`, `di_duong_chay_bo` | `passerby_backpack`, `passerby_office`, `passerby_umbrella`, `passerby_jogger` |
+  | `barista_1`, `barista_2` | giữ nguyên |
+
+- Tên bên trong mô hình (node nhân vật `_Than`, `_Dau`, `_Tay_Trai`…, hoạt ảnh `Dung`, `Di_Bo`, `Ngoi_Go_Phim`…, node quán `Ban_01`, `Tran`, `San`…) vẫn là tiếng Việt không dấu.
 
 ## 6. Chạy bản thử trên máy
 
@@ -73,6 +82,8 @@ npm run build:nav      # assets/cafe/cafe.glb -> assets/cafe/nav.json
 npm run build:pack     # -> prototype/demo/model.js
 npm run build:chars    # src/characters/characters.js -> assets/characters/*.glb (cần serve đang chạy)
 ```
+
+Nếu không muốn tải Chromium của Playwright, có thể dùng trình duyệt đã cài sẵn qua biến `PW_CHANNEL`, ví dụ trên Windows: `PW_CHANNEL=msedge npm run build:chars` (bash) hoặc `$env:PW_CHANNEL='msedge'; npm run build:chars` (PowerShell).
 
 Lưu ý: bản thử nạp three.js từ CDN jsdelivr (three@0.149.0). YouTube chỉ phát được khi chạy trên web thật/localhost, không phát trong trang xem thử của claude.ai.
 
