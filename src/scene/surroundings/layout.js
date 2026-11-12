@@ -34,11 +34,6 @@ const LEFT_GATE_Z = -0.5 // lối vào vườn hồ sen, đối diện cửa qu�
 // ---------------- màu ----------------
 const FLOWER_COLORS = ['#ff8fab', '#ffd166', '#ffffff', '#c39bd3', '#ff6b6b', '#ffa94d', '#f7a8d8']
 const LEAF_COLORS = ['#5c9e4a', '#6fb35a', '#4a8a3c', '#7cbf5e']
-const BLOSSOM_COLORS = {
-  cherry: ['#f8b4cf', '#f4a6c6', '#fbc8dc'], // anh đào hồng
-  lagerstroemia: ['#b48fd6', '#a77fd0', '#c4a2e2'], // bằng lăng tím
-  flamboyant: ['#e8553e', '#f06a45', '#d9452f'], // phượng đỏ
-}
 
 // ---------------- tiện ích ----------------
 const box = (x, y, z, sx, sy, sz, rotationY = 0, color) => ({ position: [x, y, z], scale: [sx, sy, sz], rotationY, color })
@@ -153,33 +148,28 @@ stripBed(-26, 24, FRONT_CURB_Z + 1.0, FRONT_CURB_Z + 1.9, 9, (x) => nearAny(x + 
 stripBed(LEFT_CURB_X - 1.9, LEFT_CURB_X - 1.0, -26, 4.2, 9, (z) => Math.abs(z + 0.6 - LEFT_GATE_Z) < 1.8) // sau hàng rào hẻm
 
 // ---------------- cây ----------------
-export const trunks = [] // { position, height, radius }
-export const canopies = [] // { position, scale, color }
-export const pines = [] // { position, height, radius, color }
+// Vị trí đặt cây; hình cây sinh bằng code trong src/scene/trees/ (species: broadleaf, flamboyant,
+// cherry, lagerstroemia, pine).
+export const treePlacements = [] // { species, position, scale, rotationY }
 
-/** Cây tán tròn: thân + 4–6 khối lá; kind = 'green' hoặc loại cây hoa trong BLOSSOM_COLORS. */
+const SPECIES_OF = { green: 'broadleaf', cherry: 'cherry', lagerstroemia: 'lagerstroemia', flamboyant: 'flamboyant' }
+
+/** Cây tán lá; kind = 'green' hoặc loại cây hoa (cherry, lagerstroemia, flamboyant). */
 function roundTree(x, z, size = 1, kind = 'green') {
-  const height = between(2.0, 2.8) * size
-  trunks.push({ position: [x, height / 2, z], height, radius: 0.13 * size })
-  const colors = kind === 'green' ? LEAF_COLORS : BLOSSOM_COLORS[kind]
-  const blobs = 4 + Math.floor(random() * 3)
-  for (let i = 0; i < blobs; i++) {
-    const angle = (i / blobs) * Math.PI * 2 + between(0, 0.6)
-    const spread = between(0.35, 0.8) * size
-    const r = between(0.75, 1.1) * size
-    canopies.push({
-      position: [x + Math.cos(angle) * spread, height + between(0.1, 0.7) * size, z + Math.sin(angle) * spread],
-      scale: [r, r * 0.8, r],
-      color: pick(colors),
-    })
-  }
-  canopies.push({ position: [x, height + 0.9 * size, z], scale: [0.95 * size, 0.75 * size, 0.95 * size], color: pick(colors) })
+  treePlacements.push({ species: SPECIES_OF[kind], position: [x, 0, z], scale: size * between(0.85, 1.0), rotationY: between(0, Math.PI * 2) })
 }
 
 function pine(x, z, size = 1) {
-  const height = between(3.2, 4.6) * size
-  trunks.push({ position: [x, 0.4, z], height: 0.8, radius: 0.12 * size })
-  pines.push({ position: [x, 0.6 + height / 2, z], height, radius: between(0.9, 1.2) * size, color: pick(['#3f7a46', '#356b3c', '#4a8650']) })
+  treePlacements.push({ species: 'pine', position: [x, 0, z], scale: size * between(0.85, 1.1), rotationY: between(0, Math.PI * 2) })
+}
+
+// Cây có sẵn trong cafe.glb (hàng cây hẻm, trước quán, sân vườn) được ẩn đi và trồng lại ở đúng chỗ cũ
+// bằng cây mới (xem src/scene/backdrop.js). Toạ độ lấy từ buildCafe.js, đã lật trục x.
+for (const [x, z, scale] of [
+  [-5.35, 2.2, 0.72], [-5.35, -2.6, 0.78], [-5.35, -7.0, 0.72], [-5.35, -11.0, 0.78],
+  [2.2, 5.3, 0.7], [-1.8, 5.3, 0.7], [-2.9, -4.2, 0.7],
+]) {
+  treePlacements.push({ species: 'broadleaf', position: [x, 0, z], scale, rotationY: between(0, Math.PI * 2), nearCafe: true })
 }
 
 /** Rải cây trong vùng chữ nhật, tránh các điểm trong `avoid` ([x, z, bán kính]). */

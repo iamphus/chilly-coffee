@@ -1,18 +1,13 @@
-import { useMemo } from 'react'
+import Trees from '../trees/Trees.jsx'
 import Instances from './Instances.jsx'
-import { canopies, flowerLeaves, flowers, hills, pines, trunks } from './layout.js'
+import { flowerLeaves, flowers, hills, treePlacements } from './layout.js'
 
-/** Hoa, cây (tán tròn, cây hoa, thông) và đồi xa. Mỗi loại một lần vẽ. */
+// Chỉ cây sát quán mới đổ bóng (vùng bóng của mặt trời chỉ quanh quán; bóng cây xa vừa tốn vừa không thấy)
+const NEAR_TREES = treePlacements.filter((tree) => tree.nearCafe)
+const FAR_TREES = treePlacements.filter((tree) => !tree.nearCafe)
+
+/** Hoa, cây (cây lá, cây hoa, thông; sinh bằng code) và đồi xa. */
 export default function Garden() {
-  const trunkItems = useMemo(
-    () => trunks.map(({ position, height, radius }) => ({ position, scale: [radius, height, radius] })),
-    [],
-  )
-  const pineItems = useMemo(
-    () => pines.map(({ position, height, radius, color }) => ({ position, scale: [radius, height, radius], color })),
-    [],
-  )
-
   return (
     <>
       <Instances items={flowerLeaves} material={{ roughness: 1, flatShading: true }}>
@@ -23,15 +18,8 @@ export default function Garden() {
         <icosahedronGeometry args={[1, 0]} />
       </Instances>
 
-      <Instances items={trunkItems} material={{ color: '#6b4f3a', roughness: 1 }} castShadow>
-        <cylinderGeometry args={[0.7, 1, 1, 6]} />
-      </Instances>
-      <Instances items={canopies} material={{ roughness: 1, flatShading: true }} castShadow>
-        <icosahedronGeometry args={[1, 1]} />
-      </Instances>
-      <Instances items={pineItems} material={{ roughness: 1, flatShading: true }}>
-        <coneGeometry args={[1, 1, 7]} />
-      </Instances>
+      <Trees placements={NEAR_TREES} castShadow />
+      <Trees placements={FAR_TREES} castShadow={false} />
 
       <Instances items={hills} material={{ roughness: 1, flatShading: true }}>
         <icosahedronGeometry args={[1, 1]} />
