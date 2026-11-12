@@ -27,6 +27,36 @@
       }
     }
   },
+  "select": {
+    "title": "Chọn nhân vật của bạn",
+    "subtitle": "Bạn sẽ bước vào quán bằng nhân vật này.",
+    "enter": "Vào quán",
+    "previous": "Nhân vật trước",
+    "next": "Nhân vật sau",
+    "count": "{{current}} / {{total}}",
+    "hint": "← → để đổi · Enter để vào quán · Bấm vào nhân vật để chọn"
+  },
+  "characters": {
+    "guest_headphones": "Đeo tai nghe",
+    "guest_hoodie": "Áo hoodie",
+    "guest_cardigan": "Áo cardigan",
+    "guest_overalls": "Quần yếm",
+    "guest_sweater": "Áo len sọc",
+    "guest_glasses": "Kính tròn",
+    "passerby_backpack": "Đeo ba lô",
+    "passerby_office": "Dân công sở",
+    "passerby_umbrella": "Nón lá xanh",
+    "passerby_jogger": "Chạy bộ"
+  },
+  "game": {
+    "hint": "W A S D để đi · Bấm lên sàn để tới đó · Kéo chuột để nhìn quanh · Lăn chuột để phóng to/thu nhỏ · V đổi camera",
+    "camera": {
+      "locked": "Khóa sau lưng",
+      "free": "Xoay tự do",
+      "toast": "Camera: {{mode}}",
+      "button": "Chế độ camera: {{mode}} (phím V)"
+    }
+  },
   "error": {
     "title": "Quán gặp chút trục trặc",
     "message": "Không tải được quán. Bạn thử tải lại trang nhé.",

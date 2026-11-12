@@ -4,6 +4,7 @@ import landingVideo1080 from '../../assets/video/landing-1080p.mp4'
 import landingVideo1440 from '../../assets/video/landing-1440p.mp4'
 import landingPoster from '../../assets/video/landing-poster.jpg'
 import { loadCafeCanvas } from '../scene/loadCafeCanvas.js'
+import { loadCharacterSelect } from './characterSelect/loadCharacterSelect.js'
 import { useCafeStore } from '../store.js'
 
 const LEAVE_DURATION_MS = 700 // khớp với transition của .landing--leaving trong styles.css
@@ -72,7 +73,10 @@ function usePrefetchCafe() {
     scheduled.current = true
     idleId.current = requestIdle(
       () => {
-        loadCafeCanvas().catch(() => {}) // lỗi thật sẽ hiện lúc bấm "Vào quán"
+        // Màn chọn nhân vật (nhẹ, dùng ngay sau khi bấm) trước, rồi tới quán (~9 MB)
+        loadCharacterSelect()
+          .then(loadCafeCanvas)
+          .catch(() => {}) // lỗi thật sẽ hiện lúc bấm "Vào quán"
       },
       { timeout: PREFETCH_IDLE_TIMEOUT_MS },
     )
@@ -86,22 +90,20 @@ function usePrefetchCafe() {
 /** Màn hình đầu tiên: video quảng cáo quán chạy nền, giới thiệu và nút "Vào quán". */
 export default function Landing() {
   const { t } = useTranslation()
-  const entered = useCafeStore((state) => state.entered)
-  const sceneReady = useCafeStore((state) => state.sceneReady)
-  const loadProgress = useCafeStore((state) => state.loadProgress)
-  const enterCafe = useCafeStore((state) => state.enterCafe)
+  const choosing = useCafeStore((state) => state.choosing)
+  const openCharacterSelect = useCafeStore((state) => state.openCharacterSelect)
   const [gone, setGone] = useState(false)
   const video = useRef(null)
   const prefetchCafe = usePrefetchCafe()
 
-  const leaving = entered && sceneReady
+  const leaving = choosing // bấm "Vào quán" thì sang màn chọn nhân vật
 
   // Không tự chạy video (giảm chuyển động) thì không có sự kiện video, tải trước luôn khi rảnh
   useEffect(() => {
     if (prefersReducedMotion) prefetchCafe()
   }, [prefetchCafe])
 
-  // Cảnh 3D sẵn sàng: dừng video, mờ landing rồi gỡ hẳn
+  // Sang màn chọn nhân vật: dừng video, mờ landing rồi gỡ hẳn
   useEffect(() => {
     if (!leaving) return
     video.current?.pause()
@@ -111,13 +113,6 @@ export default function Landing() {
 
   if (gone) return null
 
-  const percent = Math.round(loadProgress)
-  // Chỉ hiện % khi đang tải thật; 0% (chưa kịp đo) hoặc 100% (đang dựng cảnh) thì chỉ hiện chữ
-  const buttonLabel = !entered
-    ? t('landing.enter')
-    : percent > 0 && percent < 100
-      ? t('landing.loading', { percent })
-      : t('landing.preparing')
   const className = ['landing', leaving && 'landing--leaving'].filter(Boolean).join(' ')
 
   return (
@@ -155,15 +150,8 @@ export default function Landing() {
         <p className="landing__lead">{t('landing.lead')}</p>
 
         <div className="landing__cta">
-          <button
-            type="button"
-            className="btn-enter"
-            onClick={enterCafe}
-            disabled={entered}
-            aria-busy={entered && !sceneReady}
-            style={{ '--progress': `${percent}%` }}
-          >
-            {buttonLabel}
+          <button type="button" className="btn-enter" onClick={openCharacterSelect} disabled={choosing}>
+            {t('landing.enter')}
           </button>
           <p className="landing__note">{t('landing.note')}</p>
         </div>

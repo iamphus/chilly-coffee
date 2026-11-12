@@ -4,7 +4,7 @@ Quán cafe 3D "chill" để học và làm việc: chọn nhân vật chibi, và
 
 Repo gồm 2 phần:
 
-- **App chính** (Vite + React + React Three Fiber), đang làm ở Giai đoạn 1. Hiện có landing (nền là video quảng cáo quay từ chính cảnh 3D) và nút "Vào quán" mở cảnh 3D, camera bay từ ngoài phố lên toàn cảnh. Ngày/đêm theo giờ máy; thêm `?time=day` hoặc `?time=night` vào URL để xem thử.
+- **App chính** (Vite + React + React Three Fiber), đang làm ở Giai đoạn 1. Hiện có landing (nền là video quảng cáo quay từ chính cảnh 3D) và nút "Vào quán" → màn chọn nhân vật (10 nhân vật có sẵn, nhớ lựa chọn cho lần sau) → xuất hiện ở đầu hẻm trước quán, góc nhìn thứ ba sau lưng nhân vật. Ngày/đêm theo giờ máy; thêm `?time=day` hoặc `?time=night` vào URL để xem thử.
 - **Bản thử** viết bằng Three.js r149 thuần trong `prototype/`. Bản này đã có đủ tính năng mẫu (chọn bàn, laptop, nhạc, tai nghe) để chuyển dần sang app chính.
 
 Đọc trước khi làm tiếp: [docs/project-context.md](docs/project-context.md) (bối cảnh) và [docs/project-plan.md](docs/project-plan.md) (kế hoạch).
@@ -29,9 +29,10 @@ chilly-coffee/
 ├── index.html                 trang của app chính
 ├── src/
 │   ├── main.jsx, App.jsx      khởi động app, Canvas 3D
-│   ├── scene/                 cảnh 3D: quán, đèn ngày/đêm, sương, camera, người đi đường, khách
+│   ├── scene/                 cảnh 3D: quán, đèn ngày/đêm, sương, người đi đường, khách
+│   ├── player/                nhân vật người chơi: di chuyển, tìm đường (nav.js), va chạm (colliders.js), camera sau lưng
 │   ├── characters/Character.jsx  một nhân vật chibi + hoạt ảnh (từ assets/characters/*.glb)
-│   ├── ui/                    giao diện: landing (video nền, kiêm màn hình chờ), màn hình lỗi
+│   ├── ui/                    giao diện: landing (video nền), màn chọn nhân vật (characterSelect/), giao diện trong game (GameHud), màn hình lỗi
 │   ├── locales/{vi,en}/       chữ hiển thị (i18n), mặc định tiếng Việt
 │   ├── store.js               trạng thái chung (Zustand)
 │   ├── cafe/buildCafe.js      code dựng quán → xuất ra cafe.glb (dùng three r149)
@@ -48,6 +49,18 @@ chilly-coffee/
 ```
 
 App chính dùng three mới nhất. Bản thử và các tool xuất GLB vẫn dùng three r149, cài dưới tên `three149` (`node_modules/three149`) để hai bên không đụng nhau.
+
+## Điều khiển trong quán
+
+| Thao tác | Khóa sau lưng (mặc định) | Xoay tự do |
+|---|---|---|
+| W / S (mũi tên lên/xuống) | Đi tới / lùi chậm theo hướng nhân vật | Đi ra xa / về phía camera |
+| A / D (mũi tên trái/phải) | Xoay nhân vật, camera xoay theo | Đi ngang so với camera |
+| Shift | Chạy | Chạy |
+| Bấm lên sàn | Tự tìm đường tới đó, camera bám sau lưng | Tự tìm đường, camera giữ góc |
+| Kéo chuột (trái hoặc phải) | Nhìn quanh tạm thời; đi tiếp thì camera về sau lưng | Xoay camera và giữ góc |
+| Lăn chuột | Phóng to / thu nhỏ | Phóng to / thu nhỏ |
+| V hoặc nút góc trên phải | Đổi chế độ camera (lưu cho lần sau) | |
 
 ## Lệnh
 
