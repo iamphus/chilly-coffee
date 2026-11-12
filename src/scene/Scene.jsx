@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react'
+import { useThree } from '@react-three/fiber'
 import { useGLTF } from '@react-three/drei'
 import cafeUrl from '../../assets/cafe/cafe.glb?url'
 import { createColliders } from '../player/colliders.js'
@@ -14,6 +15,7 @@ import LampGlows from './LampGlows.jsx'
 import Lighting from './Lighting.jsx'
 import { LIGHTING_PRESETS, presetForHour } from './lightingPresets.js'
 import Passersby from './Passersby.jsx'
+import Surroundings from './surroundings/Surroundings.jsx'
 
 // Ngày/đêm: theo cài đặt (mặc định theo giờ máy). Thêm ?time=day hoặc ?time=night vào URL để xem thử.
 const requestedTime = new URLSearchParams(window.location.search).get('time')
@@ -29,6 +31,7 @@ export default function Scene() {
   const lite = useCafeStore((state) => state.lite)
   const preset = timeOfDayPreset(useCafeStore((state) => state.timeOfDay))
   const { scene: cafe } = useGLTF(cafeUrl)
+  const gl = useThree((state) => state.gl)
   const colliders = useMemo(() => createColliders(cafe), [cafe])
   const gameRef = useRef(null)
   if (gameRef.current === null) gameRef.current = createGameState()
@@ -36,9 +39,9 @@ export default function Scene() {
   // Chỉ khi chạy dev: cho script thử (Playwright) đọc/ghi trạng thái nhân vật và store
   useEffect(() => {
     if (!import.meta.env.DEV) return
-    window.__chilly = { gameRef, store: useCafeStore }
+    window.__chilly = { gameRef, store: useCafeStore, gl }
     return () => delete window.__chilly
-  }, [])
+  }, [gl])
 
   // Nhân vật người chơi không xuất hiện thêm trong khách / người đi đường
   const exclude = useMemo(() => [characterId], [characterId])
@@ -46,9 +49,10 @@ export default function Scene() {
   return (
     <>
       <Lighting preset={preset} shadows={!lite} />
-      <Fog color={preset.sky} />
+      <Fog color={preset.skyHorizon} />
       {/* Camera đi trong quán nên giữ trần */}
       <Cafe showCeiling />
+      <Surroundings preset={preset} lite={lite} />
       <LampGlows strength={preset.lampGlow} />
       {!lite && <DustMotes opacity={preset.dust} />}
       <Guests exclude={exclude} />

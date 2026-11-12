@@ -2,6 +2,7 @@ import { useLayoutEffect } from 'react'
 import { useThree } from '@react-three/fiber'
 import { useGLTF } from '@react-three/drei'
 import cafeUrl from '../../assets/cafe/cafe.glb?url'
+import { isBackdropWall, isLegacyTree } from './backdrop.js'
 
 const CEILING = /^Tran/
 
@@ -15,6 +16,8 @@ export default function Cafe({ showCeiling = false }) {
       if (object.isMesh) {
         object.castShadow = ![object.material].flat().some((m) => m.transparent)
         object.receiveShadow = true
+        // Thay bằng công viên và cây mới (Surroundings)
+        if (isBackdropWall(object) || isLegacyTree(object)) object.visible = false
       }
       if (CEILING.test(object.name)) object.visible = showCeiling
     })
