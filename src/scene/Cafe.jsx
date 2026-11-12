@@ -5,7 +5,7 @@ import cafeUrl from '../../assets/cafe/cafe.glb?url'
 
 const CEILING = /^Tran/
 
-/** Mô hình quán (assets/cafe/cafe.glb). Mặc định ẩn trần để nhìn từ trên xuống. */
+/** Mô hình quán (assets/cafe/cafe.glb). Ẩn trần khi nhìn từ trên xuống. */
 export default function Cafe({ showCeiling = false }) {
   const { scene } = useGLTF(cafeUrl)
   const invalidate = useThree((state) => state.invalidate)
