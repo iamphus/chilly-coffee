@@ -39,7 +39,7 @@ chilly-coffee/
 ├── assets/                    sinh ra từ src/ bằng tools/
 │   ├── cafe/                  cafe.glb, cafe.meta.json (chỗ ngồi, đèn), nav.json (lưới đi lại)
 │   ├── characters/            12 nhân vật .glb
-│   └── video/                 video nền landing + ảnh poster (từ tools/render-video)
+│   └── video/                 video quảng cáo landing (2K + 1080p) + ảnh poster (từ tools/render-video)
 ├── prototype/
 │   ├── demo/                  bản thử chính (model.js là file sinh ra, không commit)
 │   └── gallery/               trang xem nhân vật
@@ -68,7 +68,14 @@ App chính dùng three mới nhất. Bản thử và các tool xuất GLB vẫn 
 
 ### Video nền landing
 
-Video được quay từ chính cảnh 3D: `tools/render-video/shots.js` là kịch bản (mỗi cảnh quay là một đường đi của camera), `tools/render-video/main.jsx` dựng cảnh bằng các component trong `src/scene/`, `run.js` quay từng khung hình rồi ghép bằng ffmpeg (gói `ffmpeg-static`, không cần cài thêm). Sửa quán, nhân vật hoặc góc máy thì quay lại:
+Video kiểu TVC được quay từ chính cảnh 3D: nhân vật chính đeo tai nghe đi dọc hẻm vào quán (máy quay ngang tầm mắt bám theo), ngồi gõ laptop, rồi các cảnh trong quán và bay lên toàn cảnh; video lặp liền mạch.
+
+- `tools/render-video/shots.js`: kịch bản (cảnh quay, góc máy, cắt thẳng hay mờ dần, độ phân giải)
+- `tools/render-video/hero.js`: đường đi và hoạt ảnh của nhân vật chính
+- `tools/render-video/main.jsx`: dựng cảnh bằng các component trong `src/scene/`
+- `tools/render-video/run.js`: render ở 3840×2160 rồi ghép bằng ffmpeg (gói `ffmpeg-static`) ra 2 bản 2560×1440 và 1920×1080; landing tự chọn bản theo màn hình
+
+Sửa quán, nhân vật hoặc kịch bản thì quay lại:
 
 ```bash
 npm run dev                                   # cửa sổ 1

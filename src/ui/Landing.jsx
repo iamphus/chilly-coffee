@@ -1,12 +1,16 @@
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import landingVideo from '../../assets/video/landing.mp4'
+import landingVideo1080 from '../../assets/video/landing-1080p.mp4'
+import landingVideo1440 from '../../assets/video/landing-1440p.mp4'
 import landingPoster from '../../assets/video/landing-poster.jpg'
 import { loadCafeCanvas } from '../scene/loadCafeCanvas.js'
 import { useCafeStore } from '../store.js'
 
 const LEAVE_DURATION_MS = 700 // khớp với transition của .landing--leaving trong styles.css
 const PREFETCH_IDLE_TIMEOUT_MS = 4000
+
+// Bản 2K (~14 MB) chỉ cho màn hình rộng hoặc màn hình độ phân giải cao; còn lại dùng 1080p (~9 MB)
+const VIDEO_2K_MEDIA = '(min-width: 1600px), (min-width: 1000px) and (min-resolution: 1.5dppx)'
 
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 // Người dùng bật "tiết kiệm dữ liệu" thì không tải trước ~10 MB mô hình 3D
@@ -122,7 +126,6 @@ export default function Landing() {
       <video
         ref={video}
         className="landing__video"
-        src={landingVideo}
         poster={landingPoster}
         autoPlay={!prefersReducedMotion}
         preload={prefersReducedMotion ? 'none' : 'auto'}
@@ -134,7 +137,10 @@ export default function Landing() {
         tabIndex={-1}
         onCanPlayThrough={prefetchCafe}
         onError={prefetchCafe}
-      />
+      >
+        <source src={landingVideo1440} type="video/mp4" media={VIDEO_2K_MEDIA} />
+        <source src={landingVideo1080} type="video/mp4" onError={prefetchCafe} />
+      </video>
       <div className="landing__scrim" aria-hidden="true" />
 
       <header className="landing__header">

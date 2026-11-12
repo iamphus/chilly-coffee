@@ -38,19 +38,20 @@ function buildSegments(path) {
   return { segments, length }
 }
 
-/** Một người đi qua đi lại trên một đường gấp khúc (đi hết thì quay đầu). */
+/**
+ * Một người đi qua đi lại trên một đường gấp khúc (đi hết thì quay đầu).
+ * Vị trí tính thẳng từ đồng hồ cảnh nên luôn giống nhau ở cùng một thời điểm (video quay lại vẫn khớp).
+ */
 function Walker({ id, path, speed, offset, timeScale = 1 }) {
   const group = useRef(null)
-  const travelled = useRef(offset)
   const route = useMemo(() => buildSegments(path), [path])
   const direction = useMemo(() => new Vector3(), [])
 
-  useFrame((_, delta) => {
+  useFrame(({ clock }, delta) => {
     const walker = group.current
     if (!walker) return
 
-    travelled.current += speed * Math.min(delta, 0.1)
-    const loop = travelled.current % (2 * route.length)
+    const loop = (offset + speed * clock.elapsedTime) % (2 * route.length)
     const forward = loop < route.length
     const distance = forward ? loop : 2 * route.length - loop
 
@@ -77,9 +78,11 @@ function Walker({ id, path, speed, offset, timeScale = 1 }) {
   )
 }
 
-/** Người đi đường ngoài quán */
-export default function Passersby() {
-  return WALKERS.map((walker) => <Walker key={walker.id} {...walker} />)
+/** Người đi đường ngoài quán. exclude: id nhân vật không hiện (vd. nhân vật chính của video). */
+export default function Passersby({ exclude = [] }) {
+  return WALKERS.filter((walker) => !exclude.includes(walker.id)).map((walker) => (
+    <Walker key={walker.id} {...walker} />
+  ))
 }
 
 preloadCharacters(WALKERS.map((walker) => walker.id))
