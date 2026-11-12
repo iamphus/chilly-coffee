@@ -54,7 +54,7 @@ App chính dùng three mới nhất. Bản thử và các tool xuất GLB vẫn 
 
 ## Điều khiển trong quán
 
-| Thao tác | Khóa sau lưng (mặc định) | Xoay tự do |
+| Thao tác | Khóa sau lưng | Xoay tự do (mặc định) |
 |---|---|---|
 | W / S (mũi tên lên/xuống) | Đi tới / lùi chậm theo hướng nhân vật | Đi ra xa / về phía camera |
 | A / D (mũi tên trái/phải) | Xoay nhân vật, camera xoay theo | Đi ngang so với camera |

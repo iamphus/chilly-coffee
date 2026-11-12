@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import { DEFAULT_CHARACTER, PLAYABLE_CHARACTERS } from './characters/playableCharacters.js'
 import { randomNickname } from './player/nicknames.js'
 
-/** Chế độ camera: 'locked' = khóa sau lưng (mặc định), 'free' = xoay tự do */
+/** Chế độ camera: 'free' = xoay tự do (mặc định), 'locked' = khóa sau lưng */
 export const CAMERA_MODES = ['locked', 'free']
 const CAMERA_MODE_KEY = 'chilly.cameraMode'
 const CHARACTER_KEY = 'chilly.character'
@@ -53,7 +53,7 @@ export const useCafeStore = create((set, get) => ({
   loadProgress: 0, // % tải mô hình 3D (0–100)
   sceneReady: false, // cảnh 3D đã dựng xong, landing có thể ẩn đi
   characterId: load(CHARACTER_KEY, PLAYABLE_CHARACTERS, DEFAULT_CHARACTER), // nhân vật người chơi
-  cameraMode: load(CAMERA_MODE_KEY, CAMERA_MODES, 'locked'),
+  cameraMode: load(CAMERA_MODE_KEY, CAMERA_MODES, 'free'),
   nickname: loadNickname(), // tên trên bảng tên
   toast: null, // { key, params, id }: thông báo nhỏ ở giữa phía trên, tự ẩn
   nearbySeat: null, // bàn trống gần nhân vật (để hiện nút "Ngồi xuống")
