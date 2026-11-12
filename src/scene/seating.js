@@ -10,6 +10,15 @@ const LAPTOP_DISTANCE = 0.42 // từ đầu người ngồi tới giữa laptop
 const DEFAULT_TABLE_HEIGHT = 0.74
 
 export const SEATS = Object.fromEntries(cafeMeta.seats.map((seat) => [seat.n, seat]))
+export const SEAT_NAMES = cafeMeta.seats.map((seat) => seat.n)
+
+/** Ghế cao/thấp hơn ghế thường bao nhiêu mét (theo bản thử): ghế bar sát kính trước cao, sofa thấp. */
+export function seatLift(seat) {
+  if (/^Ban_0[1-4]$/.test(seat)) return 0.16
+  if (/^Ban_2[1-4]$/.test(seat)) return 0.02
+  if (/^Ban_(09|28)$/.test(seat)) return -0.08
+  return 0
+}
 
 /** Hướng mặt người ngồi ở bàn `seat` (radian quanh trục y). */
 export function seatYaw(seat) {
@@ -17,14 +26,14 @@ export function seatYaw(seat) {
   return Math.atan2(look[0] - head[0], look[2] - head[2])
 }
 
-/** Vị trí và hướng của nhân vật ngồi ở bàn `seat`; seatLift: ghế cao/thấp hơn ghế thường (mét). */
-export function seatPose(seat, seatLift = 0) {
+/** Vị trí và hướng của nhân vật ngồi ở bàn `seat`; lift: ghế cao/thấp hơn ghế thường (mét). */
+export function seatPose(seat, lift = seatLift(seat)) {
   const head = SEATS[seat].c
   const yaw = seatYaw(seat)
   return {
     position: [
       head[0] + Math.sin(yaw) * LEAN_FORWARD,
-      SEAT_HEIGHT + seatLift - HIP_OFFSET,
+      SEAT_HEIGHT + lift - HIP_OFFSET,
       head[2] + Math.cos(yaw) * LEAN_FORWARD,
     ],
     rotation: [0, yaw, 0],

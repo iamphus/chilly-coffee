@@ -7,6 +7,8 @@ export const LIGHTING_PRESETS = {
     sun: 0.75,
     spot: 0.7,
     lampMultiplier: 1,
+    lampGlow: 0.18, // độ sáng quầng đèn giả
+    dust: 0.35, // độ sáng hạt bụi bay
   },
   night: {
     sky: '#15171c',
@@ -15,6 +17,8 @@ export const LIGHTING_PRESETS = {
     sun: 0.03,
     spot: 1.1,
     lampMultiplier: 1.35,
+    lampGlow: 0.55,
+    dust: 0.75,
   },
 }
 

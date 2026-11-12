@@ -9,6 +9,7 @@ const CharacterSelect = lazy(loadCharacterSelect)
 
 export default function App() {
   const choosing = useCafeStore((state) => state.choosing)
+  const changingCharacter = useCafeStore((state) => state.changingCharacter)
   const entered = useCafeStore((state) => state.entered)
 
   return (
@@ -18,9 +19,10 @@ export default function App() {
           <CafeCanvas />
         </Suspense>
       )}
-      {choosing && (
+      {(choosing || changingCharacter) && (
         <Suspense fallback={<div className="char-select-backdrop" />}>
-          <CharacterSelect />
+          {/* key: đổi chế độ thì dựng lại màn chọn từ đầu */}
+          <CharacterSelect key={changingCharacter ? 'change' : 'enter'} mode={changingCharacter ? 'change' : 'enter'} />
         </Suspense>
       )}
       <Landing />

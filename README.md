@@ -30,7 +30,8 @@ chilly-coffee/
 ├── src/
 │   ├── main.jsx, App.jsx      khởi động app, Canvas 3D
 │   ├── scene/                 cảnh 3D: quán, đèn ngày/đêm, sương, người đi đường, khách
-│   ├── player/                nhân vật người chơi: di chuyển, tìm đường (nav.js), va chạm (colliders.js), camera sau lưng
+│   ├── player/                nhân vật người chơi: di chuyển, ngồi, hành động, tìm đường (nav.js), va chạm (colliders.js), camera
+│   ├── focus/                 Pomodoro, việc cần làm, ghi chú (focusStore.js lưu localStorage), thông báo khi hết giờ
 │   ├── characters/Character.jsx  một nhân vật chibi + hoạt ảnh (từ assets/characters/*.glb)
 │   ├── ui/                    giao diện: landing (video nền), màn chọn nhân vật (characterSelect/), giao diện trong game (GameHud), màn hình lỗi
 │   ├── locales/{vi,en}/       chữ hiển thị (i18n), mặc định tiếng Việt
@@ -61,6 +62,11 @@ App chính dùng three mới nhất. Bản thử và các tool xuất GLB vẫn 
 | Kéo chuột (trái hoặc phải) | Nhìn quanh tạm thời; đi tiếp thì camera về sau lưng | Xoay camera và giữ góc |
 | Lăn chuột | Phóng to / thu nhỏ | Phóng to / thu nhỏ |
 | V hoặc nút góc trên phải | Đổi chế độ camera (lưu cho lần sau) | |
+| E / nút "Ngồi xuống" | Ngồi vào ghế trống gần nhất (dưới 1,2 m); bấm thẳng vào ghế trống thì tự đi tới rồi ngồi | |
+| 1 2 3 4 | Vẫy tay, uống cà phê, vươn vai, ngáp (bấm lại để dừng) | |
+| Esc / E khi đang ngồi | Đứng dậy | |
+
+Khi ngồi: camera chuyển sang góc nhìn thứ nhất, màn hình laptop có Pomodoro (thông báo trình duyệt khi hết giờ), việc cần làm, ghi chú; mọi thứ lưu trong localStorage (`chilly.focus`). Đồng hồ vẫn chạy khi đứng dậy đi lại (hiện ở góc trái và trên tiêu đề tab). Cài đặt (góc phải): chế độ nhẹ (tắt bóng, độ phân giải 1×, 30 fps), thời gian Ngày / Tối / Theo giờ. Chấm màu ở góc phải để đổi nhân vật.
 
 ## Lệnh
 

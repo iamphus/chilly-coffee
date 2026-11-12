@@ -2,6 +2,7 @@ import { useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { Vector3 } from 'three'
 import Character from '../characters/Character.jsx'
+import { findPath } from '../player/nav.js'
 import { CLIPS, preloadCharacters } from '../characters/characterAssets.js'
 
 // Đường đi trên phố, toạ độ [x, z] (lấy từ bản thử): dọc mặt tiền rồi rẽ vào hẻm bên hông.
@@ -15,6 +16,15 @@ const SIDEWALK = [
   [-7.2, 6.6],
 ]
 
+// Nhân viên đi lại phục vụ trong phòng chính: từ dãy bàn sát kính trước vòng ra phía sau bên phải.
+// Tìm đường trên lưới đi lại để không đi xuyên bàn ghế.
+const INSIDE_FROM = [-1.8, 1.8]
+const INSIDE_TO = [2.6, -2.0]
+const INSIDE = (() => {
+  const route = findPath(...INSIDE_FROM, ...INSIDE_TO)
+  return route ? [INSIDE_FROM, ...route] : null
+})()
+
 // speed: mét/giây; offset: quãng đường đã đi lúc bắt đầu, để mọi người không đi sát nhau
 const WALKERS = [
   { id: 'passerby_backpack', path: STREET, speed: 1.0, offset: 3 },
@@ -22,6 +32,7 @@ const WALKERS = [
   { id: 'passerby_umbrella', path: STREET, speed: 0.8, offset: 25 },
   { id: 'passerby_jogger', path: STREET, speed: 2.3, offset: 9, timeScale: 1.9 },
   { id: 'guest_headphones', path: SIDEWALK, speed: 0.9, offset: 4 },
+  ...(INSIDE ? [{ id: 'barista_2', path: INSIDE, speed: 0.7, offset: 2 }] : []),
 ]
 
 const TURN_SPEED = 8

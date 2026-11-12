@@ -3,6 +3,7 @@ import { useFrame, useThree } from '@react-three/fiber'
 import { Vector3 } from 'three'
 import { useCafeStore } from '../store.js'
 import { SPAWN, damp, dampAngle } from './gameState.js'
+import { nameTagAnchor } from './nameTagAnchor.js'
 
 // Khoảng cách tính theo chiều cao nhân vật (gameRef.current.height)
 const DISTANCE = { default: 3.3, min: 1.5, max: 7 }
@@ -15,6 +16,9 @@ const ZOOM_OUT_TAU = 0.35 // hết vướng tường thì lùi về khoảng cá
 const MAX_LIFT = 0.75 // rad: bị tường ép sát thì nâng camera lên tối đa bấy nhiêu (nhìn qua đầu nhân vật)
 const MAX_PITCH_WITH_LIFT = 1.35
 const LIFT_TAU = 0.2
+const NAME_TAG_ABOVE_HEAD = 0.12 // m
+const NAME_TAG_MIN_CAMERA_DISTANCE = 1 // m: camera sát hơn thì ẩn bảng tên
+const SEAT_TAU = 0.18 // giây: camera lướt vào / ra góc nhìn thứ nhất khi ngồi xuống / đứng dậy
 const WALL_PADDING = 0.2 // m, giữ camera cách tường
 const MIN_CAMERA_DISTANCE = 0.35
 const MIN_HEIGHT_ABOVE_FEET = 0.25
@@ -120,15 +124,47 @@ export default function ThirdPersonCamera({ gameRef, colliders }) {
     }
   }, [domElement])
 
-  const scratch = useRef({ desired: new Vector3(), direction: new Vector3(), body: new Vector3(), toCamera: new Vector3() })
+  const scratch = useRef({
+    desired: new Vector3(),
+    direction: new Vector3(),
+    body: new Vector3(),
+    toCamera: new Vector3(),
+    cameraGoal: new Vector3(),
+    tag: new Vector3(),
+  })
+
+  /** Bảng tên: chiếu đỉnh đầu ra toạ độ màn hình, sau khi camera đã cập nhật trong khung hình này. */
+  const placeNameTag = (camera, size, state) => {
+    const point = scratch.current.tag.copy(state.position)
+    point.y += state.height + NAME_TAG_ABOVE_HEAD
+    point.project(camera)
+    nameTagAnchor.x = ((point.x + 1) / 2) * size.width
+    nameTagAnchor.y = ((1 - point.y) / 2) * size.height
+    nameTagAnchor.visible = !state.seatView && point.z < 1 && state.cameraDistance > NAME_TAG_MIN_CAMERA_DISTANCE
+  }
 
   // Chạy sau Player (Player dùng priority −1) để dùng vị trí nhân vật của khung hình này.
   // Không dùng priority dương: R3F sẽ coi như mình tự vẽ và ngừng vẽ cảnh.
-  useFrame(({ camera }, frameDelta) => {
+  useFrame(({ camera, size }, frameDelta) => {
     const dt = Math.min(frameDelta, 0.05)
     const r = rig.current
     const state = gameRef.current
     const locked = useCafeStore.getState().cameraMode === 'locked'
+
+    // Đang ngồi: lướt vào góc nhìn thứ nhất, từ mắt nhìn xuống màn hình laptop
+    if (state.seatView) {
+      const k = 1 - Math.exp(-dt / SEAT_TAU)
+      camera.position.lerp(state.seatView.eye, k)
+      r.target.lerp(state.seatView.target, k)
+      camera.lookAt(r.target)
+      state.cameraDistance = camera.position.distanceTo(state.seatView.eye) // gần mắt thì Player ẩn nhân vật
+      r.leavingSeat = true
+      r.lookYaw = 0
+      r.pitch = PITCH.default
+      r.yaw = state.yaw + Math.PI
+      placeNameTag(camera, size, state)
+      return
+    }
 
     if (locked) {
       r.yaw = dampAngle(r.yaw, state.yaw + Math.PI, r.returning ? RETURN_TAU : YAW_TAU, dt)
@@ -143,7 +179,7 @@ export default function ThirdPersonCamera({ gameRef, colliders }) {
     state.cameraYaw = yaw
 
     // Điểm nhìn: trên đầu nhân vật, đuổi theo mượt
-    const { desired, direction, body, toCamera } = scratch.current
+    const { desired, direction, body, toCamera, cameraGoal } = scratch.current
     desired.copy(state.position)
     desired.y += state.height * LOOK_HEIGHT
     const follow = 1 - Math.exp(-dt / FOLLOW_TAU)
@@ -177,9 +213,18 @@ export default function ThirdPersonCamera({ gameRef, colliders }) {
     r.distance = allowed < r.distance ? allowed : damp(r.distance, allowed, ZOOM_OUT_TAU, dt)
 
     state.cameraDistance = r.distance
-    camera.position.copy(r.target).addScaledVector(direction, r.distance)
-    camera.position.y = Math.max(camera.position.y, state.position.y + MIN_HEIGHT_ABOVE_FEET)
+    cameraGoal.copy(r.target).addScaledVector(direction, r.distance)
+    cameraGoal.y = Math.max(cameraGoal.y, state.position.y + MIN_HEIGHT_ABOVE_FEET)
+    if (r.leavingSeat) {
+      // Vừa đứng dậy: lướt từ góc nhìn thứ nhất ra sau lưng, không nhảy cái rụp
+      camera.position.lerp(cameraGoal, 1 - Math.exp(-dt / SEAT_TAU))
+      if (camera.position.distanceTo(cameraGoal) < 0.05) r.leavingSeat = false
+    } else {
+      camera.position.copy(cameraGoal)
+    }
     camera.lookAt(r.target)
+    camera.updateMatrixWorld()
+    placeNameTag(camera, size, state)
   })
 
   return null

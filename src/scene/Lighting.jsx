@@ -41,7 +41,7 @@ const HEMI_GROUND = linear(0x4a4038)
 const SUN_COLOR = linear(0xfff4e0)
 const SPOT_COLOR = linear(0xffd9a8)
 
-export default function Lighting({ preset = LIGHTING_PRESETS.day }) {
+export default function Lighting({ preset = LIGHTING_PRESETS.day, shadows = true }) {
   const envMap = useRoomEnvironmentMap()
 
   // Đèn hướng và đèn spot chiếu về "target"; target phải nằm trong cảnh mới cập nhật vị trí.
@@ -61,7 +61,7 @@ export default function Lighting({ preset = LIGHTING_PRESETS.day }) {
         intensity={preset.sun * LEGACY_SCALE}
         position={SUN.position}
         target={sunTarget}
-        castShadow
+        castShadow={shadows}
         shadow-mapSize={[2048, 2048]}
         shadow-bias={-0.0005}
         shadow-camera-left={-SUN_SHADOW_EXTENT}
