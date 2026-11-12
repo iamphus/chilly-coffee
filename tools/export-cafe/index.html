@@ -1,10 +1,10 @@
 <!doctype html><html><head><meta charset="utf-8"></head><body style="margin:0;background:#222">
 <canvas id="c" width="1200" height="800"></canvas>
 <script src="../../src/cafe/buildCafe.js"></script>
-<script type="importmap">{"imports":{"three":"../../node_modules/three/build/three.module.js"}}</script>
+<script type="importmap">{"imports":{"three":"../../node_modules/three149/build/three.module.js"}}</script>
 <script type="module">
 import * as THREE from 'three';
-import { GLTFExporter } from '../../node_modules/three/examples/jsm/exporters/GLTFExporter.js';
+import { GLTFExporter } from '../../node_modules/three149/examples/jsm/exporters/GLTFExporter.js';
 const R=new THREE.WebGLRenderer({canvas:document.getElementById('c'),antialias:true,preserveDrawingBuffer:true});
 R.outputEncoding=THREE.sRGBEncoding;R.setClearColor(0x2a2d33);
 const S=new THREE.Scene();const CAFE=buildCafe(THREE);const {root,lights,seats,ceiling}=CAFE;window.dbg=()=>CAFE.dbg;S.add(root);S.add(lights);

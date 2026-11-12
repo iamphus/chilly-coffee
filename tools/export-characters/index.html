@@ -1,10 +1,10 @@
 <!doctype html><html><head><meta charset="utf-8"></head><body style="margin:0;background:#ddd">
 <canvas id="c" width="1400" height="520"></canvas>
 <script src="../../src/characters/characters.js"></script>
-<script type="importmap">{"imports":{"three":"../../node_modules/three/build/three.module.js"}}</script>
+<script type="importmap">{"imports":{"three":"../../node_modules/three149/build/three.module.js"}}</script>
 <script type="module">
 import * as THREE from 'three';
-import { GLTFExporter } from '../../node_modules/three/examples/jsm/exporters/GLTFExporter.js';
+import { GLTFExporter } from '../../node_modules/three149/examples/jsm/exporters/GLTFExporter.js';
 const R=new THREE.WebGLRenderer({canvas:document.getElementById('c'),antialias:true,preserveDrawingBuffer:true});R.outputEncoding=THREE.sRGBEncoding;R.setClearColor(0xe9e4da);
 const S=new THREE.Scene();S.add(new THREE.HemisphereLight(0xffffff,0x887766,0.9));const d=new THREE.DirectionalLight(0xffffff,0.7);d.position.set(3,6,8);S.add(d);
 const C=new THREE.PerspectiveCamera(24,1400/520,0.1,100);C.position.set(0,1.6,15.5);C.lookAt(0,0.85,0);

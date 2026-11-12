@@ -118,8 +118,8 @@ Dự án chia thành 4 giai đoạn. Mỗi giai đoạn phải đạt điều ki
 - [x] Gom ảnh và video quán tham khảo (đã có 12 ảnh + 2 video)
 - [x] Mô hình 3D quán: tự dựng, có sân vườn và phòng lớn, 28 chỗ ngồi (thay cho việc tìm bộ nội thất CC0)
 - [x] Bộ 12 nhân vật chibi kèm 6 hoạt ảnh, mỗi nhân vật một file GLB
-- [ ] Cài Node.js (bản LTS), VS Code, Git
-- [ ] Tạo tài khoản GitHub và Cloudflare; tạo repo chilly-coffee
+- [x] Cài Node.js (bản LTS), VS Code, Git
+- [ ] Tạo tài khoản GitHub và Cloudflare; tạo repo chilly-coffee (đã xong GitHub + repo, còn Cloudflare)
 - [ ] Chọn 10–20 bài lofi CC0 hoặc CC BY, ghi link và giấy phép từng bài vào một bảng
 - [ ] Tìm âm thanh nền CC0: mưa, máy pha cà phê, cốc chén, tiếng mèo
 - [ ] Nhắn xin phép chủ quán gốc vì bố cục quán dựa trên một quán thật

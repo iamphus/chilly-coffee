@@ -1,0 +1,14 @@
+{
+  "scene": {
+    "label": "3D coffee shop. Drag to rotate, scroll to zoom."
+  },
+  "loading": {
+    "title": "Opening the café…",
+    "progress": "{{percent}}% loaded"
+  },
+  "error": {
+    "title": "Something went wrong in the café",
+    "message": "The café couldn't load. Please try reloading the page.",
+    "reload": "Reload page"
+  }
+}

@@ -1,4 +1,5 @@
 node_modules/
+dist/
 
 # File sinh ra
 prototype/demo/model.js
