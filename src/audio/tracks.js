@@ -7,7 +7,9 @@ const FILES = import.meta.glob('../../assets/music/*.{m4a,mp3,ogg,opus,webm}', {
 
 // Tên bài, tác giả, giấy phép theo tên file (bắt buộc với nhạc CC BY: hiện "Đang phát: …").
 // Ví dụ: '1.m4a': { title: 'Rainy Window', artist: 'Ai đó', license: 'CC BY 4.0', link: 'https://…' }
-const TRACK_INFO = {}
+const TRACK_INFO = {
+  // 4 bài tự tạo bằng AI (xem assets/music/README.md); đặt tên ở đây để hiện trên nút "Nhạc quán"
+}
 
 export const TRACKS = Object.entries(FILES)
   .sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true }))

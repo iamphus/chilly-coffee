@@ -52,9 +52,8 @@
     "passerby_jogger": "Jogger"
   },
   "game": {
-    "hint": "W A S D to walk · Click the floor to go there · Drag to look around · Scroll to zoom · V to switch camera · E to sit · R rain",
+    "hint": "W A S D to walk · Click the floor to go there · Drag to look around · Scroll to zoom · V to switch camera · E to sit · R rain · Enter to chat",
     "me": "Me",
-    "room": "Chilly Coffee 02",
     "exit": "Leave the café",
     "map": "Map (coming soon)",
     "musicShort": "Café radio",
@@ -142,5 +141,28 @@
     "title": "Something went wrong in the café",
     "message": "The café couldn't load. Please try reloading the page.",
     "reload": "Reload page"
+  },
+  "net": {
+    "room": "Chilly Coffee {{room}}",
+    "online": "{{count}} in the café",
+    "connecting": "Connecting…",
+    "seatTaken": "Someone took this seat just before you.",
+    "status": {
+      "focus": "Focusing",
+      "break": "On a break",
+      "pomodoros": "{{count}} Pomodoros"
+    },
+    "chat": {
+      "label": "Café chat",
+      "title": "Chat · {{count}} here",
+      "open": "Chat",
+      "inputLabel": "Message",
+      "placeholder": "Say something to the café…",
+      "send": "Send",
+      "block": "Block",
+      "unblockAll": "Unblock {{count}}",
+      "tooFast": "You're sending too fast, wait a moment.",
+      "offline": "Not connected yet, try again soon."
+    }
   }
 }

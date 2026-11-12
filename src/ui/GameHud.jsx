@@ -7,7 +7,10 @@ import { useNow } from '../focus/useNow.js'
 import { ACTIONS } from '../player/actionClips.js'
 import { TIME_OPTIONS, useCafeStore } from '../store.js'
 import LaptopScreen from './laptop/LaptopScreen.jsx'
+import { useNetStore } from '../net/netStore.js'
+import ChatPanel from './ChatPanel.jsx'
 import NameTag from './NameTag.jsx'
+import PeerTags from './PeerTags.jsx'
 import './gameHud.css'
 
 const isTyping = (target) => target instanceof HTMLElement && (target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName))
@@ -137,6 +140,9 @@ export default function GameHud() {
   const store = useCafeStore()
   const { cameraMode, toast, seat, laptopOpen, nearbySeat, action, characterId } = store
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const room = useNetStore((state) => state.room)
+  const connected = useNetStore((state) => state.connected)
+  const peerCount = useNetStore((state) => Object.keys(state.peers).length)
 
   useEffect(() => {
     const onKey = (event) => {
@@ -173,6 +179,7 @@ export default function GameHud() {
 
   return (
     <div className="hud">
+      <PeerTags />
       <NameTag />
       {!seat && <p className="hud-hint">{t('game.hint')}</p>}
       {toast && <Toast key={toast.id} text={toastText} />}
@@ -186,7 +193,12 @@ export default function GameHud() {
           <button type="button" className="hud-button" disabled aria-label={t('game.map')} data-label={t('game.map')}>
             <Icon name="map" />
           </button>
-          <span className="hud-room">{t('game.room')}</span>
+          <span className="hud-room">
+            {t('net.room', { room: room ?? '02' })}
+            <small className={connected ? 'hud-online' : 'hud-online hud-online--off'}>
+              {connected ? t('net.online', { count: peerCount + 1 }) : t('net.connecting')}
+            </small>
+          </span>
         </div>
         {!laptopOpen && <TimerChip />}
       </div>
@@ -310,6 +322,7 @@ export default function GameHud() {
       )}
 
       {laptopOpen && <LaptopScreen />}
+      <ChatPanel />
     </div>
   )
 }

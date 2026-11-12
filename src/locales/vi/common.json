@@ -52,9 +52,8 @@
     "passerby_jogger": "Chạy bộ"
   },
   "game": {
-    "hint": "W A S D để đi · Bấm lên sàn để tới đó · Kéo chuột để nhìn quanh · Lăn chuột để phóng to/thu nhỏ · V đổi camera · E ngồi xuống · R mưa",
+    "hint": "W A S D để đi · Bấm lên sàn để tới đó · Kéo chuột để nhìn quanh · Lăn chuột để phóng to/thu nhỏ · V đổi camera · E ngồi xuống · R mưa · Enter trò chuyện",
     "me": "Tôi",
-    "room": "Chilly Coffee 02",
     "exit": "Rời quán",
     "map": "Bản đồ (sắp có)",
     "musicShort": "Nhạc quán",
@@ -142,5 +141,28 @@
     "title": "Quán gặp chút trục trặc",
     "message": "Không tải được quán. Bạn thử tải lại trang nhé.",
     "reload": "Tải lại trang"
+  },
+  "net": {
+    "room": "Chilly Coffee {{room}}",
+    "online": "{{count}} người trong quán",
+    "connecting": "Đang kết nối…",
+    "seatTaken": "Có người vừa ngồi ghế này trước bạn.",
+    "status": {
+      "focus": "Đang tập trung",
+      "break": "Nghỉ giải lao",
+      "pomodoros": "{{count}} Pomodoro"
+    },
+    "chat": {
+      "label": "Trò chuyện trong quán",
+      "title": "Trò chuyện · {{count}} người",
+      "open": "Trò chuyện",
+      "inputLabel": "Tin nhắn",
+      "placeholder": "Nhắn gì đó cho cả quán…",
+      "send": "Gửi",
+      "block": "Chặn",
+      "unblockAll": "Bỏ chặn {{count}} người",
+      "tooFast": "Bạn gửi hơi nhanh, đợi chút nhé.",
+      "offline": "Chưa kết nối được, thử lại sau nhé."
+    }
   }
 }

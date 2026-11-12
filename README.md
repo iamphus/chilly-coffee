@@ -32,6 +32,7 @@ chilly-coffee/
 │   ├── scene/                 cảnh 3D: quán, đèn ngày/đêm, sương, người đi đường, khách
 │   │   └── surroundings/      bên ngoài: công viên đài phun nước, vườn hồ sen, cây hoa, đèn, đồi, bầu trời (bố cục ở layout.js)
 │   ├── player/                nhân vật người chơi: di chuyển, ngồi, hành động, tìm đường (nav.js), va chạm (colliders.js), camera
+│   ├── net/                   nhiều người: Supabase Realtime hoặc kênh giữa các tab, người chơi khác, chat (lọc từ tục, chặn)
 │   ├── audio/                 nhạc quán (radio đồng bộ theo đồng hồ), tạp âm phố tự tạo bằng Web Audio, trộn trong / ngoài quán
 │   ├── focus/                 Pomodoro, việc cần làm, ghi chú (focusStore.js lưu localStorage), thông báo khi hết giờ
 │   ├── characters/Character.jsx  một nhân vật chibi + hoạt ảnh (từ assets/characters/*.glb)
@@ -43,7 +44,7 @@ chilly-coffee/
 ├── assets/                    sinh ra từ src/ bằng tools/
 │   ├── cafe/                  cafe.glb, cafe.meta.json (chỗ ngồi, đèn), nav.json (lưới đi lại)
 │   ├── characters/            12 nhân vật .glb
-│   ├── music/                 file nhạc quán (không commit, xem assets/music/README.md)
+│   ├── music/                 nhạc quán (4 bài tự tạo bằng AI, xem assets/music/README.md)
 │   └── video/                 video quảng cáo landing (2K + 1080p) + ảnh poster (từ tools/render-video)
 ├── prototype/
 │   ├── demo/                  bản thử chính (model.js là file sinh ra, không commit)
@@ -67,6 +68,7 @@ App chính dùng three mới nhất. Bản thử và các tool xuất GLB vẫn 
 | V hoặc nút góc trên phải | Đổi chế độ camera (lưu cho lần sau) | |
 | E / nút "Ngồi xuống" | Ngồi vào ghế trống gần nhất (dưới 1,2 m); bấm thẳng vào ghế trống thì tự đi tới rồi ngồi | |
 | 1 2 3 4 | Vẫy tay, uống cà phê, vươn vai, ngáp (bấm lại để dừng) | |
+| Enter | Mở khung chat / gửi tin; Esc đóng | |
 | E khi đang ngồi | Mở / gập laptop | |
 | Esc khi đang ngồi | Gập laptop (nếu đang mở), rồi đứng dậy | |
 
@@ -104,6 +106,23 @@ Sửa quán, nhân vật hoặc kịch bản thì quay lại:
 npm run dev                                   # cửa sổ 1
 PW_CHANNEL=msedge npm run build:video         # cửa sổ 2 (Edge có sẵn để render bằng card đồ hoạ)
 ```
+
+## Nhiều người (Supabase)
+
+Không có khoá Supabase thì app tự dùng kênh giữa các tab cùng trình duyệt: mở 2 tab `npm run dev` là thấy nhau, chat được.
+Để kết nối qua mạng thật:
+
+1. Tạo project miễn phí ở https://supabase.com (không cần tạo bảng nào; chỉ dùng Realtime Presence + Broadcast).
+2. Project Settings → API: chép **Project URL** và **anon public key**.
+3. Tạo file `.env.local` (đã bị git bỏ qua) theo mẫu `.env.example`:
+   ```
+   VITE_SUPABASE_URL=https://xxxx.supabase.co
+   VITE_SUPABASE_ANON_KEY=eyJ...
+   ```
+4. Chạy lại `npm run dev`. Khi deploy, thêm 2 biến này trong Cloudflare Pages → Settings → Environment variables.
+5. Nếu không kết nối được: Supabase Dashboard → Realtime → Settings, đảm bảo cho phép kênh công khai (không bật "Private channels only").
+
+Mỗi phòng tối đa 20 người, đầy thì tự sang phòng sau. Chat không lưu lại ở đâu cả; có lọc từ tục và nút "Chặn".
 
 ## Deploy (Cloudflare Pages)
 
