@@ -34,7 +34,10 @@
     "previous": "Nhân vật trước",
     "next": "Nhân vật sau",
     "count": "{{current}} / {{total}}",
-    "hint": "← → để đổi · Enter để vào quán · Bấm vào nhân vật để chọn"
+    "hint": "← → để đổi · Enter để vào quán · Bấm vào nhân vật để chọn",
+    "change": "Đổi sang nhân vật này",
+    "cancel": "Huỷ",
+    "hintChange": "← → để đổi · Enter để chọn · Esc để huỷ"
   },
   "characters": {
     "guest_headphones": "Đeo tai nghe",
@@ -49,12 +52,77 @@
     "passerby_jogger": "Chạy bộ"
   },
   "game": {
-    "hint": "W A S D để đi · Bấm lên sàn để tới đó · Kéo chuột để nhìn quanh · Lăn chuột để phóng to/thu nhỏ · V đổi camera",
+    "hint": "W A S D để đi · Bấm lên sàn để tới đó · Kéo chuột để nhìn quanh · Lăn chuột để phóng to/thu nhỏ · V đổi camera · E ngồi xuống",
+    "me": "Tôi",
+    "room": "Chilly Coffee 02",
+    "exit": "Rời quán",
+    "map": "Bản đồ (sắp có)",
+    "sound": "Âm thanh (sắp có)",
+    "music": "Nhạc quán (sắp có)",
+    "musicShort": "Nhạc quán",
+    "changeCharacter": "Đổi nhân vật",
+    "sit": "Ngồi xuống",
     "camera": {
       "locked": "Khóa sau lưng",
       "free": "Xoay tự do",
       "toast": "Camera: {{mode}}",
       "button": "Chế độ camera: {{mode}} (phím V)"
+    },
+    "actions": {
+      "label": "Hành động",
+      "wave": "Vẫy tay",
+      "drink": "Uống cà phê",
+      "stretch": "Vươn vai",
+      "yawn": "Ngáp",
+      "stop": "Dừng"
+    },
+    "settings": {
+      "title": "Cài đặt",
+      "lite": "Chế độ nhẹ",
+      "liteHint": "Tắt bóng đổ, giảm độ phân giải, 30 khung hình/giây. Dùng khi máy bị giật.",
+      "time": "Thời gian trong quán",
+      "timeOptions": {
+        "auto": "Theo giờ",
+        "day": "Ngày",
+        "night": "Tối"
+      }
+    }
+  },
+  "laptop": {
+    "label": "Màn hình laptop",
+    "appsLabel": "Ứng dụng",
+    "standUp": "Đứng dậy",
+    "apps": {
+      "pomodoro": "Pomodoro",
+      "todo": "Việc cần làm",
+      "notes": "Ghi chú"
+    },
+    "pomodoro": {
+      "focus": "Tập trung",
+      "break": "Nghỉ ngắn",
+      "start": "Bắt đầu",
+      "resume": "Tiếp tục",
+      "pause": "Tạm dừng",
+      "reset": "Đặt lại",
+      "skipToBreak": "Sang giờ nghỉ",
+      "skipToFocus": "Sang giờ tập trung",
+      "completed": "Hôm nay đã xong {{count}} Pomodoro",
+      "settings": "Thời lượng (phút)",
+      "focusMinutes": "Tập trung",
+      "breakMinutes": "Nghỉ",
+      "focusDone": "Hết giờ tập trung! Nghỉ một chút nhé.",
+      "breakDone": "Hết giờ nghỉ. Sẵn sàng tập trung tiếp chưa?"
+    },
+    "todo": {
+      "newLabel": "Việc cần làm mới",
+      "add": "Thêm",
+      "empty": "Chưa có việc nào. Gõ một việc nhỏ để bắt đầu nhé.",
+      "left": "Còn {{count}} việc",
+      "remove": "Xoá \"{{text}}\""
+    },
+    "notes": {
+      "label": "Ghi chú",
+      "autosave": "Tự lưu trên máy này"
     }
   },
   "error": {

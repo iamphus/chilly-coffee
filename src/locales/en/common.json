@@ -34,7 +34,10 @@
     "previous": "Previous character",
     "next": "Next character",
     "count": "{{current}} / {{total}}",
-    "hint": "← → to switch · Enter to go in · Click a character to pick"
+    "hint": "← → to switch · Enter to go in · Click a character to pick",
+    "change": "Switch to this character",
+    "cancel": "Cancel",
+    "hintChange": "← → to switch · Enter to pick · Esc to cancel"
   },
   "characters": {
     "guest_headphones": "Headphones",
@@ -49,12 +52,77 @@
     "passerby_jogger": "Jogger"
   },
   "game": {
-    "hint": "W A S D to walk · Click the floor to go there · Drag to look around · Scroll to zoom · V to switch camera",
+    "hint": "W A S D to walk · Click the floor to go there · Drag to look around · Scroll to zoom · V to switch camera · E to sit",
+    "me": "Me",
+    "room": "Chilly Coffee 02",
+    "exit": "Leave the café",
+    "map": "Map (coming soon)",
+    "sound": "Sound (coming soon)",
+    "music": "Café radio (coming soon)",
+    "musicShort": "Café radio",
+    "changeCharacter": "Change character",
+    "sit": "Sit down",
     "camera": {
       "locked": "Locked behind",
       "free": "Free orbit",
       "toast": "Camera: {{mode}}",
       "button": "Camera mode: {{mode}} (V)"
+    },
+    "actions": {
+      "label": "Actions",
+      "wave": "Wave",
+      "drink": "Sip coffee",
+      "stretch": "Stretch",
+      "yawn": "Yawn",
+      "stop": "Stop"
+    },
+    "settings": {
+      "title": "Settings",
+      "lite": "Lite mode",
+      "liteHint": "No shadows, lower resolution, 30 fps. Use it if things feel choppy.",
+      "time": "Time in the café",
+      "timeOptions": {
+        "auto": "Local time",
+        "day": "Day",
+        "night": "Night"
+      }
+    }
+  },
+  "laptop": {
+    "label": "Laptop screen",
+    "appsLabel": "Apps",
+    "standUp": "Stand up",
+    "apps": {
+      "pomodoro": "Pomodoro",
+      "todo": "To-dos",
+      "notes": "Notes"
+    },
+    "pomodoro": {
+      "focus": "Focus",
+      "break": "Short break",
+      "start": "Start",
+      "resume": "Resume",
+      "pause": "Pause",
+      "reset": "Reset",
+      "skipToBreak": "Skip to break",
+      "skipToFocus": "Skip to focus",
+      "completed": "{{count}} Pomodoros done today",
+      "settings": "Durations (minutes)",
+      "focusMinutes": "Focus",
+      "breakMinutes": "Break",
+      "focusDone": "Focus time's up! Take a short break.",
+      "breakDone": "Break's over. Ready to focus again?"
+    },
+    "todo": {
+      "newLabel": "New to-do",
+      "add": "Add",
+      "empty": "No to-dos yet. Add a small one to get started.",
+      "left": "{{count}} left",
+      "remove": "Delete \"{{text}}\""
+    },
+    "notes": {
+      "label": "Notes",
+      "autosave": "Saved on this device"
     }
   },
   "error": {

@@ -128,16 +128,16 @@ Dự án chia thành 4 giai đoạn. Mỗi giai đoạn phải đạt điều ki
 
 ### Giai đoạn 1 – Bản 1, một người (khoảng 2–3 tuần)
 
-- [ ] Tạo khung dự án Vite + React + React Three Fiber, đưa lên Cloudflare Pages
+- [ ] Tạo khung dự án Vite + React + React Three Fiber, đưa lên Cloudflare Pages (đã có khung, còn Cloudflare)
 - [ ] Dựng cảnh quán: ánh sáng ấm, cửa kính có mưa, bàn ghế, TV
 - [ ] Nhân vật chibi: 5 kiểu tóc, 5 bộ đồ, chọn màu; gộp thành 1–2 khối mỗi nhân vật
-- [ ] Click chọn bàn, camera zoom vào laptop
-- [ ] Giao diện laptop: Pomodoro, to-do, ghi chú
-- [ ] Pomodoro gửi thông báo trình duyệt khi hết giờ
+- [x] Click chọn bàn, camera zoom vào laptop
+- [x] Giao diện laptop: Pomodoro, to-do, ghi chú
+- [x] Pomodoro gửi thông báo trình duyệt khi hết giờ
 - [ ] Trình phát YouTube cho playlist riêng
 - [ ] TV quán phát nhạc tự host, đồng bộ theo đồng hồ
 - [ ] Nút tai nghe + crossfade + hiệu ứng lọc tiếng
-- [ ] Chế độ nhẹ; giảm fps khi ngồi bàn hoặc ẩn tab
+- [x] Chế độ nhẹ; giảm fps khi ngồi bàn hoặc ẩn tab
 - [ ] Trang chính sách riêng tư (YouTube yêu cầu với trang nhúng)
 - [ ] Đưa lên mạng, nhờ 3–5 bạn dùng thử và góp ý
 

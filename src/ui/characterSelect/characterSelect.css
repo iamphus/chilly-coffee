@@ -120,6 +120,23 @@
   color: var(--text-muted);
 }
 
+.char-select__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.char-select__cancel {
+  padding: 13px 24px;
+  border-radius: 999px;
+  background: rgba(246, 238, 227, 0.12);
+  font-weight: 700;
+}
+
+.char-select__cancel:hover:not(:disabled) {
+  background: rgba(246, 238, 227, 0.2);
+}
+
 .char-select__hint {
   margin: 0;
   font-size: var(--text-sm);
