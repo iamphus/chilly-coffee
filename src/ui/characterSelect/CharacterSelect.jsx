@@ -2,6 +2,7 @@ import { Suspense, useEffect, useState } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { useTranslation } from 'react-i18next'
 import { PLAYABLE_CHARACTERS } from '../../characters/playableCharacters.js'
+import { audioEngine } from '../../audio/audioEngine.js'
 import { useCafeStore } from '../../store.js'
 import CharacterLineup from './CharacterLineup.jsx'
 import './characterSelect.css'
@@ -35,7 +36,11 @@ export default function CharacterSelect({ mode = 'enter' }) {
   const characterId = PLAYABLE_CHARACTERS[selected]
   const leaving = !changing && entered && sceneReady
   const locked = !changing && entered // đã bấm vào quán, đang chờ dựng cảnh
-  const confirm = (id) => (changing ? changeCharacter(id) : enterCafe(id))
+  const confirm = (id) => {
+    audioEngine.unlock()
+    if (changing) changeCharacter(id)
+    else enterCafe(id)
+  }
 
   // ← → (hoặc A D) để đổi nhân vật, Enter để chọn, Esc để huỷ (khi đổi trong quán)
   useEffect(() => {

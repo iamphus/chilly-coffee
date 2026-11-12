@@ -52,13 +52,11 @@
     "passerby_jogger": "Jogger"
   },
   "game": {
-    "hint": "W A S D to walk · Click the floor to go there · Drag to look around · Scroll to zoom · V to switch camera · E to sit",
+    "hint": "W A S D to walk · Click the floor to go there · Drag to look around · Scroll to zoom · V to switch camera · E to sit · R rain",
     "me": "Me",
     "room": "Chilly Coffee 02",
     "exit": "Leave the café",
     "map": "Map (coming soon)",
-    "sound": "Sound (coming soon)",
-    "music": "Café radio (coming soon)",
     "musicShort": "Café radio",
     "changeCharacter": "Change character",
     "sit": "Sit down",
@@ -79,13 +77,26 @@
     "settings": {
       "title": "Settings",
       "lite": "Lite mode",
-      "liteHint": "No shadows, lower resolution, 30 fps. Use it if things feel choppy.",
+      "liteHint": "No shadows, lower resolution, 30 fps, lighter rain. Use it if things feel choppy.",
       "time": "Time in the café",
       "timeOptions": {
         "auto": "Local time",
         "day": "Day",
         "night": "Night"
-      }
+      },
+      "musicVolume": "Café radio volume",
+      "ambienceVolume": "Street sounds volume"
+    },
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "musicOn": "Turn café radio on",
+    "musicOff": "Turn café radio off",
+    "nowPlaying": "Café radio · {{title}}",
+    "trackNumber": "Track {{number}}",
+    "rain": {
+      "button": "Toggle rain",
+      "on": "It's raining",
+      "off": "Rain stopped"
     }
   },
   "laptop": {

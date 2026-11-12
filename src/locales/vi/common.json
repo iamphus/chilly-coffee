@@ -52,13 +52,11 @@
     "passerby_jogger": "Chạy bộ"
   },
   "game": {
-    "hint": "W A S D để đi · Bấm lên sàn để tới đó · Kéo chuột để nhìn quanh · Lăn chuột để phóng to/thu nhỏ · V đổi camera · E ngồi xuống",
+    "hint": "W A S D để đi · Bấm lên sàn để tới đó · Kéo chuột để nhìn quanh · Lăn chuột để phóng to/thu nhỏ · V đổi camera · E ngồi xuống · R mưa",
     "me": "Tôi",
     "room": "Chilly Coffee 02",
     "exit": "Rời quán",
     "map": "Bản đồ (sắp có)",
-    "sound": "Âm thanh (sắp có)",
-    "music": "Nhạc quán (sắp có)",
     "musicShort": "Nhạc quán",
     "changeCharacter": "Đổi nhân vật",
     "sit": "Ngồi xuống",
@@ -79,13 +77,26 @@
     "settings": {
       "title": "Cài đặt",
       "lite": "Chế độ nhẹ",
-      "liteHint": "Tắt bóng đổ, giảm độ phân giải, 30 khung hình/giây. Dùng khi máy bị giật.",
+      "liteHint": "Tắt bóng đổ, giảm độ phân giải, 30 khung hình/giây, ít hạt mưa. Dùng khi máy bị giật.",
       "time": "Thời gian trong quán",
       "timeOptions": {
         "auto": "Theo giờ",
         "day": "Ngày",
         "night": "Tối"
-      }
+      },
+      "musicVolume": "Âm lượng nhạc quán",
+      "ambienceVolume": "Âm lượng tiếng phố"
+    },
+    "mute": "Tắt tiếng",
+    "unmute": "Bật tiếng",
+    "musicOn": "Bật nhạc quán",
+    "musicOff": "Tắt nhạc quán",
+    "nowPlaying": "Nhạc quán · {{title}}",
+    "trackNumber": "Bài {{number}}",
+    "rain": {
+      "button": "Bật / tắt mưa",
+      "on": "Trời đang mưa",
+      "off": "Trời tạnh"
     }
   },
   "laptop": {

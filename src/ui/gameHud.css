@@ -113,6 +113,24 @@
   font-weight: 700;
 }
 
+.hud-pill--off {
+  opacity: 0.6;
+}
+
+.hud-slider {
+  display: grid;
+  gap: 4px;
+}
+
+.hud-slider span {
+  font-weight: 700;
+}
+
+.hud-slider input {
+  width: 100%;
+  accent-color: var(--accent);
+}
+
 .hud-pill--text svg {
   width: 16px;
   height: 16px;
@@ -153,6 +171,10 @@
   stroke-width: 1.8;
   stroke-linecap: round;
   stroke-linejoin: round;
+}
+
+.hud-button--on {
+  background: rgba(143, 191, 220, 0.35);
 }
 
 .hud-dot {

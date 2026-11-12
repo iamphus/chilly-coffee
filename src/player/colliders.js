@@ -4,7 +4,7 @@
 // - bấm lên sàn: tìm điểm nhân vật cần đi tới
 import { Box3, Raycaster, Vector3 } from 'three'
 import { MeshBVH, acceleratedRaycast } from 'three-mesh-bvh'
-import { isBackdropWall, isLegacyTree } from '../scene/backdrop.js'
+import { isBackdropWall } from '../scene/backdrop.js'
 
 const STEP_UP = 0.45 // bắn tia từ cao hơn chân bao nhiêu mét: bậc cao nhất có thể bước lên
 const MAX_DROP = 1.2 // nhìn xuống sâu nhất bao nhiêu mét
@@ -34,7 +34,7 @@ export function createColliders(cafe) {
   cafe.traverse((object) => {
     if (!object.isMesh) return
     if ([object.material].flat().some((material) => material.transparent)) return
-    if (isBackdropWall(object) || isLegacyTree(object)) return // nhà đối diện và cây cũ, đã ẩn
+    if (isBackdropWall(object)) return // nhà đối diện cũ, đã ẩn
     if (!object.geometry.boundsTree) object.geometry.boundsTree = new MeshBVH(object.geometry)
     object.raycast = acceleratedRaycast
     meshes.push(object)

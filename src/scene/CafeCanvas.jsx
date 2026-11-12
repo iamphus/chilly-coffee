@@ -4,6 +4,7 @@ import { useProgress } from '@react-three/drei'
 import { useTranslation } from 'react-i18next'
 import { useCafeStore } from '../store.js'
 import { SPAWN } from '../player/gameState.js'
+import AudioController from '../audio/AudioController.jsx'
 import FocusTimer from '../focus/FocusTimer.jsx'
 import GameHud from '../ui/GameHud.jsx'
 import Scene from './Scene.jsx'
@@ -69,8 +70,7 @@ export default function CafeCanvas() {
   const { t } = useTranslation()
   const sceneReady = useCafeStore((state) => state.sceneReady)
   const lite = useCafeStore((state) => state.lite)
-  const seated = useCafeStore((state) => state.seat !== null)
-  const limited = lite || seated
+  const limited = lite // chỉ chế độ nhẹ mới khoá 30 khung hình/giây (ngồi laptop vẫn chạy mượt)
 
   return (
     <>
@@ -79,7 +79,7 @@ export default function CafeCanvas() {
         role="img"
         aria-label={t('scene.label')}
         // Chưa vẽ cho tới khi shader biên dịch xong (SceneReady). Sau đó vẽ liên tục vì người
-        // đi đường luôn chuyển động; ngồi bàn hoặc chế độ nhẹ thì giảm còn 30 khung hình/giây.
+        // đi đường luôn chuyển động; chế độ nhẹ thì giảm còn 30 khung hình/giây.
         // Ẩn tab thì trình duyệt tự ngừng vẽ.
         frameloop={!sceneReady ? 'never' : limited ? 'demand' : 'always'}
         dpr={lite ? 1 : [1, 1.5]}
@@ -97,6 +97,7 @@ export default function CafeCanvas() {
       </Canvas>
       {sceneReady && <GameHud />}
       {sceneReady && <FocusTimer />}
+      {sceneReady && <AudioController />}
     </>
   )
 }

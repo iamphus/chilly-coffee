@@ -32,6 +32,7 @@ chilly-coffee/
 │   ├── scene/                 cảnh 3D: quán, đèn ngày/đêm, sương, người đi đường, khách
 │   │   └── surroundings/      bên ngoài: công viên đài phun nước, vườn hồ sen, cây hoa, đèn, đồi, bầu trời (bố cục ở layout.js)
 │   ├── player/                nhân vật người chơi: di chuyển, ngồi, hành động, tìm đường (nav.js), va chạm (colliders.js), camera
+│   ├── audio/                 nhạc quán (radio đồng bộ theo đồng hồ), tạp âm phố tự tạo bằng Web Audio, trộn trong / ngoài quán
 │   ├── focus/                 Pomodoro, việc cần làm, ghi chú (focusStore.js lưu localStorage), thông báo khi hết giờ
 │   ├── characters/Character.jsx  một nhân vật chibi + hoạt ảnh (từ assets/characters/*.glb)
 │   ├── ui/                    giao diện: landing (video nền), màn chọn nhân vật (characterSelect/), giao diện trong game (GameHud), màn hình lỗi
@@ -42,6 +43,7 @@ chilly-coffee/
 ├── assets/                    sinh ra từ src/ bằng tools/
 │   ├── cafe/                  cafe.glb, cafe.meta.json (chỗ ngồi, đèn), nav.json (lưới đi lại)
 │   ├── characters/            12 nhân vật .glb
+│   ├── music/                 file nhạc quán (không commit, xem assets/music/README.md)
 │   └── video/                 video quảng cáo landing (2K + 1080p) + ảnh poster (từ tools/render-video)
 ├── prototype/
 │   ├── demo/                  bản thử chính (model.js là file sinh ra, không commit)
@@ -54,7 +56,7 @@ App chính dùng three mới nhất. Bản thử và các tool xuất GLB vẫn 
 
 ## Điều khiển trong quán
 
-| Thao tác | Khóa sau lưng (mặc định) | Xoay tự do |
+| Thao tác | Khóa sau lưng | Xoay tự do (mặc định) |
 |---|---|---|
 | W / S (mũi tên lên/xuống) | Đi tới / lùi chậm theo hướng nhân vật | Đi ra xa / về phía camera |
 | A / D (mũi tên trái/phải) | Xoay nhân vật, camera xoay theo | Đi ngang so với camera |

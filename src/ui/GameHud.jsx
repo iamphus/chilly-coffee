@@ -31,7 +31,9 @@ const ICONS = {
   exit: <path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4M10 8l-4 4 4 4M6 12h10" />,
   map: <path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2zM9 4v14M15 6v14" />,
   muted: <path d="M4 9h4l5-4v14l-5-4H4zM17 9l4 6M21 9l-4 6" />,
+  sound: <path d="M4 9h4l5-4v14l-5-4H4zM16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12" />,
   settings: <path d="M4 7h10M18 7h2M4 17h2M10 17h10M14 4v6M6 14v6" />,
+  rain: <path d="M7 15a4.5 4.5 0 1 1 1.2-8.85A6 6 0 0 1 19.5 9a3.5 3.5 0 0 1-.5 6.97M8 18l-1 2.5M12 18l-1 2.5M16 18l-1 2.5" />,
   music: <path d="M9 18V6l11-2v12M9 18a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM20 16a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />,
   seat: <path d="M6 4v9h12V4M5 13h14v3H5zM7 16v4M17 16v4" />,
   wave: <path d="M7 11V6a1.5 1.5 0 0 1 3 0v4M10 10V4.5a1.5 1.5 0 0 1 3 0V10M13 10V5.5a1.5 1.5 0 0 1 3 0V12M16 9a1.5 1.5 0 0 1 3 0v5a7 7 0 0 1-12 4l-3-4a1.5 1.5 0 0 1 2.3-2L7 13" />,
@@ -70,9 +72,19 @@ function TimerChip() {
   )
 }
 
-/** Cài đặt: chế độ nhẹ, ngày / đêm */
+function VolumeSlider({ label, value, onChange }) {
+  return (
+    <label className="hud-slider">
+      <span>{label}</span>
+      <input type="range" min={0} max={1} step={0.05} value={value} onChange={(event) => onChange(Number(event.target.value))} />
+    </label>
+  )
+}
+
+/** Cài đặt: chế độ nhẹ, âm lượng, ngày / đêm */
 function SettingsPopover({ onClose }) {
   const { t } = useTranslation()
+  const store = useCafeStore()
   const lite = useCafeStore((state) => state.lite)
   const setLite = useCafeStore((state) => state.setLite)
   const timeOfDay = useCafeStore((state) => state.timeOfDay)
@@ -99,6 +111,8 @@ function SettingsPopover({ onClose }) {
           <small>{t('game.settings.liteHint')}</small>
         </span>
       </label>
+      <VolumeSlider label={t('game.settings.musicVolume')} value={store.musicVolume} onChange={(musicVolume) => store.setSound({ musicVolume })} />
+      <VolumeSlider label={t('game.settings.ambienceVolume')} value={store.ambienceVolume} onChange={(ambienceVolume) => store.setSound({ ambienceVolume })} />
       <fieldset className="hud-segmented">
         <legend>{t('game.settings.time')}</legend>
         {TIME_OPTIONS.map((option) => (
@@ -135,6 +149,8 @@ export default function GameHud() {
       if (event.code === 'KeyE') {
         if (state.seat) state.standUp()
         else if (state.nearbySeat) state.sitDown(state.nearbySeat)
+      } else if (event.code === 'KeyR') {
+        state.toggleRain()
       } else if (event.code === 'KeyV' && !state.seat) {
         state.toggleCameraMode()
       } else if (/^Digit[1-4]$/.test(event.code) && !state.seat) {
@@ -193,8 +209,25 @@ export default function GameHud() {
               <Icon name={cameraMode === 'locked' ? 'lock' : 'orbit'} />
             </button>
           )}
-          <button type="button" className="hud-button" disabled aria-label={t('game.sound')} data-label={t('game.sound')}>
-            <Icon name="muted" />
+          <button
+            type="button"
+            className={store.rain ? 'hud-button hud-button--on' : 'hud-button'}
+            onClick={store.toggleRain}
+            aria-pressed={store.rain}
+            aria-label={t('game.rain.button')}
+            data-label={`${t(store.rain ? 'game.rain.on' : 'game.rain.off')} (R)`}
+          >
+            <Icon name="rain" />
+          </button>
+          <button
+            type="button"
+            className="hud-button"
+            onClick={() => store.setSound({ muted: !store.muted })}
+            aria-pressed={store.muted}
+            aria-label={store.muted ? t('game.unmute') : t('game.mute')}
+            data-label={store.muted ? t('game.unmute') : t('game.mute')}
+          >
+            <Icon name={store.muted ? 'muted' : 'sound'} />
           </button>
           <div className="hud-popover-anchor">
             <button
@@ -210,9 +243,17 @@ export default function GameHud() {
             {settingsOpen && <SettingsPopover onClose={() => setSettingsOpen(false)} />}
           </div>
         </div>
-        <button type="button" className="hud-pill hud-pill--text" disabled aria-label={t('game.music')}>
+        <button
+          type="button"
+          className={store.musicOn ? 'hud-pill hud-pill--text' : 'hud-pill hud-pill--text hud-pill--off'}
+          onClick={() => store.setSound({ musicOn: !store.musicOn })}
+          aria-pressed={store.musicOn}
+          aria-label={store.musicOn ? t('game.musicOff') : t('game.musicOn')}
+        >
           <Icon name="music" />
-          {t('game.musicShort')}
+          {store.musicOn && store.nowPlaying
+            ? t('game.nowPlaying', { title: store.nowPlaying.title ?? t('game.trackNumber', { number: store.nowPlaying.index + 1 }) })
+            : t('game.musicShort')}
         </button>
       </div>
 
