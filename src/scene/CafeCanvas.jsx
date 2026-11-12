@@ -3,10 +3,17 @@ import { Canvas, useThree } from '@react-three/fiber'
 import { useProgress } from '@react-three/drei'
 import { useTranslation } from 'react-i18next'
 import { useCafeStore } from '../store.js'
-import { VIEWS } from './cameraViews.js'
+import { SPAWN } from '../player/gameState.js'
+import GameHud from '../ui/GameHud.jsx'
 import Scene from './Scene.jsx'
 
-const CAMERA = { position: VIEWS.street.position.toArray(), fov: 50, near: 0.05, far: 80 }
+// Khung hình đầu: sau lưng nhân vật ở chỗ xuất hiện (ThirdPersonCamera chỉnh lại ngay từ khung đầu)
+const CAMERA = {
+  position: [SPAWN.position[0] - Math.sin(SPAWN.yaw) * 3, 1.8, SPAWN.position[2] - Math.cos(SPAWN.yaw) * 3],
+  fov: 50,
+  near: 0.05,
+  far: 80,
+}
 
 /** Báo % tải mô hình cho landing (landing không import drei để giữ nhẹ). */
 function ProgressReporter() {
@@ -70,6 +77,7 @@ export default function CafeCanvas() {
           <SceneReady />
         </Suspense>
       </Canvas>
+      {sceneReady && <GameHud />}
     </>
   )
 }

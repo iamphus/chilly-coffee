@@ -27,6 +27,36 @@
       }
     }
   },
+  "select": {
+    "title": "Choose your character",
+    "subtitle": "This is who you'll walk into the café as.",
+    "enter": "Enter the café",
+    "previous": "Previous character",
+    "next": "Next character",
+    "count": "{{current}} / {{total}}",
+    "hint": "← → to switch · Enter to go in · Click a character to pick"
+  },
+  "characters": {
+    "guest_headphones": "Headphones",
+    "guest_hoodie": "Hoodie",
+    "guest_cardigan": "Cardigan",
+    "guest_overalls": "Overalls",
+    "guest_sweater": "Striped sweater",
+    "guest_glasses": "Round glasses",
+    "passerby_backpack": "Backpack",
+    "passerby_office": "Office worker",
+    "passerby_umbrella": "Blue hat",
+    "passerby_jogger": "Jogger"
+  },
+  "game": {
+    "hint": "W A S D to walk · Click the floor to go there · Drag to look around · Scroll to zoom · V to switch camera",
+    "camera": {
+      "locked": "Locked behind",
+      "free": "Free orbit",
+      "toast": "Camera: {{mode}}",
+      "button": "Camera mode: {{mode}} (V)"
+    }
+  },
   "error": {
     "title": "Something went wrong in the café",
     "message": "The café couldn't load. Please try reloading the page.",

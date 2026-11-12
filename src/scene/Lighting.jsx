@@ -1,10 +1,9 @@
-import { useEffect, useMemo } from 'react'
-import { useThree } from '@react-three/fiber'
+import { useMemo } from 'react'
 import { Environment } from '@react-three/drei'
-import { Color, LinearSRGBColorSpace, Object3D, PMREMGenerator } from 'three'
-import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
+import { Color, LinearSRGBColorSpace, Object3D } from 'three'
 import cafeMeta from '../../assets/cafe/cafe.meta.json'
 import { LIGHTING_PRESETS } from './lightingPresets.js'
+import { useRoomEnvironmentMap } from './useRoomEnvironmentMap.js'
 
 /*
  * Ánh sáng ban ngày, chuyển từ bản thử (three r149) sang three mới.
@@ -41,24 +40,6 @@ const HEMI_SKY = linear(0xffe9cc)
 const HEMI_GROUND = linear(0x4a4038)
 const SUN_COLOR = linear(0xfff4e0)
 const SPOT_COLOR = linear(0xffd9a8)
-
-/** Bản đồ phản chiếu dựng từ RoomEnvironment của three, không cần tải file ngoài. */
-function useRoomEnvironmentMap() {
-  const gl = useThree((state) => state.gl)
-
-  const envMap = useMemo(() => {
-    const pmrem = new PMREMGenerator(gl)
-    const room = new RoomEnvironment()
-    const texture = pmrem.fromScene(room, 0.04).texture
-    room.dispose()
-    pmrem.dispose()
-    return texture
-  }, [gl])
-
-  useEffect(() => () => envMap.dispose(), [envMap])
-
-  return envMap
-}
 
 export default function Lighting({ preset = LIGHTING_PRESETS.day }) {
   const envMap = useRoomEnvironmentMap()

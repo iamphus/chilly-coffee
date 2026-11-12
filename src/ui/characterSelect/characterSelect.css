@@ -1,0 +1,134 @@
+/* Màn chọn nhân vật: nền ấm như trong quán buổi tối, nhân vật 3D ở giữa, bảng chọn ở dưới */
+
+.char-select {
+  position: fixed;
+  inset: 0;
+  z-index: 12; /* trên landing (10) và cảnh quán đang dựng phía sau */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: clamp(20px, 4vh, 40px) var(--gutter);
+  background:
+    radial-gradient(55% 45% at 50% 58%, rgba(255, 190, 120, 0.22), transparent 70%),
+    radial-gradient(80% 70% at 50% 100%, rgba(143, 191, 134, 0.1), transparent 70%),
+    linear-gradient(180deg, #2a211c 0%, #1c1612 70%, #15110e 100%);
+  color: var(--text-primary);
+  animation: char-select-in 0.6s ease both;
+  transition: opacity 0.7s ease;
+}
+
+.char-select--leaving {
+  opacity: 0;
+  pointer-events: none;
+}
+
+@keyframes char-select-in {
+  from {
+    opacity: 0;
+  }
+}
+
+.char-select__canvas {
+  position: absolute !important;
+  inset: 0;
+}
+
+.char-select__header,
+.char-select__panel {
+  position: relative; /* nằm trên canvas */
+  text-align: center;
+  pointer-events: none;
+}
+
+.char-select__header h1 {
+  margin: 0;
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 800;
+}
+
+.char-select__header p {
+  margin: 8px 0 0;
+  color: var(--text-secondary);
+}
+
+.char-select__panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.char-select__panel button {
+  pointer-events: auto;
+}
+
+.char-select__picker {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px;
+  border-radius: 999px;
+  background: rgba(16, 14, 12, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.char-select__arrow {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border-radius: 50%;
+  background: rgba(246, 238, 227, 0.1);
+}
+
+.char-select__arrow:hover:not(:disabled) {
+  background: rgba(246, 238, 227, 0.2);
+}
+
+.char-select__arrow:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.char-select__arrow svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.char-select__name {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 11rem;
+  line-height: 1.25;
+}
+
+.char-select__name strong {
+  font-size: var(--text-lg);
+  font-weight: 800;
+}
+
+.char-select__name span {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.char-select__hint {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .char-select {
+    animation: none;
+    transition: none;
+  }
+}
