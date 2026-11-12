@@ -44,7 +44,7 @@ chilly-coffee/
 ├── assets/                    sinh ra từ src/ bằng tools/
 │   ├── cafe/                  cafe.glb, cafe.meta.json (chỗ ngồi, đèn), nav.json (lưới đi lại)
 │   ├── characters/            12 nhân vật .glb
-│   ├── music/                 file nhạc quán (không commit, xem assets/music/README.md)
+│   ├── music/                 nhạc quán (4 bài tự tạo bằng AI, xem assets/music/README.md)
 │   └── video/                 video quảng cáo landing (2K + 1080p) + ảnh poster (từ tools/render-video)
 ├── prototype/
 │   ├── demo/                  bản thử chính (model.js là file sinh ra, không commit)
