@@ -1,0 +1,17 @@
+<!doctype html><html><head><meta charset="utf-8"></head><body style="margin:0;background:#222">
+<canvas id="c" width="1200" height="800"></canvas>
+<script src="../cafe2.js"></script>
+<script type="importmap">{"imports":{"three":"../node_modules/three/build/three.module.js"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import { GLTFExporter } from '../node_modules/three/examples/jsm/exporters/GLTFExporter.js';
+const R=new THREE.WebGLRenderer({canvas:document.getElementById('c'),antialias:true,preserveDrawingBuffer:true});
+R.outputEncoding=THREE.sRGBEncoding;R.setClearColor(0x2a2d33);
+const S=new THREE.Scene();const CAFE=buildCafe(THREE);const {root,lights,seats,ceiling}=CAFE;window.dbg=()=>CAFE.dbg;S.add(root);S.add(lights);
+const C=new THREE.PerspectiveCamera(50,1.5,0.05,80);
+window.view=(p,t,hideCeil,fov)=>{ceiling.visible=!hideCeil;C.fov=fov||50;C.updateProjectionMatrix();C.position.set(...p);C.lookAt(...t);R.render(S,C);return true;};
+window.info=()=>{let tri=0,meshes=0;root.traverse(o=>{if(o.isMesh){meshes++;const g=o.geometry;tri+=(g.index?g.index.count:g.attributes.position.count)/3;}});return {tri,meshes,seats};};
+window.exportGLB=()=>new Promise((res,rej)=>{ceiling.visible=true;new GLTFExporter().parse(root,(buf)=>{const b=new Uint8Array(buf);let s='';for(let i=0;i<b.length;i+=32768)s+=String.fromCharCode.apply(null,b.subarray(i,i+32768));res(btoa(s));},rej,{binary:true});});
+window.extra=()=>{lights.updateMatrixWorld(true);const L=[];lights.children.forEach(l=>{if(l.isPointLight){const p=new THREE.Vector3();l.getWorldPosition(p);L.push([+p.x.toFixed(2),+p.y.toFixed(2),+p.z.toFixed(2),l.intensity,l.distance,l.color.getHex()]);}});return {seats:seats.map(s=>({n:s.name,label:s.label,c:s.cam.map(v=>+v.toFixed(2)),l:s.look.map(v=>+v.toFixed(2))})),lights:L};};
+window.ready=true;
+</script></body></html>
