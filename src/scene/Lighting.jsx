@@ -4,6 +4,7 @@ import { Environment } from '@react-three/drei'
 import { Color, LinearSRGBColorSpace, Object3D, PMREMGenerator } from 'three'
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
 import cafeMeta from '../../assets/cafe/cafe.meta.json'
+import { LIGHTING_PRESETS } from './lightingPresets.js'
 
 /*
  * Ánh sáng ban ngày, chuyển từ bản thử (three r149) sang three mới.
@@ -18,14 +19,6 @@ import cafeMeta from '../../assets/cafe/cafe.meta.json'
 const LEGACY_SCALE = Math.PI
 
 const linear = (hex) => new Color().setHex(hex, LinearSRGBColorSpace)
-
-const DAY = {
-  environment: 0.35,
-  hemisphere: 0.45,
-  sun: 0.75,
-  spot: 0.7,
-  lampMultiplier: 1,
-}
 
 const SUN = { position: [-6, 10, 3], target: [0, 0, -4.5] }
 const SUN_SHADOW_EXTENT = 13
@@ -67,7 +60,7 @@ function useRoomEnvironmentMap() {
   return envMap
 }
 
-export default function Lighting({ preset = DAY }) {
+export default function Lighting({ preset = LIGHTING_PRESETS.day }) {
   const envMap = useRoomEnvironmentMap()
 
   // Đèn hướng và đèn spot chiếu về "target"; target phải nằm trong cảnh mới cập nhật vị trí.
@@ -76,6 +69,7 @@ export default function Lighting({ preset = DAY }) {
 
   return (
     <>
+      <color attach="background" args={[preset.sky]} />
       <Environment map={envMap} environmentIntensity={preset.environment} />
 
       <hemisphereLight args={[HEMI_SKY, HEMI_GROUND, preset.hemisphere * LEGACY_SCALE]} />

@@ -2,9 +2,30 @@
   "scene": {
     "label": "3D coffee shop. Drag to rotate, scroll to zoom."
   },
-  "loading": {
-    "title": "Opening the café…",
-    "progress": "{{percent}}% loaded"
+  "landing": {
+    "badge": "Early preview",
+    "eyebrow": "A 3D café to study and work in",
+    "title": "A warm corner of the café\nfor your focus hours",
+    "lead": "Pick an empty table, open your laptop with Pomodoro, to-dos and your own playlist. People stroll by outside, others work quietly inside.",
+    "enter": "Enter the café",
+    "loading": "Opening the café… {{percent}}%",
+    "preparing": "Opening the café…",
+    "note": "Free · runs right in your desktop browser",
+    "soon": "Coming soon",
+    "features": {
+      "focus": {
+        "title": "Pomodoro & to-dos",
+        "text": "A 25/5 timer, task list and notes right on your laptop."
+      },
+      "music": {
+        "title": "Café radio & your playlist",
+        "text": "The café TV plays lofi for everyone. Put on headphones to hear your own YouTube playlist."
+      },
+      "together": {
+        "title": "Sit side by side",
+        "text": "Work alongside others in the café. No chat, no camera."
+      }
+    }
   },
   "error": {
     "title": "Something went wrong in the café",

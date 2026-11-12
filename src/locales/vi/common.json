@@ -2,9 +2,30 @@
   "scene": {
     "label": "Quán cafe 3D. Kéo để xoay, cuộn để phóng to."
   },
-  "loading": {
-    "title": "Đang mở cửa quán…",
-    "progress": "Đã tải {{percent}}%"
+  "landing": {
+    "badge": "Bản thử nghiệm",
+    "eyebrow": "Quán cafe 3D để học và làm việc",
+    "title": "Một góc quán ấm\ncho giờ tập trung của bạn",
+    "lead": "Chọn một bàn trống, mở laptop với Pomodoro, to-do và playlist riêng. Ngoài phố người qua lại, trong quán có người cùng ngồi làm việc.",
+    "enter": "Vào quán",
+    "loading": "Đang mở cửa quán… {{percent}}%",
+    "preparing": "Đang mở cửa quán…",
+    "note": "Miễn phí · chạy ngay trên trình duyệt máy tính",
+    "soon": "Sắp có",
+    "features": {
+      "focus": {
+        "title": "Pomodoro & to-do",
+        "text": "Hẹn giờ 25/5 phút, danh sách việc và ghi chú ngay trên laptop của bạn."
+      },
+      "music": {
+        "title": "Nhạc quán & playlist riêng",
+        "text": "TV quán phát lofi cho cả quán. Đeo tai nghe để nghe playlist YouTube của bạn."
+      },
+      "together": {
+        "title": "Ngồi cạnh nhau",
+        "text": "Cùng làm việc với mọi người trong quán, không chat, không camera."
+      }
+    }
   },
   "error": {
     "title": "Quán gặp chút trục trặc",

@@ -1,5 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import '@fontsource-variable/nunito/wght.css'
 import './i18n.js'
 import './styles.css'
 import App from './App.jsx'
