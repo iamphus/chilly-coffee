@@ -1,0 +1,14 @@
+{
+  "scene": {
+    "label": "Quán cafe 3D. Kéo để xoay, cuộn để phóng to."
+  },
+  "loading": {
+    "title": "Đang mở cửa quán…",
+    "progress": "Đã tải {{percent}}%"
+  },
+  "error": {
+    "title": "Quán gặp chút trục trặc",
+    "message": "Không tải được quán. Bạn thử tải lại trang nhé.",
+    "reload": "Tải lại trang"
+  }
+}

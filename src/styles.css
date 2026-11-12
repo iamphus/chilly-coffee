@@ -1,0 +1,97 @@
+:root {
+  /* Màu lấy từ bản thử: nền tối ấm, điểm nhấn cam cà phê */
+  --bg-base: #1f2226;
+  --bg-overlay: rgba(24, 22, 20, 0.92);
+  --text-primary: #f1ece2;
+  --text-secondary: #b9b0a3;
+  --accent: #c9773a;
+  --accent-hover: #b4662d;
+  --track: rgba(255, 255, 255, 0.14);
+
+  --font-sans: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --radius: 8px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  height: 100%;
+}
+
+body {
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  overflow: hidden;
+}
+
+button {
+  font: inherit;
+  font-size: var(--text-base);
+  color: #fff;
+  background: var(--accent);
+  border: none;
+  border-radius: var(--radius);
+  padding: 10px 24px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: var(--accent-hover);
+}
+
+button:focus-visible {
+  outline: 2px solid var(--text-primary);
+  outline-offset: 2px;
+}
+
+/* Màn hình chờ và màn hình lỗi dùng chung khung */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 16px;
+  text-align: center;
+  background: var(--bg-overlay);
+}
+
+.overlay h1 {
+  margin: 0;
+  font-size: var(--text-lg);
+  font-weight: 600;
+}
+
+.overlay p {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+.progress {
+  width: min(240px, 100%);
+  height: 4px;
+  border-radius: 2px;
+  background: var(--track);
+  overflow: hidden;
+}
+
+.progress__bar {
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.2s ease-out;
+}

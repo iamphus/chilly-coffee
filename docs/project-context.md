@@ -22,6 +22,9 @@ Bản lưu trong repo: [docs/project-plan.md](project-plan.md)
 - React + React Three Fiber + drei + Zustand, JavaScript, Vite, deploy Cloudflare Pages.
 - Bản 2: Supabase (tài khoản, thấy người khác trong quán).
 - Bản thử hiện tại viết bằng Three.js r149 thuần (một file HTML) để duyệt nhanh; khi chuyển sang R3F thì dùng lại mô hình GLB, dữ liệu chỗ ngồi, lưới đi lại và logic trong `prototype/demo/index.html`.
+- App chính (Vite + R3F) đã có khung (12/11/2026): `index.html` + `src/main.jsx`, `src/App.jsx`, `src/scene/` (Cafe, Lighting, Scene), `src/ui/` (màn hình chờ, màn hình lỗi), `src/locales/`, `src/store.js`. Hiện mới hiển thị quán nhìn từ trên xuống, xoay được.
+- App chính dùng three mới nhất; bản thử và tool xuất GLB vẫn dùng r149, cài dưới tên `three149` (`node_modules/three149`).
+- Khi chuyển đèn từ bản thử sang three mới: nhân cường độ với π, đọc mã màu đèn là giá trị tuyến tính, và chỉnh độ phản chiếu bằng `environmentIntensity` của cả cảnh (three mới bỏ qua `material.envMapIntensity` khi dùng `scene.environment`). Chi tiết ở đầu `src/scene/Lighting.jsx`.
 
 ## 4. Các file
 
@@ -70,7 +73,7 @@ docs/       tài liệu
 ## 6. Chạy bản thử trên máy
 
 1. Cài Node.js (bản LTS) và Python 3.
-2. Trong thư mục dự án: `npm install`, rồi `npm start` (= `build:pack` tạo `prototype/demo/model.js` + `serve`).
+2. Trong thư mục dự án: `npm install`, rồi `npm run prototype` (= `build:pack` tạo `prototype/demo/model.js` + `serve`). App chính chạy bằng `npm run dev` (http://localhost:5173).
 3. Mở http://localhost:8765/prototype/demo/index.html (bản thử) hoặc http://localhost:8765/prototype/gallery/index.html (nhân vật).
 
 Sửa quán rồi dựng lại (mọi lệnh chạy từ thư mục gốc):
@@ -86,11 +89,11 @@ npm run build:chars    # src/characters/characters.js -> assets/characters/*.glb
 
 Nếu không muốn tải Chromium của Playwright, có thể dùng trình duyệt đã cài sẵn qua biến `PW_CHANNEL`, ví dụ trên Windows: `PW_CHANNEL=msedge npm run build:chars` (bash) hoặc `$env:PW_CHANNEL='msedge'; npm run build:chars` (PowerShell).
 
-Lưu ý: bản thử nạp three.js từ CDN jsdelivr (three@0.149.0). YouTube chỉ phát được khi chạy trên web thật/localhost, không phát trong trang xem thử của claude.ai.
+Lưu ý: bản thử nạp three.js từ CDN jsdelivr (three@0.149.0); `tools/screenshot.js` chuyển các request đó sang `node_modules/three149`. YouTube chỉ phát được khi chạy trên web thật/localhost, không phát trong trang xem thử của claude.ai.
 
 ## 7. Việc còn lại
 
-1. Chuyển sang dự án thật React Three Fiber + Vite, deploy Cloudflare Pages (cần GitHub + Cloudflare).
+1. Chuyển sang dự án thật React Three Fiber + Vite, deploy Cloudflare Pages. Đã có khung và repo GitHub; còn kết nối Cloudflare Pages, rồi chuyển dần tính năng từ bản thử sang.
 2. Làm nhẹ trang: nén GLB (Draco / meshopt, texture KTX2), chế độ đồ hoạ nhẹ cho laptop tầm trung.
 3. Màn hình chọn nhân vật (trang phục, kiểu tóc).
 4. Mưa và ngày/đêm theo giờ thật; NPC tránh va chạm nhau.
