@@ -3,6 +3,8 @@ import { useThree } from '@react-three/fiber'
 import { useGLTF } from '@react-three/drei'
 import cafeUrl from '../../assets/cafe/cafe.glb?url'
 import { audioEngine } from '../audio/audioEngine.js'
+import NetworkSync from '../net/NetworkSync.jsx'
+import RemotePlayers from '../net/remote/RemotePlayers.jsx'
 import { createColliders } from '../player/colliders.js'
 import { createGameState } from '../player/gameState.js'
 import Player from '../player/Player.jsx'
@@ -56,6 +58,9 @@ export default function Scene() {
       <Passersby exclude={exclude} />
       <Player gameRef={gameRef} colliders={colliders} />
       <ThirdPersonCamera gameRef={gameRef} colliders={colliders} />
+      {/* Sau camera: bảng tên người khác dùng camera đã cập nhật của khung hình này */}
+      <RemotePlayers />
+      <NetworkSync gameRef={gameRef} />
     </>
   )
 }

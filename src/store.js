@@ -99,8 +99,8 @@ export const useCafeStore = create((set, get) => ({
     set({ cameraMode, ...toast('game.camera.toast', { mode: cameraMode }) })
   },
   showToast: (key, params) => set(toast(key, params)),
-  sitDown: (seat) => set({ seat, laptopOpen: false, nearbySeat: null, action: null }),
-  standUp: () => set({ seat: null, laptopOpen: false }),
+  sitDown: (seat) => set({ seat, seatAt: Date.now(), laptopOpen: false, nearbySeat: null, action: null }),
+  standUp: () => set({ seat: null, seatAt: null, laptopOpen: false }),
   openLaptop: () => set((state) => (state.seat ? { laptopOpen: true } : {})),
   closeLaptop: () => set({ laptopOpen: false }),
   toggleAction: (action) => set((state) => ({ action: state.action === action ? null : action })),

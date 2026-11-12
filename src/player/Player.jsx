@@ -7,6 +7,7 @@ import { CHARACTER_URLS, CLIPS } from '../characters/characterAssets.js'
 import { occupiedSeats } from '../scene/guestList.js'
 import Laptop from '../scene/Laptop.jsx'
 import { SEAT_NAMES, laptopPoses, seatPose, seatYaw } from '../scene/seating.js'
+import { useNetStore } from '../net/netStore.js'
 import { useCafeStore } from '../store.js'
 import { createActionClips } from './actionClips.js'
 import { dampAngle } from './gameState.js'
@@ -108,13 +109,22 @@ export default function Player({ gameRef, colliders }) {
   const height = useMemo(() => new Box3().setFromObject(model).getSize(new Vector3()).y || 1, [model])
 
   // Bàn trống = mọi bàn trừ bàn có khách (khách trùng nhân vật người chơi đã bị bỏ nên bàn đó trống)
+  // Ghế người chơi khác đang ngồi (chuỗi để useMemo chỉ chạy lại khi thật sự đổi)
+  const peerSeats = useNetStore((state) =>
+    Object.values(state.peers)
+      .map((peer) => peer.seat)
+      .filter(Boolean)
+      .sort()
+      .join(','),
+  )
   const freeSeats = useMemo(() => {
     const taken = occupiedSeats([characterId])
+    for (const name of peerSeats.split(',')) if (name) taken.add(name)
     return SEAT_NAMES.filter((name) => !taken.has(name)).map((name) => {
       const { position } = seatPose(name)
       return { name, x: position[0], z: position[2] }
     })
-  }, [characterId])
+  }, [characterId, peerSeats])
   const laptop = useMemo(() => (seat ? laptopPoses(cafe, [seat])[0] : null), [cafe, seat])
 
   useEffect(() => {

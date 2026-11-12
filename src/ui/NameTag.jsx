@@ -1,32 +1,34 @@
-import { useEffect, useRef } from 'react'
+import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
+import { remainingMs, useFocusStore } from '../focus/focusStore.js'
+import { useNetStore } from '../net/netStore.js'
 import { nameTagAnchor } from '../player/nameTagAnchor.js'
 import { useCafeStore } from '../store.js'
+import { statusText, useFollowAnchor } from './tagHelpers.js'
 
-/** Bảng tên trên đầu nhân vật người chơi: chấm "Tôi" + tên; cỡ chữ không đổi khi zoom. */
+/** Bảng tên trên đầu nhân vật người chơi: chấm "Tôi" + tên + trạng thái, bong bóng khi mình chat. */
 export default function NameTag() {
   const { t } = useTranslation()
   const nickname = useCafeStore((state) => state.nickname)
-  const tag = useRef(null)
-
-  useEffect(() => {
-    let frame = 0
-    const follow = () => {
-      const element = tag.current
-      if (element) {
-        element.style.opacity = nameTagAnchor.visible ? '1' : '0'
-        element.style.transform = `translate(${nameTagAnchor.x}px, ${nameTagAnchor.y}px) translate(-50%, -100%)`
-      }
-      frame = requestAnimationFrame(follow)
-    }
-    frame = requestAnimationFrame(follow)
-    return () => cancelAnimationFrame(frame)
-  }, [])
+  const selfId = useNetStore((state) => state.selfId)
+  const focus = useFocusStore()
+  const getAnchor = useCallback(() => nameTagAnchor, [])
+  const { tag, bubble } = useFollowAnchor(getAnchor, selfId)
+  const status = statusText(t, {
+    status: focus.running && remainingMs(focus) > 0 ? focus.mode : 'idle',
+    pomodoros: focus.completedToday,
+  })
 
   return (
-    <div ref={tag} className="name-tag" aria-hidden="true">
-      <span className="name-tag__me">{t('game.me')}</span>
-      {nickname}
+    <div ref={tag} className="peer-tag" aria-hidden="true">
+      <p ref={bubble} className="chat-bubble chat-bubble--self" hidden />
+      <div className="name-tag">
+        <span className="name-tag__me">{t('game.me')}</span>
+        <span>
+          {nickname}
+          {status && <small>{status}</small>}
+        </span>
+      </div>
     </div>
   )
 }

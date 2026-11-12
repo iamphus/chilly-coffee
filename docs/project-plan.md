@@ -146,9 +146,10 @@ Dự án chia thành 4 giai đoạn. Mỗi giai đoạn phải đạt điều ki
 ### Giai đoạn 2 – Bản 2, nhiều người (khoảng 3–4 tuần)
 
 - [ ] Đăng nhập bằng Supabase, lưu to-do và playlist theo tài khoản
-- [ ] Server realtime: đồng bộ vị trí, chỗ ngồi, trạng thái
-- [ ] Hiện nhân vật người khác, trạng thái trên đầu, tai nghe khi đang đeo
-- [ ] Giới hạn số người mỗi phòng, tự mở phòng mới khi đầy
+- [x] Server realtime: đồng bộ vị trí, chỗ ngồi, trạng thái (Supabase Realtime; cần điền khoá trong .env.local)
+- [x] Hiện nhân vật người khác, trạng thái trên đầu (còn: tai nghe khi đang đeo)
+- [x] Giới hạn số người mỗi phòng, tự mở phòng mới khi đầy
+- [x] Chat tự do (đổi so với kế hoạch gốc): lọc từ tục, giới hạn tốc độ, nút chặn
 
 **Điều kiện hoàn thành:** một nhóm bạn ngồi cùng quán trọn một buổi học không lỗi.
 
