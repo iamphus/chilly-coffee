@@ -23,7 +23,7 @@ Bản lưu trong repo: [docs/project-plan.md](project-plan.md)
 - Bản 2: Supabase (tài khoản, thấy người khác trong quán).
 - Bản thử hiện tại viết bằng Three.js r149 thuần (một file HTML) để duyệt nhanh; khi chuyển sang R3F thì dùng lại mô hình GLB, dữ liệu chỗ ngồi, lưới đi lại và logic trong `prototype/demo/index.html`.
 - App chính (Vite + R3F) đã có khung (12/11/2026): `index.html` + `src/main.jsx`, `src/App.jsx`, `src/scene/` (Cafe, Lighting, Scene), `src/ui/` (màn hình chờ, màn hình lỗi), `src/locales/`, `src/store.js`. Hiện mới hiển thị quán nhìn từ trên xuống, xoay được.
-- Landing: nền là video quảng cáo (`assets/video/landing.mp4`, 1280×720, ~3 MB) quay từ chính cảnh 3D bằng `tools/render-video/` (`npm run build:video`). Phần 3D (`src/scene/CafeCanvas.jsx`) là chunk riêng, tải trước khi trình duyệt rảnh, chỉ dựng khi bấm "Vào quán"; shader được biên dịch bất đồng bộ (`compileAsync`) trước khung hình đầu để không treo trang.
+- Landing: nền là video quảng cáo kiểu TVC (`assets/video/landing-1440p.mp4` ~16 MB và `landing-1080p.mp4` ~11 MB, 22 giây, 60 fps) quay từ chính cảnh 3D bằng `tools/render-video/` (`npm run build:video`). Phần 3D (`src/scene/CafeCanvas.jsx`) là chunk riêng, tải trước khi trình duyệt rảnh, chỉ dựng khi bấm "Vào quán"; shader được biên dịch bất đồng bộ (`compileAsync`) trước khung hình đầu để không treo trang.
 - App chính dùng three mới nhất; bản thử và tool xuất GLB vẫn dùng r149, cài dưới tên `three149` (`node_modules/three149`).
 - Khi chuyển đèn từ bản thử sang three mới: nhân cường độ với π, đọc mã màu đèn là giá trị tuyến tính, và chỉnh độ phản chiếu bằng `environmentIntensity` của cả cảnh (three mới bỏ qua `material.envMapIntensity` khi dùng `scene.environment`). Chi tiết ở đầu `src/scene/Lighting.jsx`.
 
