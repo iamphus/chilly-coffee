@@ -14,15 +14,18 @@ import Fog from './Fog.jsx'
 import Guests from './Guests.jsx'
 import LampGlows from './LampGlows.jsx'
 import Lighting from './Lighting.jsx'
-import { LIGHTING_PRESETS, effectiveTimeOfDay } from './lightingPresets.js'
+import { effectiveTimeOfDay, lightingFor } from './lightingPresets.js'
 import Passersby from './Passersby.jsx'
+import Rain from './Rain.jsx'
 import Surroundings from './surroundings/Surroundings.jsx'
 
 
 export default function Scene() {
   const characterId = useCafeStore((state) => state.characterId)
   const lite = useCafeStore((state) => state.lite)
-  const preset = LIGHTING_PRESETS[effectiveTimeOfDay(useCafeStore((state) => state.timeOfDay))]
+  const timeOfDay = effectiveTimeOfDay(useCafeStore((state) => state.timeOfDay))
+  const rain = useCafeStore((state) => state.rain)
+  const preset = useMemo(() => lightingFor(timeOfDay, rain), [timeOfDay, rain])
   const { scene: cafe } = useGLTF(cafeUrl)
   const gl = useThree((state) => state.gl)
   const colliders = useMemo(() => createColliders(cafe), [cafe])
@@ -42,7 +45,8 @@ export default function Scene() {
   return (
     <>
       <Lighting preset={preset} shadows={!lite} />
-      <Fog color={preset.skyHorizon} />
+      <Fog key={rain ? 'rain' : 'clear'} color={preset.skyHorizon} near={preset.fogNear} far={preset.fogFar} />
+      {rain && <Rain count={lite ? 3500 : 9000} />}
       {/* Camera đi trong quán nên giữ trần */}
       <Cafe showCeiling />
       <Surroundings preset={preset} lite={lite} />

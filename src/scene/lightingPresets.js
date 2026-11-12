@@ -37,6 +37,17 @@ export const LIGHTING_PRESETS = {
   },
 }
 
+// Trời mưa: bầu trời xám, nắng / trăng yếu đi, không sao, sương dày hơn
+const RAINY = {
+  day: { skyTop: '#8d99a6', skyHorizon: '#b9bfc4', sun: 0.3, hemisphere: 0.38, clouds: 0.9, fogNear: 12, fogFar: 55 },
+  night: { skyTop: '#0c1018', skyHorizon: '#252a38', moon: 0.18, stars: 0, fogNear: 10, fogFar: 50 },
+}
+
+/** Thông số ánh sáng của `time` ('day' | 'night'), có tính trời mưa. */
+export function lightingFor(time, rain) {
+  return rain ? { ...LIGHTING_PRESETS[time], ...RAINY[time] } : LIGHTING_PRESETS[time]
+}
+
 /** Buổi tối từ 18:00 đến 6:00 theo giờ máy người dùng */
 export function presetForHour(hour) {
   return hour >= 18 || hour < 6 ? 'night' : 'day'

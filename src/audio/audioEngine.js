@@ -17,7 +17,7 @@ const TRANSITION = 0.6 // giây (hằng số thời gian; ~2 giây là chuyển 
 class AudioEngine {
   context = null
   ready = false
-  state = { inside: false, muted: false, musicOn: true, musicVolume: 0.8, ambienceVolume: 0.8, night: false }
+  state = { inside: false, muted: false, musicOn: true, musicVolume: 0.8, ambienceVolume: 0.8, night: false, rain: false }
 
   /** Gọi trong một thao tác của người dùng (bấm nút) để trình duyệt cho phát âm thanh. */
   unlock() {
@@ -75,7 +75,7 @@ class AudioEngine {
   }
 
   apply(immediate = false) {
-    const { inside, muted, musicOn, musicVolume, ambienceVolume, night } = this.state
+    const { inside, muted, musicOn, musicVolume, ambienceVolume, night, rain } = this.state
     const mix = inside ? MIX.inside : MIX.outside
     const now = this.context.currentTime
     const tau = immediate ? 0.01 : TRANSITION
@@ -85,6 +85,7 @@ class AudioEngine {
     this.ambienceGain.gain.setTargetAtTime(mix.ambience * ambienceVolume, now, tau)
     this.ambienceFilter.frequency.setTargetAtTime(mix.ambienceCutoff, now, tau)
     this.street.setNight(night)
+    this.street.setRain(rain)
   }
 
   /** Rời quán: dừng hết. */

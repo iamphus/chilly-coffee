@@ -10,6 +10,7 @@ const NICKNAME_KEY = 'chilly.nickname'
 const LITE_KEY = 'chilly.lite'
 const TIME_KEY = 'chilly.timeOfDay'
 const SOUND_KEY = 'chilly.sound'
+const RAIN_KEY = 'chilly.rain'
 export const TIME_OPTIONS = ['auto', 'day', 'night']
 
 // localStorage có thể bị chặn (chế độ ẩn danh…): đọc lỗi thì dùng mặc định, ghi lỗi thì bỏ qua
@@ -78,6 +79,7 @@ export const useCafeStore = create((set, get) => ({
   changingCharacter: false, // đang mở màn đổi nhân vật trong quán
   lite: load(LITE_KEY, ['1', '0'], '0') === '1', // chế độ nhẹ: tắt bóng, độ phân giải 1×
   timeOfDay: load(TIME_KEY, TIME_OPTIONS, 'auto'),
+  rain: load(RAIN_KEY, ['1', '0'], '0') === '1', // trời mưa (hạt mưa + tiếng mưa)
   headphones: false,
   // Âm thanh (src/audio/): tắt tiếng, bật/tắt nhạc quán, âm lượng nhạc / tạp âm phố (0–1)
   ...loadSound(),
@@ -108,6 +110,11 @@ export const useCafeStore = create((set, get) => ({
   setLite: (lite) => {
     save(LITE_KEY, lite ? '1' : '0')
     set({ lite })
+  },
+  toggleRain: () => {
+    const rain = !get().rain
+    save(RAIN_KEY, rain ? '1' : '0')
+    set({ rain, ...toast(rain ? 'game.rain.on' : 'game.rain.off') })
   },
   setSound: (changes) => {
     set(changes)

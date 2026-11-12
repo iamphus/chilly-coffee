@@ -173,6 +173,10 @@
   stroke-linejoin: round;
 }
 
+.hud-button--on {
+  background: rgba(143, 191, 220, 0.35);
+}
+
 .hud-dot {
   width: 20px;
   height: 20px;

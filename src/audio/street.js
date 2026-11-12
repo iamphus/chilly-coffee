@@ -75,8 +75,34 @@ export class StreetAmbience {
     cricket.connect(cricketPulse).connect(this.cricketGain).connect(this.output)
     cricket.start()
 
+    // Mưa: nhiễu cao (hạt mưa lộp độp) + nhiễu trầm (mưa rào xa), bật bằng setRain
+    this.rainGain = context.createGain()
+    this.rainGain.gain.value = 0
+    this.rainGain.connect(this.output)
+    const hiss = loopNoise(context, this.noise)
+    const hissFilter = context.createBiquadFilter()
+    hissFilter.type = 'highpass'
+    hissFilter.frequency.value = 1800
+    const hissGain = context.createGain()
+    hissGain.gain.value = 0.22
+    wobble(context, hissGain.gain, 0.3, 0.04)
+    hiss.connect(hissFilter).connect(hissGain).connect(this.rainGain)
+    const roar = loopNoise(context, this.noise)
+    const roarFilter = context.createBiquadFilter()
+    roarFilter.type = 'bandpass'
+    roarFilter.frequency.value = 500
+    roarFilter.Q.value = 0.4
+    const roarGain = context.createGain()
+    roarGain.gain.value = 0.3
+    roar.connect(roarFilter).connect(roarGain).connect(this.rainGain)
+
     this.scheduleMotorbike()
     this.scheduleBird()
+  }
+
+  setRain(rain) {
+    this.rain = rain
+    this.rainGain.gain.setTargetAtTime(rain ? 1 : 0, this.context.currentTime, 1.2)
   }
 
   setNight(night) {
@@ -133,7 +159,7 @@ export class StreetAmbience {
   /** Chim hót (ban ngày): vài tiếng líu lo ngắn, cao độ trượt nhanh. */
   scheduleBird() {
     this.later(between(BIRD_GAP), () => {
-      if (!this.night) {
+      if (!this.night && !this.rain) {
         const { context } = this
         const start = context.currentTime
         const notes = 2 + Math.floor(Math.random() * 4)

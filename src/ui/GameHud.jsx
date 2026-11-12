@@ -33,6 +33,7 @@ const ICONS = {
   muted: <path d="M4 9h4l5-4v14l-5-4H4zM17 9l4 6M21 9l-4 6" />,
   sound: <path d="M4 9h4l5-4v14l-5-4H4zM16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12" />,
   settings: <path d="M4 7h10M18 7h2M4 17h2M10 17h10M14 4v6M6 14v6" />,
+  rain: <path d="M7 15a4.5 4.5 0 1 1 1.2-8.85A6 6 0 0 1 19.5 9a3.5 3.5 0 0 1-.5 6.97M8 18l-1 2.5M12 18l-1 2.5M16 18l-1 2.5" />,
   music: <path d="M9 18V6l11-2v12M9 18a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM20 16a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />,
   seat: <path d="M6 4v9h12V4M5 13h14v3H5zM7 16v4M17 16v4" />,
   wave: <path d="M7 11V6a1.5 1.5 0 0 1 3 0v4M10 10V4.5a1.5 1.5 0 0 1 3 0V10M13 10V5.5a1.5 1.5 0 0 1 3 0V12M16 9a1.5 1.5 0 0 1 3 0v5a7 7 0 0 1-12 4l-3-4a1.5 1.5 0 0 1 2.3-2L7 13" />,
@@ -148,6 +149,8 @@ export default function GameHud() {
       if (event.code === 'KeyE') {
         if (state.seat) state.standUp()
         else if (state.nearbySeat) state.sitDown(state.nearbySeat)
+      } else if (event.code === 'KeyR') {
+        state.toggleRain()
       } else if (event.code === 'KeyV' && !state.seat) {
         state.toggleCameraMode()
       } else if (/^Digit[1-4]$/.test(event.code) && !state.seat) {
@@ -206,6 +209,16 @@ export default function GameHud() {
               <Icon name={cameraMode === 'locked' ? 'lock' : 'orbit'} />
             </button>
           )}
+          <button
+            type="button"
+            className={store.rain ? 'hud-button hud-button--on' : 'hud-button'}
+            onClick={store.toggleRain}
+            aria-pressed={store.rain}
+            aria-label={t('game.rain.button')}
+            data-label={`${t(store.rain ? 'game.rain.on' : 'game.rain.off')} (R)`}
+          >
+            <Icon name="rain" />
+          </button>
           <button
             type="button"
             className="hud-button"

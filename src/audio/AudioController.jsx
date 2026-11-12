@@ -10,6 +10,7 @@ const pickAudioState = (state) => ({
   musicVolume: state.musicVolume,
   ambienceVolume: state.ambienceVolume,
   night: effectiveTimeOfDay(state.timeOfDay) === 'night',
+  rain: state.rain,
 })
 
 /** Bật âm thanh khi đã vào quán, rồi theo dõi store để trộn lại (trong / ngoài quán, âm lượng…). */
