@@ -36,6 +36,8 @@ const ICONS = {
   rain: <path d="M7 15a4.5 4.5 0 1 1 1.2-8.85A6 6 0 0 1 19.5 9a3.5 3.5 0 0 1-.5 6.97M8 18l-1 2.5M12 18l-1 2.5M16 18l-1 2.5" />,
   music: <path d="M9 18V6l11-2v12M9 18a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM20 16a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />,
   seat: <path d="M6 4v9h12V4M5 13h14v3H5zM7 16v4M17 16v4" />,
+  laptop: <path d="M5 6h14v9H5zM3 18h18M10 15.5h4" />,
+  standUp: <path d="M12 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM9 22l1.5-7.5L8 12V9l4-1 4 1v3l-2.5 2.5L15 22" />,
   wave: <path d="M7 11V6a1.5 1.5 0 0 1 3 0v4M10 10V4.5a1.5 1.5 0 0 1 3 0V10M13 10V5.5a1.5 1.5 0 0 1 3 0V12M16 9a1.5 1.5 0 0 1 3 0v5a7 7 0 0 1-12 4l-3-4a1.5 1.5 0 0 1 2.3-2L7 13" />,
   drink: <path d="M4 9h12v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5zM16 10h1.5a2.5 2.5 0 0 1 0 5H16M8 3c-.8 1 .8 2 0 3M12 3c-.8 1 .8 2 0 3" />,
   stretch: <path d="M12 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM5 3l5 6h4l5-6M10 9v5l-2 7M14 9v5l2 7" />,
@@ -133,25 +135,29 @@ function SettingsPopover({ onClose }) {
 export default function GameHud() {
   const { t } = useTranslation()
   const store = useCafeStore()
-  const { cameraMode, toast, seat, nearbySeat, action, characterId } = store
+  const { cameraMode, toast, seat, laptopOpen, nearbySeat, action, characterId } = store
   const [settingsOpen, setSettingsOpen] = useState(false)
 
   useEffect(() => {
     const onKey = (event) => {
       const state = useCafeStore.getState()
       if (state.changingCharacter || event.repeat) return
+      // Esc: đang gõ thì thôi gõ → gập laptop → đứng dậy
       if (event.code === 'Escape' && state.seat) {
         if (isTyping(event.target)) event.target.blur()
+        else if (state.laptopOpen) state.closeLaptop()
         else state.standUp()
         return
       }
       if (isTyping(event.target)) return
       if (event.code === 'KeyE') {
-        if (state.seat) state.standUp()
-        else if (state.nearbySeat) state.sitDown(state.nearbySeat)
+        if (state.seat) {
+          if (state.laptopOpen) state.closeLaptop()
+          else state.openLaptop()
+        } else if (state.nearbySeat) state.sitDown(state.nearbySeat)
       } else if (event.code === 'KeyR') {
         state.toggleRain()
-      } else if (event.code === 'KeyV' && !state.seat) {
+      } else if (event.code === 'KeyV' && !state.laptopOpen) {
         state.toggleCameraMode()
       } else if (/^Digit[1-4]$/.test(event.code) && !state.seat) {
         state.toggleAction(ACTIONS[Number(event.code.slice(5)) - 1])
@@ -182,7 +188,7 @@ export default function GameHud() {
           </button>
           <span className="hud-room">{t('game.room')}</span>
         </div>
-        {!seat && <TimerChip />}
+        {!laptopOpen && <TimerChip />}
       </div>
 
       {/* Trên phải: nhân vật, camera, âm thanh, cài đặt; bên dưới: nhạc quán */}
@@ -198,7 +204,7 @@ export default function GameHud() {
           >
             <span className="hud-dot" style={{ background: CHARACTER_COLORS[characterId] }} />
           </button>
-          {!seat && (
+          {!laptopOpen && (
             <button
               type="button"
               className="hud-button"
@@ -285,7 +291,25 @@ export default function GameHud() {
         </div>
       )}
 
-      {seat && <LaptopScreen />}
+      {/* Đang ngồi, laptop gập: mở laptop hoặc đứng dậy */}
+      {seat && !laptopOpen && (
+        <div className="hud-bottom">
+          <div className="hud-context-row">
+            <button type="button" className="hud-context hud-context--primary" onClick={store.openLaptop}>
+              <Icon name="laptop" />
+              {t('game.openLaptop')}
+              <kbd>E</kbd>
+            </button>
+            <button type="button" className="hud-context" onClick={store.standUp}>
+              <Icon name="standUp" />
+              {t('game.standUp')}
+              <kbd>Esc</kbd>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {laptopOpen && <LaptopScreen />}
     </div>
   )
 }

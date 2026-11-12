@@ -41,7 +41,7 @@ function TimerChip() {
  */
 export default function LaptopScreen() {
   const { t } = useTranslation()
-  const standUp = useCafeStore((state) => state.standUp)
+  const closeLaptop = useCafeStore((state) => state.closeLaptop)
   const [app, setApp] = useState('pomodoro')
   const { Component } = APPS.find((item) => item.key === app)
 
@@ -67,8 +67,8 @@ export default function LaptopScreen() {
           </nav>
           <TimerChip />
           <Clock />
-          <button type="button" className="laptop-bar__stand" onClick={standUp}>
-            {t('laptop.standUp')}
+          <button type="button" className="laptop-bar__stand" onClick={closeLaptop}>
+            {t('laptop.close')}
             <kbd>Esc</kbd>
           </button>
         </header>

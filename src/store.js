@@ -75,6 +75,7 @@ export const useCafeStore = create((set, get) => ({
   toast: null, // { key, params, id }: thông báo nhỏ ở giữa phía trên, tự ẩn
   nearbySeat: null, // bàn trống gần nhân vật (để hiện nút "Ngồi xuống")
   seat: null, // tên bàn đang ngồi, ví dụ 'Ban_07'; null = đang đi lại
+  laptopOpen: false, // đang ngồi và đã mở laptop (góc nhìn vào màn hình)
   action: null, // hành động đang chạy ở thanh hành động: 'wave' | 'drink' | 'stretch' | 'yawn'
   changingCharacter: false, // đang mở màn đổi nhân vật trong quán
   lite: load(LITE_KEY, ['1', '0'], '0') === '1', // chế độ nhẹ: tắt bóng, độ phân giải 1×
@@ -98,8 +99,10 @@ export const useCafeStore = create((set, get) => ({
     set({ cameraMode, ...toast('game.camera.toast', { mode: cameraMode }) })
   },
   showToast: (key, params) => set(toast(key, params)),
-  sitDown: (seat) => set({ seat, nearbySeat: null, action: null }),
-  standUp: () => set({ seat: null }),
+  sitDown: (seat) => set({ seat, laptopOpen: false, nearbySeat: null, action: null }),
+  standUp: () => set({ seat: null, laptopOpen: false }),
+  openLaptop: () => set((state) => (state.seat ? { laptopOpen: true } : {})),
+  closeLaptop: () => set({ laptopOpen: false }),
   toggleAction: (action) => set((state) => ({ action: state.action === action ? null : action })),
   openCharacterChange: () => set({ changingCharacter: true, action: null }),
   closeCharacterChange: () => set({ changingCharacter: false }),

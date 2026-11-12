@@ -355,6 +355,20 @@
   }
 }
 
+.hud-context-row {
+  display: flex;
+  gap: 10px;
+}
+
+.hud-context--primary {
+  background: rgba(201, 119, 58, 0.92);
+  border-color: transparent;
+}
+
+.hud-context--primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+
 .hud-actions {
   display: flex;
   gap: 4px;

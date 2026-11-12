@@ -77,12 +77,14 @@ function stepWithCollision(position, dx, dz) {
  * - Khóa sau lưng: W/S đi tới/lùi theo hướng nhân vật, A/D xoay người.
  * - Xoay tự do: W A S D đi theo hướng camera, nhân vật tự quay mặt theo hướng đi.
  * - Bấm lên sàn: tự tìm đường tới đó; bấm vào ghế/bàn trống: đi tới rồi ngồi.
- * - Ngồi (store.seat): lướt vào ghế, gõ laptop; camera chuyển sang góc nhìn thứ nhất (gameRef.seatView).
+ * - Ngồi (store.seat): lướt vào ghế, nhâm nhi cà phê, laptop gập; mở laptop (store.laptopOpen) thì gõ phím
+ *   và camera chuyển sang góc nhìn thứ nhất vào màn hình (gameRef.seatView).
  * `gameRef` là ref chứa trạng thái dùng chung với camera (xem gameState.js).
  */
 export default function Player({ gameRef, colliders }) {
   const characterId = useCafeStore((state) => state.characterId)
   const seat = useCafeStore((state) => state.seat)
+  const laptopOpen = useCafeStore((state) => state.laptopOpen)
   const { scene, animations } = useGLTF(CHARACTER_URLS[characterId])
   const { scene: cafe } = useGLTF(cafeUrl)
   const camera = useThree((state) => state.camera)
@@ -126,6 +128,7 @@ export default function Player({ gameRef, colliders }) {
       idle: AnimationClip.findByName(animations, CLIPS.STAND),
       walk: AnimationClip.findByName(animations, CLIPS.WALK),
       type: AnimationClip.findByName(animations, CLIPS.TYPE),
+      seatedDrink: AnimationClip.findByName(animations, CLIPS.DRINK), // ngồi nhâm nhi khi laptop gập
       ...extra,
     }
     const actions = Object.fromEntries(
@@ -155,16 +158,23 @@ export default function Player({ gameRef, colliders }) {
       }
       path.current = []
       pendingSeat.current = null
-      state.seatView = firstPersonView(seat, laptopPoses(cafe, [seat])[0])
       return () => {
         // Đứng dậy: về chỗ đứng lúc trước, quay lưng lại bàn
         sitting.current = null
         if (approach.current) state.position.copy(approach.current)
         state.yaw = seatYaw(seat) + Math.PI
-        state.seatView = null
       }
     }
   }, [cafe, gameRef, seat])
+
+  // Mở laptop: camera vào màn hình; gập lại: camera về góc nhìn thứ ba quanh chỗ ngồi
+  useEffect(() => {
+    const state = gameRef.current
+    state.seatView = seat && laptopOpen ? firstPersonView(seat, laptopPoses(cafe, [seat])[0]) : null
+    return () => {
+      state.seatView = null
+    }
+  }, [cafe, gameRef, seat, laptopOpen])
 
   // Bấm lên sàn (không phải kéo) → tìm đường tới đó; bấm vào ghế/bàn trống → tới đó rồi ngồi
   useEffect(() => {
@@ -312,7 +322,7 @@ export default function Player({ gameRef, colliders }) {
     // Hoạt ảnh: ngồi gõ phím / đi / hành động / đứng
     const anim = animation.current
     if (anim) {
-      const key = store.seat ? 'type' : state.moving ? 'walk' : (store.action ?? 'idle')
+      const key = store.seat ? (store.laptopOpen ? 'type' : 'seatedDrink') : state.moving ? 'walk' : (store.action ?? 'idle')
       const next = anim.actions[key]
       if (next !== anim.current) {
         next.reset().fadeIn(FADE).play()
@@ -335,7 +345,7 @@ export default function Player({ gameRef, colliders }) {
       <group ref={group}>
         <primitive object={model} />
       </group>
-      {laptop && <Laptop position={laptop.position} rotation={laptop.rotation} />}
+      {laptop && <Laptop position={laptop.position} rotation={laptop.rotation} open={laptopOpen} />}
       {destination && <DestinationMarker position={destination} />}
     </>
   )

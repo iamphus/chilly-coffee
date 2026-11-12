@@ -67,9 +67,10 @@ App chính dùng three mới nhất. Bản thử và các tool xuất GLB vẫn 
 | V hoặc nút góc trên phải | Đổi chế độ camera (lưu cho lần sau) | |
 | E / nút "Ngồi xuống" | Ngồi vào ghế trống gần nhất (dưới 1,2 m); bấm thẳng vào ghế trống thì tự đi tới rồi ngồi | |
 | 1 2 3 4 | Vẫy tay, uống cà phê, vươn vai, ngáp (bấm lại để dừng) | |
-| Esc / E khi đang ngồi | Đứng dậy | |
+| E khi đang ngồi | Mở / gập laptop | |
+| Esc khi đang ngồi | Gập laptop (nếu đang mở), rồi đứng dậy | |
 
-Khi ngồi: camera chuyển sang góc nhìn thứ nhất, màn hình laptop có Pomodoro (thông báo trình duyệt khi hết giờ), việc cần làm, ghi chú; mọi thứ lưu trong localStorage (`chilly.focus`). Đồng hồ vẫn chạy khi đứng dậy đi lại (hiện ở góc trái và trên tiêu đề tab). Cài đặt (góc phải): chế độ nhẹ (tắt bóng, độ phân giải 1×, 30 fps), thời gian Ngày / Tối / Theo giờ. Chấm màu ở góc phải để đổi nhân vật.
+Khi ngồi: nhân vật nhâm nhi cà phê, laptop trên bàn đang gập; bấm "Mở laptop" (E) thì nắp mở, camera chuyển vào màn hình laptop có Pomodoro (thông báo trình duyệt khi hết giờ), việc cần làm, ghi chú; mọi thứ lưu trong localStorage (`chilly.focus`). Đồng hồ vẫn chạy khi đứng dậy đi lại (hiện ở góc trái và trên tiêu đề tab). Cài đặt (góc phải): chế độ nhẹ (tắt bóng, độ phân giải 1×, 30 fps), thời gian Ngày / Tối / Theo giờ. Chấm màu ở góc phải để đổi nhân vật.
 
 ## Lệnh
 
