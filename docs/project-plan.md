@@ -1,6 +1,8 @@
 # Kế hoạch dự án: Chilly Coffee – Quán cafe 3D để làm việc chill
 
-Nov 11, 2026 · @NgTiens
+Nov 11, 2026 · @NgTiens · cập nhật tiến độ 16/11/2026
+
+> **Tình trạng (16/11/2026):** web đang chạy công khai tại https://chilly-coffee.pages.dev, tự deploy mỗi khi merge vào `main`. Phần nhiều người của giai đoạn 2 (Supabase Realtime, chat) đã làm trước và đang chạy thật. Giai đoạn 1 còn thiếu cụm YouTube + nút tai nghe + trang chính sách riêng tư, và chưa có người dùng thử.
 
 ## Tổng quan và mục tiêu
 
@@ -119,37 +121,40 @@ Dự án chia thành 4 giai đoạn. Mỗi giai đoạn phải đạt điều ki
 - [x] Mô hình 3D quán: tự dựng, có sân vườn và phòng lớn, 28 chỗ ngồi (thay cho việc tìm bộ nội thất CC0)
 - [x] Bộ 12 nhân vật chibi kèm 6 hoạt ảnh, mỗi nhân vật một file GLB
 - [x] Cài Node.js (bản LTS), VS Code, Git
-- [ ] Tạo tài khoản GitHub và Cloudflare; tạo repo chilly-coffee (đã xong GitHub + repo, còn Cloudflare)
-- [ ] Chọn 10–20 bài lofi CC0 hoặc CC BY, ghi link và giấy phép từng bài vào một bảng
-- [ ] Tìm âm thanh nền CC0: mưa, máy pha cà phê, cốc chén, tiếng mèo
+- [x] Tạo tài khoản GitHub và Cloudflare; tạo repo chilly-coffee
+- [ ] Chọn 10–20 bài lofi CC0 hoặc CC BY, ghi link và giấy phép từng bài vào một bảng (tạm có 4 bài tự tạo bằng AI, ghi nguồn trong `assets/music/README.md`; kiểm tra điều khoản công cụ AI trước khi kiếm tiền)
+- [ ] Tìm âm thanh nền CC0: mưa, máy pha cà phê, cốc chén, tiếng mèo (đã có tiếng đường phố và mưa tự tạo bằng Web Audio, không cần giấy phép; còn máy pha cà phê, cốc chén, mèo)
 - [ ] Nhắn xin phép chủ quán gốc vì bố cục quán dựa trên một quán thật
 - [ ] Kiểm tra tên miền Chilly Coffee còn trống không (chưa cần mua)
 - [ ] Lập danh sách 3–5 bạn sẽ dùng thử
 
 ### Giai đoạn 1 – Bản 1, một người (khoảng 2–3 tuần)
 
-- [ ] Tạo khung dự án Vite + React + React Three Fiber, đưa lên Cloudflare Pages (đã có khung, còn Cloudflare)
-- [ ] Dựng cảnh quán: ánh sáng ấm, cửa kính có mưa, bàn ghế, TV
-- [ ] Nhân vật chibi: 5 kiểu tóc, 5 bộ đồ, chọn màu; gộp thành 1–2 khối mỗi nhân vật
+- [x] Tạo khung dự án Vite + React + React Three Fiber, đưa lên Cloudflare Pages
+- [x] Dựng cảnh quán: ánh sáng ấm, mưa bật/tắt, bàn ghế, TV; thêm công viên, vườn và bầu trời xung quanh
+- [ ] Nhân vật chibi: 5 kiểu tóc, 5 bộ đồ, chọn màu; gộp thành 1–2 khối mỗi nhân vật (đã có màn chọn 1 trong 12 nhân vật dựng sẵn; chưa tách tóc, đồ, màu)
 - [x] Click chọn bàn, camera zoom vào laptop
 - [x] Giao diện laptop: Pomodoro, to-do, ghi chú
 - [x] Pomodoro gửi thông báo trình duyệt khi hết giờ
 - [ ] Trình phát YouTube cho playlist riêng
-- [ ] TV quán phát nhạc tự host, đồng bộ theo đồng hồ
-- [ ] Nút tai nghe + crossfade + hiệu ứng lọc tiếng
+- [x] TV quán phát nhạc tự host, đồng bộ theo đồng hồ; âm thanh khác nhau khi đứng trong hay ngoài quán
+- [ ] Nhạc quán lấy giờ chuẩn từ header `Date` của server (hiện dùng đồng hồ máy người dùng, máy sai giờ sẽ nghe lệch bài); hiện "Đang phát" trên màn hình TV (hiện mới ở thanh điều khiển)
+- [ ] Nút tai nghe + crossfade + hiệu ứng lọc tiếng (cần làm cùng trình phát YouTube)
 - [x] Chế độ nhẹ; giảm fps khi ngồi bàn hoặc ẩn tab
 - [ ] Trang chính sách riêng tư (YouTube yêu cầu với trang nhúng)
-- [ ] Đưa lên mạng, nhờ 3–5 bạn dùng thử và góp ý
+- [x] Đưa lên mạng
+- [ ] Nhờ 3–5 bạn dùng thử và góp ý
 
 **Điều kiện hoàn thành:** tải lần đầu dưới 5 giây trên mạng 4G, tổng tài nguyên 3D dưới 15MB, giữ 60fps trên laptop dùng đồ họa tích hợp, nhạc TV lệch dưới 2 giây giữa 2 máy mở cùng lúc.
 
 ### Giai đoạn 2 – Bản 2, nhiều người (khoảng 3–4 tuần)
 
 - [ ] Đăng nhập bằng Supabase, lưu to-do và playlist theo tài khoản
-- [x] Server realtime: đồng bộ vị trí, chỗ ngồi, trạng thái (Supabase Realtime; cần điền khoá trong .env.local)
+- [x] Server realtime: đồng bộ vị trí, chỗ ngồi, trạng thái (Supabase Realtime; khoá đặt trong `.env.local` khi chạy trên máy và trong biến môi trường của Cloudflare Pages khi chạy thật)
 - [x] Hiện nhân vật người khác, trạng thái trên đầu (còn: tai nghe khi đang đeo)
 - [x] Giới hạn số người mỗi phòng, tự mở phòng mới khi đầy
 - [x] Chat tự do (đổi so với kế hoạch gốc): lọc từ tục, giới hạn tốc độ, nút chặn
+- [ ] Báo cáo hoặc tạm khoá người quấy rối (nút chặn hiện chỉ có tác dụng trên máy người bấm; cần có trước khi chia sẻ link rộng)
 
 **Điều kiện hoàn thành:** một nhóm bạn ngồi cùng quán trọn một buổi học không lỗi.
 
@@ -224,7 +229,7 @@ Rủi ro lớn nhất là làm quá nhiều cùng lúc; giữ đúng thứ tự 
 | Nhạc TV bị lệch giữa các máy | Lấy giờ chuẩn từ server, kiểm tra lại định kỳ và tự nhảy về đúng chỗ |
 | Trình duyệt chặn tự phát âm thanh | Nút "Vào quán" bắt buộc bấm một lần |
 | Vi phạm giấy phép nhạc hoặc asset | Chỉ dùng CC0 / CC BY, lưu bảng giấy phép từng file |
-| Người lạ quấy rối khi mở công khai | Không có chat tự do ở bản 2; thêm phòng riêng bằng link mời |
+| Người lạ quấy rối khi mở công khai | Đã đổi: có chat tự do (lọc từ tục, giới hạn tốc độ, nút chặn). Cần thêm báo cáo / tạm khoá trước khi chia sẻ rộng; thêm phòng riêng bằng link mời |
 | Hết lượt Claude giữa chừng | Chia nhiệm vụ nhỏ, lưu code trên GitHub sau mỗi bước |
 
 ### Quyết định đã chốt
