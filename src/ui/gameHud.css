@@ -242,7 +242,7 @@
   right: -4px;
   display: grid;
   gap: 14px;
-  width: 260px;
+  width: 278px;
   padding: 14px;
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 16px;
@@ -531,10 +531,12 @@
 
 .hud-segmented span {
   display: block;
-  padding: 6px 0;
+  padding: 6px 4px;
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.08);
+  font-size: var(--text-xs);
   text-align: center;
+  white-space: nowrap;
 }
 
 .hud-segmented input:checked + span {

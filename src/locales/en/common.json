@@ -136,6 +136,7 @@
       "timeOptions": {
         "auto": "Local time",
         "day": "Day",
+        "sunset": "Sunset",
         "night": "Night"
       },
       "musicVolume": "Café radio volume",

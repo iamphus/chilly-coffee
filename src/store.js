@@ -15,7 +15,7 @@ const LITE_KEY = 'chilly.lite'
 const TIME_KEY = 'chilly.timeOfDay'
 const SOUND_KEY = 'chilly.sound'
 const RAIN_KEY = 'chilly.rain'
-export const TIME_OPTIONS = ['auto', 'day', 'night']
+export const TIME_OPTIONS = ['auto', 'day', 'sunset', 'night']
 
 // localStorage có thể bị chặn (chế độ ẩn danh…): đọc lỗi thì dùng mặc định, ghi lỗi thì bỏ qua
 function load(key, allowed, fallback) {

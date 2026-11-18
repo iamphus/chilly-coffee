@@ -136,6 +136,7 @@
       "timeOptions": {
         "auto": "Theo giờ",
         "day": "Ngày",
+        "sunset": "Chiều",
         "night": "Tối"
       },
       "musicVolume": "Âm lượng nhạc quán",
