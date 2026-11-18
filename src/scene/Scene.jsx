@@ -17,6 +17,7 @@ import Guests from './Guests.jsx'
 import LampGlows from './LampGlows.jsx'
 import Lighting from './Lighting.jsx'
 import { effectiveTimeOfDay, lightingFor } from './lightingPresets.js'
+import NowPlayingSign from './NowPlayingSign.jsx'
 import Passersby from './Passersby.jsx'
 import Rain from './Rain.jsx'
 import Surroundings from './surroundings/Surroundings.jsx'
@@ -51,6 +52,7 @@ export default function Scene() {
       {rain && <Rain count={lite ? 3500 : 9000} />}
       {/* Camera đi trong quán nên giữ trần */}
       <Cafe showCeiling />
+      <NowPlayingSign />
       <Surroundings preset={preset} lite={lite} />
       <LampGlows strength={preset.lampGlow} />
       {!lite && <DustMotes opacity={preset.dust} />}

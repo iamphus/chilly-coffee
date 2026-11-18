@@ -128,6 +128,11 @@
       "on": "Đang đeo tai nghe",
       "off": "Đã tháo tai nghe",
       "musicMuted": "Đang đeo tai nghe · nhạc quán tắt"
+    },
+    "tv": {
+      "onAir": "Chilly Radio · Đang phát",
+      "stationSub": "Đài phát lofi đồng bộ cả quán",
+      "headphonesSub": "Nhạc quán đang nhường cho tai nghe của bạn"
     }
   },
   "laptop": {
