@@ -109,6 +109,13 @@
     "hint": "W A S D to walk · Click the floor to go there · M café map · V camera · E sit · H headphones · R rain · Enter chat",
     "me": "Me",
     "exit": "Leave the café",
+    "exitConfirm": {
+      "title": "Leave the café?",
+      "body": "You'll leave your current spot and return to the welcome screen.",
+      "pomodoroWarning": "Your Pomodoro timer is still running — leaving now will stop this focus session.",
+      "stay": "Stay",
+      "confirm": "Leave"
+    },
     "map": "Café map",
     "musicShort": "Café radio",
     "changeCharacter": "Change character",

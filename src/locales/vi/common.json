@@ -109,6 +109,13 @@
     "hint": "W A S D để đi · Bấm lên sàn để tới đó · M sơ đồ quán · V đổi camera · E ngồi xuống · H tai nghe · R mưa · Enter trò chuyện",
     "me": "Tôi",
     "exit": "Rời quán",
+    "exitConfirm": {
+      "title": "Rời khỏi quán?",
+      "body": "Bạn sẽ rời chỗ hiện tại và quay lại màn hình chào ngoài cổng.",
+      "pomodoroWarning": "Đồng hồ Pomodoro đang chạy — rời quán lúc này sẽ dừng phiên tập trung của bạn.",
+      "stay": "Ở lại quán",
+      "confirm": "Rời quán"
+    },
     "map": "Sơ đồ quán",
     "musicShort": "Nhạc quán",
     "changeCharacter": "Đổi nhân vật",
