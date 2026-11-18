@@ -22,6 +22,7 @@ import { lightingFor } from './lightingPresets.js'
 import NowPlayingSign from './NowPlayingSign.jsx'
 import Passersby from './Passersby.jsx'
 import Rain from './Rain.jsx'
+import Sunbeams from './Sunbeams.jsx'
 import Surroundings from './surroundings/Surroundings.jsx'
 
 const CLOCK_SYNC_MS = 30_000 // ở chế độ "Theo giờ", cập nhật góc nắng & màu trời mỗi 30 giây theo đồng hồ máy
@@ -84,6 +85,7 @@ export default function Scene() {
       <NowPlayingSign />
       <Surroundings preset={initialPreset} atmosphereRef={atmosphereRef} lite={lite} />
       <LampGlows strength={initialPreset.lampGlow} atmosphereRef={atmosphereRef} />
+      {!lite && <Sunbeams preset={initialPreset} atmosphereRef={atmosphereRef} />}
       {!lite && <DustMotes opacity={initialPreset.dust} atmosphereRef={atmosphereRef} />}
       <Guests exclude={exclude} />
       <Passersby exclude={exclude} />

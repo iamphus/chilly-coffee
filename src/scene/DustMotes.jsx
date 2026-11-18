@@ -1,7 +1,9 @@
 import { useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { AdditiveBlending, BufferAttribute, BufferGeometry } from 'three'
+import { AdditiveBlending, BufferAttribute, BufferGeometry, Color } from 'three'
 import { glowTexture } from './glowTexture.js'
+
+const LAMP_DUST_COLOR = new Color('#ffd9a8')
 
 const ROOMS = [
   { min: [-3.4, 0.4, -2.4], max: [3.0, 2.4, 2.7], count: 90 },
@@ -42,10 +44,14 @@ export default function DustMotes({ opacity = 0.35, atmosphereRef = null }) {
   useFrame(({ clock }) => {
     const node = points.current
     if (!node) return
-    const currentOpacity = atmosphereRef?.current ? atmosphereRef.current.values.dust : opacity
+    const atmo = atmosphereRef?.current
+    const currentOpacity = atmo ? atmo.values.dust : opacity
     node.visible = currentOpacity > 0.004
     if (!node.visible) return
     node.material.opacity = currentOpacity
+    if (atmo) {
+      node.material.color.copy(LAMP_DUST_COLOR).lerp(atmo.colors.sunColor, Math.min(0.65, atmo.values.sunbeam * 0.65))
+    }
 
     const t = clock.elapsedTime * SPEED
     const positions = node.geometry.attributes.position
