@@ -4,13 +4,14 @@ import { remainingMs, useFocusStore } from '../focus/focusStore.js'
 import { useCafeStore } from '../store.js'
 import { cleanMessage, createRateLimiter } from './chatFilter.js'
 import { BUBBLE_MS, bubbles, peerMotion, useNetStore } from './netStore.js'
+import { PUBLIC_ROOMS } from './roomCode.js'
 import { createLocalTransport } from './transport/localTransport.js'
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY
-const LOCAL_ROOM = '02'
 
 let transport = null
+let sessionToken = 0
 let lastState = ''
 const limiter = createRateLimiter()
 
@@ -74,21 +75,31 @@ function resolveSeatConflict(peers) {
   }
 }
 
-export async function startSession(initialPosition) {
+export async function startSession(initialPosition, requestedRoom = useNetStore.getState().requestedRoom) {
+  const token = ++sessionToken
   const net = useNetStore.getState()
-  const options = { room: LOCAL_ROOM, selfId: net.selfId, initialState: selfState(initialPosition) }
+  const fallbackRoom = requestedRoom ?? PUBLIC_ROOMS[0]
+  const options = { room: fallbackRoom, requestedRoom, selfId: net.selfId, initialState: selfState(initialPosition) }
+
+  let nextTransport
   if (SUPABASE_URL && SUPABASE_ANON_KEY) {
     const { createSupabaseTransport } = await import('./transport/supabaseTransport.js')
-    transport = createSupabaseTransport({ ...options, url: SUPABASE_URL, anonKey: SUPABASE_ANON_KEY })
+    if (token !== sessionToken) return
+    nextTransport = createSupabaseTransport({ ...options, url: SUPABASE_URL, anonKey: SUPABASE_ANON_KEY })
   } else {
-    transport = createLocalTransport(options)
+    nextTransport = createLocalTransport(options)
   }
+
+  transport = nextTransport
   lastState = JSON.stringify(options.initialState)
-  useNetStore.setState({ kind: transport.kind })
+  useNetStore.setState({ kind: transport.kind, connected: false, room: requestedRoom })
 
   transport.connect({
-    onStatus: ({ connected, room }) => useNetStore.setState({ connected, room }),
+    onStatus: ({ connected, room }) => {
+      if (token === sessionToken) useNetStore.setState({ connected, room })
+    },
     onPeers: (peers) => {
+      if (token !== sessionToken) return
       // Người mới vào: đặt vị trí ban đầu từ trạng thái; người rời: xoá
       for (const [id, peer] of Object.entries(peers)) {
         if (!peerMotion.has(id)) peerMotion.set(id, { x: peer.x, y: 0, z: peer.z, yaw: peer.yaw, moving: false })
@@ -98,9 +109,11 @@ export async function startSession(initialPosition) {
       resolveSeatConflict(peers)
     },
     onMove: (id, move) => {
+      if (token !== sessionToken) return
       if (move && Number.isFinite(move.x) && Number.isFinite(move.z)) peerMotion.set(id, move)
     },
     onChat: (id, message) => {
+      if (token !== sessionToken) return
       const state = useNetStore.getState()
       if (state.blocked[id]) return
       const text = cleanMessage(message?.text) // lọc cả phía nhận (không tin người gửi)
@@ -114,6 +127,7 @@ export async function startSession(initialPosition) {
 }
 
 export function stopSession() {
+  sessionToken += 1
   transport?.disconnect()
   transport = null
   peerMotion.clear()
