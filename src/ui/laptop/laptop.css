@@ -219,8 +219,8 @@
 }
 
 .pomodoro__time {
-  margin: 8px 0 12px;
-  font-size: clamp(3.5rem, 9vw, 6rem);
+  margin: 6px 0 10px;
+  font-size: clamp(2.8rem, min(8vw, 11vh), 5.5rem);
   font-weight: 800;
   line-height: 1;
   font-variant-numeric: tabular-nums;
@@ -398,6 +398,46 @@
 
 .pomodoro__settings input {
   width: 6rem;
+}
+
+@media (max-height: 760px) {
+  .laptop {
+    padding: 10px;
+    max-height: 84vh;
+  }
+  .laptop-content {
+    padding: 12px 20px;
+  }
+  .pomodoro__time {
+    margin: 2px 0 6px;
+    font-size: clamp(2.2rem, 7.5vh, 3.8rem);
+  }
+  .pomodoro__controls {
+    margin-top: 10px;
+    gap: 6px;
+  }
+  .pomodoro__count {
+    margin: 6px 0 0;
+    font-size: var(--text-xs);
+  }
+  .pomodoro__footer {
+    margin-top: 10px;
+    gap: 10px;
+  }
+  .pomodoro__weekly {
+    padding: 8px 12px;
+    gap: 6px;
+  }
+  .pomodoro__col-track {
+    height: 32px;
+  }
+  .pomodoro__settings {
+    padding: 8px 12px;
+    gap: 10px;
+  }
+  .pomodoro__settings input {
+    padding: 4px 8px;
+  }
 }
 
 /* Việc cần làm */

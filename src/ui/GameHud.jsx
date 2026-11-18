@@ -305,7 +305,7 @@ export default function GameHud() {
 
       {/* Trên trái: rời quán, bản đồ, tên phòng */}
       <div className="hud-corner hud-corner--left">
-        <div className="hud-pill">
+        <div className={mapOpen || roomOpen || exitOpen ? 'hud-pill has-popover' : 'hud-pill'}>
           <button
             type="button"
             className={exitOpen ? 'hud-button hud-button--on' : 'hud-button'}
@@ -361,7 +361,7 @@ export default function GameHud() {
 
       {/* Trên phải: nhân vật, camera, âm thanh, cài đặt; bên dưới: nhạc quán */}
       <div className="hud-corner hud-corner--right">
-        <div className="hud-pill">
+        <div className={settingsOpen ? 'hud-pill has-popover' : 'hud-pill'}>
           <button
             type="button"
             className="hud-button"
@@ -430,20 +430,22 @@ export default function GameHud() {
             {settingsOpen && <SettingsPopover onClose={() => setSettingsOpen(false)} />}
           </div>
         </div>
-        <button
-          type="button"
-          className={store.musicOn ? 'hud-pill hud-pill--text' : 'hud-pill hud-pill--text hud-pill--off'}
-          onClick={() => store.setSound({ musicOn: !store.musicOn })}
-          aria-pressed={store.musicOn}
-          aria-label={store.musicOn ? t('game.musicOff') : t('game.musicOn')}
-        >
-          <Icon name="music" />
-          {store.headphones
-            ? t('game.headphones.musicMuted')
-            : store.musicOn && store.nowPlaying
-              ? t('game.nowPlaying', { title: store.nowPlaying.title ?? t('game.trackNumber', { number: store.nowPlaying.index + 1 }) })
-              : t('game.musicShort')}
-        </button>
+        {!laptopOpen && (
+          <button
+            type="button"
+            className={store.musicOn ? 'hud-pill hud-pill--text' : 'hud-pill hud-pill--text hud-pill--off'}
+            onClick={() => store.setSound({ musicOn: !store.musicOn })}
+            aria-pressed={store.musicOn}
+            aria-label={store.musicOn ? t('game.musicOff') : t('game.musicOn')}
+          >
+            <Icon name="music" />
+            {store.headphones
+              ? t('game.headphones.musicMuted')
+              : store.musicOn && store.nowPlaying
+                ? t('game.nowPlaying', { title: store.nowPlaying.title ?? t('game.trackNumber', { number: store.nowPlaying.index + 1 }) })
+                : t('game.musicShort')}
+          </button>
+        )}
       </div>
 
       {/* Giữa đáy: nút theo ngữ cảnh + thanh hành động */}

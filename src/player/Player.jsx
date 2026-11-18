@@ -106,7 +106,9 @@ export default function Player({ gameRef, colliders }) {
   const model = useMemo(() => {
     const copy = scene.clone(true)
     copy.traverse((object) => {
-      if (object.isMesh) object.castShadow = true
+      if (object.isMesh) {
+        object.castShadow = !/Tay|Chan|Mat|Mouth|Eye/i.test(object.name)
+      }
     })
     return copy
   }, [scene])

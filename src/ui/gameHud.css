@@ -92,6 +92,18 @@
   align-items: flex-end;
 }
 
+@media (max-height: 760px) {
+  .hud-corner {
+    top: 10px;
+  }
+}
+
+.hud-corner--right > .hud-pill:first-child,
+.hud-corner--left > .hud-pill:first-child {
+  position: relative;
+  z-index: 10;
+}
+
 .hud-pill {
   display: flex;
   align-items: center;
@@ -103,6 +115,12 @@
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   pointer-events: auto;
+}
+
+.hud-pill:has(.hud-popover),
+.hud-pill.has-popover {
+  position: relative;
+  z-index: 20;
 }
 
 .hud-pill--text {

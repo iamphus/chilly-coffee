@@ -12,6 +12,7 @@ tmp/
 .env.*.local
 .DS_Store
 Thumbs.db
+~$*
 .vscode/
 .idea/
 __pycache__/
