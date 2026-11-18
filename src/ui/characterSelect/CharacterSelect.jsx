@@ -2,9 +2,11 @@ import { Suspense, useEffect, useState } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { useTranslation } from 'react-i18next'
 import { audioEngine } from '../../audio/audioEngine.js'
+import { isPresetAppearance, presetAppearance } from '../../characters/appearance.js'
 import { PLAYABLE_CHARACTERS } from '../../characters/playableCharacters.js'
 import { MAX_NICKNAME_LENGTH, useCafeStore } from '../../store.js'
 import CharacterLineup from './CharacterLineup.jsx'
+import WardrobePanel from './WardrobePanel.jsx'
 import './characterSelect.css'
 
 const LEAVE_DURATION_MS = 700 // khớp với transition của .char-select--leaving
@@ -14,15 +16,15 @@ const wrap = (index) => (index + COUNT) % COUNT
 const isTyping = (target) => target instanceof HTMLElement && /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName)
 
 /**
- * Màn chọn nhân vật (và đặt tên hiển thị).
+ * Màn chọn & phối đồ nhân vật (kèm đặt tên hiển thị).
  * - mode 'enter': sau khi bấm "Vào quán" ở landing. Chọn xong thì dựng cảnh quán phía sau (nút hiện
  *   tiến độ); cảnh sẵn sàng thì màn này mờ dần rồi gỡ hẳn.
- * - mode 'change': đổi nhân vật khi đang ở trong quán (bấm chấm màu ở góc phải); có nút Huỷ / Esc.
+ * - mode 'change': đổi nhân vật / trang phục khi đang ở trong quán (bấm chấm màu ở góc phải); có nút Huỷ / Esc.
  */
 export default function CharacterSelect({ mode = 'enter' }) {
   const changing = mode === 'change'
   const { t } = useTranslation()
-  const savedCharacter = useCafeStore((state) => state.characterId)
+  const savedAppearance = useCafeStore((state) => state.appearance)
   const nickname = useCafeStore((state) => state.nickname)
   const setNickname = useCafeStore((state) => state.setNickname)
   const randomizeNickname = useCafeStore((state) => state.randomizeNickname)
@@ -33,30 +35,45 @@ export default function CharacterSelect({ mode = 'enter' }) {
   const changeCharacter = useCafeStore((state) => state.changeCharacter)
   const closeCharacterChange = useCafeStore((state) => state.closeCharacterChange)
   const finishChoosing = useCafeStore((state) => state.finishChoosing)
-  const [selected, setSelected] = useState(() => Math.max(0, PLAYABLE_CHARACTERS.indexOf(savedCharacter)))
+
+  const [selected, setSelected] = useState(() => Math.max(0, PLAYABLE_CHARACTERS.indexOf(savedAppearance.base)))
+  const [appearance, setAppearance] = useState(savedAppearance)
+  const [customizing, setCustomizing] = useState(() => !isPresetAppearance(savedAppearance))
   const [nameDraft, setNameDraft] = useState(nickname)
   const [gone, setGone] = useState(false)
 
   const characterId = PLAYABLE_CHARACTERS[selected]
   const leaving = !changing && entered && sceneReady
   const locked = !changing && entered // đã bấm vào quán, đang chờ dựng cảnh
-  const confirm = (id) => {
-    setNickname(nameDraft)
-    audioEngine.unlock()
-    if (changing) changeCharacter(id)
-    else enterCafe(id)
+
+  const pickPreset = (nextIndex) => {
+    if (locked) return
+    const wrapped = wrap(nextIndex)
+    const nextId = PLAYABLE_CHARACTERS[wrapped]
+    setSelected(wrapped)
+    setAppearance(presetAppearance(nextId))
   }
 
-  // ← → (hoặc A D) để đổi nhân vật, Enter để chọn, Esc để huỷ (khi đổi trong quán)
+  const confirm = () => {
+    setNickname(nameDraft)
+    audioEngine.unlock()
+    if (changing) changeCharacter(characterId, appearance)
+    else enterCafe(characterId, appearance)
+  }
+
+  // ← → (hoặc A D) để đổi mẫu nhân vật, Enter để chọn, Esc để đóng tủ đồ / huỷ
   useEffect(() => {
-    if (locked) return
+    if (locked) return undefined
     const onKey = (event) => {
       if (isTyping(event.target)) return
-      if (event.code === 'ArrowLeft' || event.code === 'KeyA') setSelected((index) => wrap(index - 1))
-      else if (event.code === 'ArrowRight' || event.code === 'KeyD') setSelected((index) => wrap(index + 1))
-      else if (event.code === 'Enter' && !event.repeat) confirm(PLAYABLE_CHARACTERS[selected])
-      else if (event.code === 'Escape' && changing) closeCharacterChange()
-      else return
+      if (event.code === 'ArrowLeft' || event.code === 'KeyA') pickPreset(selected - 1)
+      else if (event.code === 'ArrowRight' || event.code === 'KeyD') pickPreset(selected + 1)
+      else if (event.code === 'Enter' && !event.repeat) confirm()
+      else if (event.code === 'Escape') {
+        if (customizing && !changing) setCustomizing(false)
+        else if (changing) closeCharacterChange()
+        else return
+      } else return
       event.preventDefault()
     }
     window.addEventListener('keydown', onKey)
@@ -64,7 +81,7 @@ export default function CharacterSelect({ mode = 'enter' }) {
   })
 
   useEffect(() => {
-    if (!leaving) return
+    if (!leaving) return undefined
     const timer = setTimeout(() => {
       setGone(true)
       finishChoosing()
@@ -75,7 +92,6 @@ export default function CharacterSelect({ mode = 'enter' }) {
   if (gone) return null
 
   const percent = Math.round(loadProgress)
-  // Chỉ hiện % khi đang tải thật; 0% (chưa kịp đo) hoặc 100% (đang dựng cảnh) thì chỉ hiện chữ
   const enterLabel = changing
     ? t('select.change')
     : !entered
@@ -83,7 +99,8 @@ export default function CharacterSelect({ mode = 'enter' }) {
       : percent > 0 && percent < 100
         ? t('landing.loading', { percent })
         : t('landing.preparing')
-  const name = t(`characters.${characterId}`)
+  const baseName = t(`characters.${characterId}`)
+  const modified = !isPresetAppearance(appearance)
 
   return (
     <div className={leaving ? 'char-select char-select--leaving' : 'char-select'}>
@@ -97,7 +114,7 @@ export default function CharacterSelect({ mode = 'enter' }) {
         }}
       >
         <Suspense fallback={null}>
-          <CharacterLineup selected={selected} onSelect={locked ? () => {} : setSelected} />
+          <CharacterLineup selected={selected} onSelect={pickPreset} appearance={appearance} customizing={customizing} />
         </Suspense>
       </Canvas>
 
@@ -106,43 +123,61 @@ export default function CharacterSelect({ mode = 'enter' }) {
         <p>{t('select.subtitle')}</p>
       </header>
 
+      {customizing && <WardrobePanel appearance={appearance} onChange={setAppearance} disabled={locked} />}
+
       <div className="char-select__panel">
-        <div className="char-select__nickname">
-          <label htmlFor="char-select-nickname">{t('select.nicknameLabel')}</label>
-          <input
-            id="char-select-nickname"
-            type="text"
-            value={nameDraft}
-            maxLength={MAX_NICKNAME_LENGTH}
-            disabled={locked}
-            autoComplete="off"
-            spellCheck={false}
-            placeholder={t('select.nicknamePlaceholder')}
-            onChange={(event) => setNameDraft(event.target.value)}
-            onBlur={() => setNameDraft(setNickname(nameDraft))}
-            onKeyDown={(event) => {
-              if (event.key === 'Enter') {
-                event.preventDefault()
-                event.currentTarget.blur()
-              }
-            }}
-          />
+        <div className="char-select__top-row">
+          <div className="char-select__nickname">
+            <label htmlFor="char-select-nickname">{t('select.nicknameLabel')}</label>
+            <input
+              id="char-select-nickname"
+              type="text"
+              value={nameDraft}
+              maxLength={MAX_NICKNAME_LENGTH}
+              disabled={locked}
+              autoComplete="off"
+              spellCheck={false}
+              placeholder={t('select.nicknamePlaceholder')}
+              onChange={(event) => setNameDraft(event.target.value)}
+              onBlur={() => setNameDraft(setNickname(nameDraft))}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter') {
+                  event.preventDefault()
+                  event.currentTarget.blur()
+                }
+              }}
+            />
+            <button
+              type="button"
+              className="char-select__dice"
+              onClick={() => setNameDraft(randomizeNickname())}
+              disabled={locked}
+              aria-label={t('select.randomName')}
+              title={t('select.randomName')}
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="4" y="4" width="16" height="16" rx="3" />
+                <circle cx="9" cy="9" r="1.2" fill="currentColor" stroke="none" />
+                <circle cx="15" cy="9" r="1.2" fill="currentColor" stroke="none" />
+                <circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none" />
+                <circle cx="9" cy="15" r="1.2" fill="currentColor" stroke="none" />
+                <circle cx="15" cy="15" r="1.2" fill="currentColor" stroke="none" />
+              </svg>
+            </button>
+          </div>
+
           <button
             type="button"
-            className="char-select__dice"
-            onClick={() => setNameDraft(randomizeNickname())}
+            className={customizing ? 'char-select__wardrobe-btn char-select__wardrobe-btn--open' : 'char-select__wardrobe-btn'}
+            onClick={() => setCustomizing((open) => !open)}
             disabled={locked}
-            aria-label={t('select.randomName')}
-            title={t('select.randomName')}
+            aria-expanded={customizing}
           >
             <svg viewBox="0 0 24 24" aria-hidden="true">
-              <rect x="4" y="4" width="16" height="16" rx="3" />
-              <circle cx="9" cy="9" r="1.2" fill="currentColor" stroke="none" />
-              <circle cx="15" cy="9" r="1.2" fill="currentColor" stroke="none" />
-              <circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none" />
-              <circle cx="9" cy="15" r="1.2" fill="currentColor" stroke="none" />
-              <circle cx="15" cy="15" r="1.2" fill="currentColor" stroke="none" />
+              <path d="M12 4a2 2 0 0 1 2 2c0 1.1-.9 1.6-2 2.4L4 14h16l-8-5.6" />
+              <path d="M6 14v5a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-5" />
             </svg>
+            {t('select.wardrobe.toggle')}
           </button>
         </div>
 
@@ -150,7 +185,7 @@ export default function CharacterSelect({ mode = 'enter' }) {
           <button
             type="button"
             className="char-select__arrow"
-            onClick={() => setSelected((index) => wrap(index - 1))}
+            onClick={() => pickPreset(selected - 1)}
             disabled={locked}
             aria-label={t('select.previous')}
           >
@@ -159,13 +194,13 @@ export default function CharacterSelect({ mode = 'enter' }) {
             </svg>
           </button>
           <div className="char-select__name" aria-live="polite">
-            <strong>{name}</strong>
+            <strong>{modified ? `${baseName} · ${t('select.wardrobe.customBadge')}` : baseName}</strong>
             <span>{t('select.count', { current: selected + 1, total: COUNT })}</span>
           </div>
           <button
             type="button"
             className="char-select__arrow"
-            onClick={() => setSelected((index) => wrap(index + 1))}
+            onClick={() => pickPreset(selected + 1)}
             disabled={locked}
             aria-label={t('select.next')}
           >
@@ -184,7 +219,7 @@ export default function CharacterSelect({ mode = 'enter' }) {
           <button
             type="button"
             className="btn-enter"
-            onClick={() => confirm(characterId)}
+            onClick={confirm}
             disabled={locked}
             aria-busy={locked && !sceneReady}
             style={{ '--progress': `${percent}%` }}

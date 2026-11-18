@@ -7,8 +7,8 @@ import { fireflyAreas } from './layout.js'
 const PER_AREA = 70
 const DRIFT = 0.6
 
-/** Đom đóm buổi tối: chấm vàng xanh bay lượn và nhấp nháy trong hai công viên. */
-export default function Fireflies({ opacity }) {
+/** Đom đóm chạng vạng & buổi tối: luôn gắn sẵn để không biên dịch lại shader khi chuyển sang tối. */
+export default function Fireflies({ opacity = 0, atmosphereRef = null }) {
   const points = useRef(null)
   const { geometry, base, phases } = useMemo(() => {
     let seed = 99
@@ -29,8 +29,13 @@ export default function Fireflies({ opacity }) {
   }, [])
 
   useFrame(({ clock }) => {
-    const positions = points.current?.geometry.attributes.position
-    if (!positions) return
+    const node = points.current
+    if (!node) return
+    const currentOpacity = atmosphereRef?.current ? atmosphereRef.current.values.fireflies : opacity
+    node.visible = currentOpacity > 0.004
+    if (!node.visible) return
+
+    const positions = node.geometry.attributes.position
     const t = clock.elapsedTime * 0.35
     for (let i = 0; i < phases.length; i++) {
       const p = phases[i]
@@ -39,13 +44,22 @@ export default function Fireflies({ opacity }) {
       positions.array[i * 3 + 2] = base[i * 3 + 2] + Math.cos(t * 0.9 + p) * DRIFT
     }
     positions.needsUpdate = true
-    points.current.material.opacity = opacity * (0.75 + 0.25 * Math.sin(clock.elapsedTime * 2.3))
+    node.material.opacity = currentOpacity * (0.75 + 0.25 * Math.sin(clock.elapsedTime * 2.3))
   })
 
-  if (opacity <= 0) return null
   return (
-    <points ref={points} geometry={geometry}>
-      <pointsMaterial map={glowTexture()} color="#e6ff8a" size={0.14} sizeAttenuation transparent opacity={opacity} blending={AdditiveBlending} depthWrite={false} toneMapped={false} />
+    <points ref={points} geometry={geometry} visible={opacity > 0.004}>
+      <pointsMaterial
+        map={glowTexture()}
+        color="#e6ff8a"
+        size={0.14}
+        sizeAttenuation
+        transparent
+        opacity={opacity}
+        blending={AdditiveBlending}
+        depthWrite={false}
+        toneMapped={false}
+      />
     </points>
   )
 }

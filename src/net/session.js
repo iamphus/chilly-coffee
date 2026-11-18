@@ -1,5 +1,6 @@
 // Phiên kết nối nhiều người: chọn Supabase (nếu có khoá trong .env.local) hoặc kênh giữa các tab,
 // đẩy trạng thái của mình lên, nhận người khác về netStore, gửi / nhận chat.
+import { encodeAppearance } from '../characters/appearance.js'
 import { remainingMs, useFocusStore } from '../focus/focusStore.js'
 import { useCafeStore } from '../store.js'
 import { cleanMessage, createRateLimiter } from './chatFilter.js'
@@ -22,6 +23,7 @@ export function selfState(position) {
   return {
     name: cafe.nickname,
     character: cafe.characterId,
+    look: encodeAppearance(cafe.appearance),
     seat: cafe.seat,
     sitAt: cafe.seatAt ?? null,
     laptopOpen: cafe.laptopOpen,

@@ -41,7 +41,57 @@
     "hint": "← → to switch · Enter to go in · Click a character to pick",
     "change": "Switch to this character",
     "cancel": "Cancel",
-    "hintChange": "← → to switch · Enter to pick · Esc to cancel"
+    "hintChange": "← → to switch · Enter to pick · Esc to cancel",
+    "wardrobe": {
+      "toggle": "Customize",
+      "title": "Wardrobe",
+      "customBadge": "Custom",
+      "shuffle": "Random",
+      "reset": "Reset",
+      "spinHint": "Drag across the character to spin 360°",
+      "tabs": {
+        "hair": "Hair",
+        "outfit": "Top",
+        "bottom": "Bottom",
+        "acc": "Extras"
+      },
+      "hairColor": "Hair color",
+      "topColor": "Top color",
+      "pantsColor": "Pants color",
+      "shoeColor": "Shoe color",
+      "skinTone": "Skin tone",
+      "hairs": {
+        "short": "Short",
+        "bob": "Bob",
+        "long": "Long",
+        "bun": "High bun",
+        "pony": "Ponytail",
+        "twin": "Twin tails",
+        "curly": "Curly",
+        "buzz": "Buzz cut"
+      },
+      "outfits": {
+        "hoodie": "Hoodie",
+        "cardigan": "Cardigan",
+        "overalls": "Overalls",
+        "sweater": "Scarf sweater",
+        "shirt": "Button shirt",
+        "tee": "T-shirt",
+        "coat": "Long coat"
+      },
+      "pantsKinds": {
+        "long": "Trousers",
+        "shorts": "Shorts"
+      },
+      "accessories": {
+        "glasses": "Round glasses",
+        "headphones": "Headphones",
+        "cap": "Baseball cap",
+        "beret": "Beret",
+        "backpack": "Backpack",
+        "tie": "Necktie"
+      }
+    }
   },
   "characters": {
     "guest_headphones": "Headphones",
@@ -59,6 +109,13 @@
     "hint": "W A S D to walk · Click the floor to go there · M café map · V camera · E sit · H headphones · R rain · Enter chat",
     "me": "Me",
     "exit": "Leave the café",
+    "exitConfirm": {
+      "title": "Leave the café?",
+      "body": "You'll leave your current spot and return to the welcome screen.",
+      "pomodoroWarning": "Your Pomodoro timer is still running — leaving now will stop this focus session.",
+      "stay": "Stay",
+      "confirm": "Leave"
+    },
     "map": "Café map",
     "musicShort": "Café radio",
     "changeCharacter": "Change character",
@@ -86,6 +143,7 @@
       "timeOptions": {
         "auto": "Local time",
         "day": "Day",
+        "sunset": "Sunset",
         "night": "Night"
       },
       "musicVolume": "Café radio volume",
@@ -128,6 +186,11 @@
       "on": "Headphones on",
       "off": "Headphones off",
       "musicMuted": "Headphones on · café radio muted"
+    },
+    "tv": {
+      "onAir": "Chilly Radio · Now Playing",
+      "stationSub": "Synced lofi radio for the whole café",
+      "headphonesSub": "Café speakers muted while headphones are on"
     }
   },
   "laptop": {
@@ -149,6 +212,10 @@
       "skipToBreak": "Skip to break",
       "skipToFocus": "Skip to focus",
       "completed": "{{count}} Pomodoros done today",
+      "weeklyTitle": "Last 7 days",
+      "weeklySummary": "{{count}} sessions · {{minutes}} min",
+      "streak": "{{count}}-day streak",
+      "dayTooltip": "{{date}}: {{count}} Pomodoros ({{minutes}} min)",
       "settings": "Durations (minutes)",
       "focusMinutes": "Focus",
       "breakMinutes": "Break",
@@ -299,7 +366,7 @@
       {
         "title": "Your music via YouTube",
         "paragraphs": [
-          "The My music app on the laptop uses YouTube API Services (YouTube's official player). The player only loads after you paste a YouTube link, and it uses privacy-enhanced mode (youtube-nocookie.com).",
+          "The My music app on the laptop uses YouTube API Services (YouTube's official player). The player only loads after you paste a YouTube link yourself.",
           "Once the player loads, Google / YouTube may collect data and store cookies on your device under their own policies. Chilly Coffee does not access your YouTube account or watch history; it only reads the playback state (playing, paused, which track) to adjust the volume and resume next time.",
           "By using My music you agree to YouTube's Terms of Service."
         ],

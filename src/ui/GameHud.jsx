@@ -185,6 +185,53 @@ function SettingsPopover({ onClose }) {
   )
 }
 
+/** Thẻ xác nhận trước khi rời quán để tránh bấm nhầm làm mất bàn / phiên Pomodoro đang chạy */
+function ExitConfirmDialog({ onCancel, onConfirm }) {
+  const { t } = useTranslation()
+  const focusRunning = useFocusStore((state) => state.running)
+  const stayRef = useRef(null)
+
+  useEffect(() => {
+    stayRef.current?.focus()
+  }, [])
+
+  return (
+    <div
+      className="exit-confirm-backdrop"
+      onPointerDown={(event) => {
+        if (event.target === event.currentTarget) onCancel()
+      }}
+    >
+      <div
+        className="exit-confirm"
+        role="alertdialog"
+        aria-modal="true"
+        aria-labelledby="exit-confirm-title"
+        aria-describedby="exit-confirm-desc"
+      >
+        <div className="exit-confirm__icon" aria-hidden="true">
+          <Icon name="exit" />
+        </div>
+        <h2 id="exit-confirm-title" className="exit-confirm__title">
+          {t('game.exitConfirm.title')}
+        </h2>
+        <p id="exit-confirm-desc" className="exit-confirm__body">
+          {t('game.exitConfirm.body')}
+        </p>
+        {focusRunning && <p className="exit-confirm__warning">{t('game.exitConfirm.pomodoroWarning')}</p>}
+        <div className="exit-confirm__actions">
+          <button ref={stayRef} type="button" className="exit-confirm__btn exit-confirm__btn--stay" onClick={onCancel}>
+            {t('game.exitConfirm.stay')}
+          </button>
+          <button type="button" className="exit-confirm__btn exit-confirm__btn--leave" onClick={onConfirm}>
+            {t('game.exitConfirm.confirm')}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 /**
  * Giao diện khi ở trong quán (theo tham-khao/THAM_KHAO_SANSA.md):
  * gợi ý điều khiển, thông báo, các góc màn hình, nút "Ngồi xuống", thanh hành động, laptop khi ngồi.
@@ -196,6 +243,7 @@ export default function GameHud() {
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [mapOpen, setMapOpen] = useState(false)
   const [roomOpen, setRoomOpen] = useState(false)
+  const [exitOpen, setExitOpen] = useState(false)
   const room = useNetStore((state) => state.room)
   const requestedRoom = useNetStore((state) => state.requestedRoom)
   const connected = useNetStore((state) => state.connected)
@@ -203,6 +251,13 @@ export default function GameHud() {
 
   useEffect(() => {
     const onKey = (event) => {
+      if (exitOpen) {
+        if (event.code === 'Escape') {
+          event.preventDefault()
+          setExitOpen(false)
+        }
+        return
+      }
       const state = useCafeStore.getState()
       if (state.changingCharacter || event.repeat) return
       // Esc: đang gõ thì thôi gõ → gập laptop → đứng dậy
@@ -233,7 +288,7 @@ export default function GameHud() {
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [])
+  }, [exitOpen])
 
   const modeName = t(`game.camera.${cameraMode}`)
   const toastText =
@@ -251,7 +306,20 @@ export default function GameHud() {
       {/* Trên trái: rời quán, bản đồ, tên phòng */}
       <div className="hud-corner hud-corner--left">
         <div className="hud-pill">
-          <button type="button" className="hud-button" onClick={() => window.location.reload()} aria-label={t('game.exit')} data-label={t('game.exit')}>
+          <button
+            type="button"
+            className={exitOpen ? 'hud-button hud-button--on' : 'hud-button'}
+            onClick={() => {
+              setMapOpen(false)
+              setRoomOpen(false)
+              setSettingsOpen(false)
+              setExitOpen(true)
+            }}
+            aria-haspopup="dialog"
+            aria-expanded={exitOpen}
+            aria-label={t('game.exit')}
+            data-label={exitOpen ? '' : t('game.exit')}
+          >
             <Icon name="exit" />
           </button>
           <div className="hud-popover-anchor">
@@ -302,7 +370,10 @@ export default function GameHud() {
             aria-label={t('game.changeCharacter')}
             data-label={t('game.changeCharacter')}
           >
-            <span className="hud-dot" style={{ background: CHARACTER_COLORS[characterId] }} />
+            <span
+              className="hud-dot"
+              style={{ background: store.appearance?.top ? `#${store.appearance.top}` : CHARACTER_COLORS[characterId] }}
+            />
           </button>
           {!laptopOpen && (
             <button
@@ -423,6 +494,7 @@ export default function GameHud() {
 
       {laptopOpen && <LaptopScreen />}
       <ChatPanel />
+      {exitOpen && <ExitConfirmDialog onCancel={() => setExitOpen(false)} onConfirm={() => window.location.reload()} />}
     </div>
   )
 }

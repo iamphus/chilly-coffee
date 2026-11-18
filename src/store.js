@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { decodeAppearance, encodeAppearance, normalizeAppearance, presetAppearance } from './characters/appearance.js'
 import { DEFAULT_CHARACTER, PLAYABLE_CHARACTERS } from './characters/playableCharacters.js'
 import { cleanMessage } from './net/chatFilter.js'
 import { randomNickname } from './player/nicknames.js'
@@ -8,12 +9,13 @@ export const CAMERA_MODES = ['locked', 'free']
 export const MAX_NICKNAME_LENGTH = 24
 const CAMERA_MODE_KEY = 'chilly.cameraMode'
 const CHARACTER_KEY = 'chilly.character'
+const APPEARANCE_KEY = 'chilly.appearance'
 const NICKNAME_KEY = 'chilly.nickname'
 const LITE_KEY = 'chilly.lite'
 const TIME_KEY = 'chilly.timeOfDay'
 const SOUND_KEY = 'chilly.sound'
 const RAIN_KEY = 'chilly.rain'
-export const TIME_OPTIONS = ['auto', 'day', 'night']
+export const TIME_OPTIONS = ['auto', 'day', 'sunset', 'night']
 
 // localStorage có thể bị chặn (chế độ ẩn danh…): đọc lỗi thì dùng mặc định, ghi lỗi thì bỏ qua
 function load(key, allowed, fallback) {
@@ -66,6 +68,18 @@ function saveSound(state) {
 
 const toast = (key, params = {}) => ({ toast: { key, params, id: Date.now() } })
 
+function loadAppearance(characterId) {
+  try {
+    const raw = localStorage.getItem(APPEARANCE_KEY)
+    if (raw) return decodeAppearance(raw, characterId)
+  } catch {
+    // dùng ngoại hình gốc của mẫu nhân vật
+  }
+  return presetAppearance(characterId)
+}
+
+const initialCharacterId = load(CHARACTER_KEY, PLAYABLE_CHARACTERS, DEFAULT_CHARACTER)
+
 /**
  * Trạng thái chung của quán, dùng chung giữa cảnh 3D, giao diện laptop và âm thanh.
  * Các tính năng sau (chọn bàn, tai nghe…) đọc và ghi qua đây thay vì truyền props qua nhiều tầng.
@@ -75,7 +89,8 @@ export const useCafeStore = create((set, get) => ({
   entered: false, // đã chọn xong nhân vật → bắt đầu dựng cảnh 3D
   loadProgress: 0, // % tải mô hình 3D (0–100)
   sceneReady: false, // cảnh 3D đã dựng xong, landing có thể ẩn đi
-  characterId: load(CHARACTER_KEY, PLAYABLE_CHARACTERS, DEFAULT_CHARACTER), // nhân vật người chơi
+  characterId: initialCharacterId, // mẫu nhân vật nền
+  appearance: loadAppearance(initialCharacterId), // ngoại hình chi tiết (tóc, đồ, màu, phụ kiện)
   cameraMode: load(CAMERA_MODE_KEY, CAMERA_MODES, 'free'),
   nickname: loadNickname(), // tên trên bảng tên
   toast: null, // { key, params, id }: thông báo nhỏ ở giữa phía trên, tự ẩn
@@ -95,9 +110,17 @@ export const useCafeStore = create((set, get) => ({
 
   openCharacterSelect: () => set({ choosing: true }),
   finishChoosing: () => set({ choosing: false }), // màn chọn nhân vật lúc vào quán đã mờ hẳn
-  enterCafe: (characterId) => {
-    save(CHARACTER_KEY, characterId)
-    set({ characterId, entered: true })
+  setAppearance: (rawAppearance) => {
+    const appearance = normalizeAppearance(rawAppearance, rawAppearance?.base ?? get().characterId)
+    save(CHARACTER_KEY, appearance.base)
+    save(APPEARANCE_KEY, encodeAppearance(appearance))
+    set({ characterId: appearance.base, appearance })
+  },
+  enterCafe: (characterId, rawAppearance) => {
+    const appearance = normalizeAppearance(rawAppearance ?? presetAppearance(characterId), characterId)
+    save(CHARACTER_KEY, appearance.base)
+    save(APPEARANCE_KEY, encodeAppearance(appearance))
+    set({ characterId: appearance.base, appearance, entered: true })
   },
   setNickname: (raw) => {
     const nickname = sanitizeNickname(raw) || randomNickname()
@@ -141,9 +164,11 @@ export const useCafeStore = create((set, get) => ({
   toggleAction: (action) => set((state) => ({ action: state.action === action ? null : action })),
   openCharacterChange: () => set({ changingCharacter: true, action: null }),
   closeCharacterChange: () => set({ changingCharacter: false }),
-  changeCharacter: (characterId) => {
-    save(CHARACTER_KEY, characterId)
-    set({ characterId, changingCharacter: false })
+  changeCharacter: (characterId, rawAppearance) => {
+    const appearance = normalizeAppearance(rawAppearance ?? presetAppearance(characterId), characterId)
+    save(CHARACTER_KEY, appearance.base)
+    save(APPEARANCE_KEY, encodeAppearance(appearance))
+    set({ characterId: appearance.base, appearance, changingCharacter: false })
   },
   setLite: (lite) => {
     save(LITE_KEY, lite ? '1' : '0')

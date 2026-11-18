@@ -29,7 +29,7 @@ export default function Garden() {
       <Instances items={canopies} material={{ roughness: 1, flatShading: true }} castShadow>
         <icosahedronGeometry args={[1, 1]} />
       </Instances>
-      <Instances items={pineItems} material={{ roughness: 1, flatShading: true }}>
+      <Instances items={pineItems} material={{ roughness: 1, flatShading: true }} castShadow>
         <coneGeometry args={[1, 1, 7]} />
       </Instances>
 

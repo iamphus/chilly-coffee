@@ -132,13 +132,13 @@ Dự án chia thành 4 giai đoạn. Mỗi giai đoạn phải đạt điều ki
 
 - [x] Tạo khung dự án Vite + React + React Three Fiber, đưa lên Cloudflare Pages
 - [x] Dựng cảnh quán: ánh sáng ấm, mưa bật/tắt, bàn ghế, TV; thêm công viên, vườn và bầu trời xung quanh
-- [ ] Nhân vật chibi: 5 kiểu tóc, 5 bộ đồ, chọn màu; gộp thành 1–2 khối mỗi nhân vật (đã có màn chọn 1 trong 12 nhân vật dựng sẵn; chưa tách tóc, đồ, màu)
+- [x] Nhân vật chibi: 8 kiểu tóc, 7 bộ đồ, quần dài/đùi, 6 phụ kiện và bảng màu (gộp thành 6 khối màu đỉnh / nhân vật trong `customCharacter.js`)
 - [x] Click chọn bàn, camera zoom vào laptop
 - [x] Giao diện laptop: Pomodoro, to-do, ghi chú
 - [x] Pomodoro gửi thông báo trình duyệt khi hết giờ
 - [x] Trình phát YouTube cho playlist riêng (app "Nhạc riêng" trên laptop; dán link playlist / video, lưu trên máy)
 - [x] TV quán phát nhạc tự host, đồng bộ theo đồng hồ; âm thanh khác nhau khi đứng trong hay ngoài quán
-- [x] Nhạc quán lấy giờ chuẩn từ header `Date` của server (`radio.js`) để máy sai giờ vẫn nghe đúng đoạn; hiện bài đang phát ở thanh điều khiển và trong app Nhạc trên laptop (còn màn hình TV 3D trong quán nếu muốn vẽ chữ trực tiếp)
+- [x] Nhạc quán lấy giờ chuẩn từ header `Date` của server (`radio.js`) để máy sai giờ vẫn nghe đúng đoạn; hiện bài đang phát ở thanh điều khiển, trong app Nhạc trên laptop và trên 2 màn hình TV 3D trong quán (`NowPlayingSign.jsx`)
 - [x] Nút tai nghe + crossfade + hiệu ứng lọc tiếng (phím H; nhạc quán tắt dần nhưng vẫn chạy ngầm để giữ đồng bộ)
 - [x] Chế độ nhẹ; giảm fps khi ngồi bàn hoặc ẩn tab
 - [x] Trang chính sách riêng tư (YouTube yêu cầu với trang nhúng): `/privacy`, tiếng Việt và tiếng Anh
@@ -160,11 +160,11 @@ Dự án chia thành 4 giai đoạn. Mỗi giai đoạn phải đạt điều ki
 
 ### Giai đoạn 3 – Mở rộng (làm dần)
 
-- [ ] Chọn và tùy chỉnh nhân vật
+- [x] Chọn và tùy chỉnh nhân vật (`WardrobePanel.jsx`, xoay thử 360°, đồng bộ ngoại hình qua Supabase Presence)
 - [ ] Thêm phòng: thư viện, ban công mưa
 - [x] Phòng riêng cho nhóm bạn (vào bằng link mời `?room=…` hoặc tạo mã phòng ở góc trên trái `RoomPopover.jsx`)
 - [ ] Vote bài cho TV quán
-- [ ] Thống kê Pomodoro cá nhân theo tuần
+- [x] Thống kê Pomodoro cá nhân theo tuần (`PomodoroApp.jsx` + lịch sử 7 ngày & chuỗi ngày liên tiếp trong `focusStore.js`)
 - [ ] Bản cho điện thoại (giao diện laptop thu gọn, cảnh 3D nhẹ hơn)
 
 ## Lưu ý chính sách YouTube và giấy phép nhạc

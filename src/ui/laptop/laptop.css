@@ -255,18 +255,130 @@
 }
 
 .pomodoro__count {
-  margin: 16px 0 0;
+  margin: 14px 0 0;
   color: #7a685a;
   font-size: var(--text-sm);
 }
 
-.pomodoro__settings {
+.pomodoro__footer {
   display: flex;
-  gap: 16px;
-  margin: 20px 0 0;
-  padding: 12px 16px;
+  flex-wrap: wrap;
+  align-items: stretch;
+  justify-content: center;
+  gap: 14px;
+  width: 100%;
+  max-width: 38rem;
+  margin-top: 16px;
+}
+
+.pomodoro__weekly {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+  flex: 1 1 18rem;
+  padding: 12px 14px;
   border: 1px solid rgba(43, 34, 28, 0.1);
   border-radius: 12px;
+  background: rgba(255, 255, 255, 0.55);
+  text-align: left;
+}
+
+.pomodoro__weekly-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px;
+  font-size: var(--text-xs);
+}
+
+.pomodoro__weekly-head strong {
+  color: #2b221c;
+}
+
+.pomodoro__weekly-head span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #7a685a;
+}
+
+.pomodoro__streak {
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: rgba(201, 119, 58, 0.16);
+  color: #8c4f22;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.pomodoro__bars {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  align-items: end;
+}
+
+.pomodoro__col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.pomodoro__col-count {
+  min-height: 14px;
+  color: #7a685a;
+  font-size: 11px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.pomodoro__col-track {
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+  max-width: 24px;
+  height: 46px;
+  border-radius: 6px;
+  background: rgba(43, 34, 28, 0.07);
+  overflow: hidden;
+}
+
+.pomodoro__col-fill {
+  display: block;
+  width: 100%;
+  border-radius: 6px;
+  background: #cfa178;
+  transition: height 0.25s ease;
+}
+
+.pomodoro__col--today .pomodoro__col-fill {
+  background: var(--accent);
+}
+
+.pomodoro__col--today .pomodoro__col-day,
+.pomodoro__col--today .pomodoro__col-count {
+  color: #2b221c;
+  font-weight: 800;
+}
+
+.pomodoro__col-day {
+  color: #7a685a;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.pomodoro__settings {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 0;
+  padding: 10px 14px;
+  border: 1px solid rgba(43, 34, 28, 0.1);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.4);
 }
 
 .pomodoro__settings legend {
@@ -410,6 +522,10 @@
   color: rgba(255, 255, 255, 0.85);
   font-size: var(--text-sm);
   text-align: center;
+}
+
+.youtube-player__status--loading {
+  pointer-events: none;
 }
 
 .youtube-player__status--error {

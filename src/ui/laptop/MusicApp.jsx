@@ -11,6 +11,7 @@ export default function MusicApp() {
   const setSource = useYoutubeStore((state) => state.setSource)
   const clearSource = useYoutubeStore((state) => state.clearSource)
   const headphones = useCafeStore((state) => state.headphones)
+  const setHeadphones = useCafeStore((state) => state.setHeadphones)
   const toggleHeadphones = useCafeStore((state) => state.toggleHeadphones)
   const musicOn = useCafeStore((state) => state.musicOn)
   const nowPlaying = useCafeStore((state) => state.nowPlaying)
@@ -28,8 +29,14 @@ export default function MusicApp() {
       return
     }
     setSource(parsed)
+    setHeadphones(true)
     setDraft('')
     setInvalid(false)
+  }
+
+  const removeSource = () => {
+    clearSource()
+    if (headphones) setHeadphones(false)
   }
 
   const radioTitle = nowPlaying
@@ -109,7 +116,7 @@ export default function MusicApp() {
               {headphones ? t('laptop.music.takeOff') : t('laptop.music.putOn')}
               <kbd>H</kbd>
             </button>
-            <button type="button" className="laptop-button" onClick={clearSource}>
+            <button type="button" className="laptop-button" onClick={removeSource}>
               {t('laptop.music.remove')}
             </button>
           </div>
