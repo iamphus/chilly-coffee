@@ -132,7 +132,7 @@ Dự án chia thành 4 giai đoạn. Mỗi giai đoạn phải đạt điều ki
 
 - [x] Tạo khung dự án Vite + React + React Three Fiber, đưa lên Cloudflare Pages
 - [x] Dựng cảnh quán: ánh sáng ấm, mưa bật/tắt, bàn ghế, TV; thêm công viên, vườn và bầu trời xung quanh
-- [ ] Nhân vật chibi: 5 kiểu tóc, 5 bộ đồ, chọn màu; gộp thành 1–2 khối mỗi nhân vật (đã có màn chọn 1 trong 12 nhân vật dựng sẵn; chưa tách tóc, đồ, màu)
+- [x] Nhân vật chibi: 8 kiểu tóc, 7 bộ đồ, quần dài/đùi, 6 phụ kiện và bảng màu (gộp thành 6 khối màu đỉnh / nhân vật trong `customCharacter.js`)
 - [x] Click chọn bàn, camera zoom vào laptop
 - [x] Giao diện laptop: Pomodoro, to-do, ghi chú
 - [x] Pomodoro gửi thông báo trình duyệt khi hết giờ
@@ -160,7 +160,7 @@ Dự án chia thành 4 giai đoạn. Mỗi giai đoạn phải đạt điều ki
 
 ### Giai đoạn 3 – Mở rộng (làm dần)
 
-- [ ] Chọn và tùy chỉnh nhân vật
+- [x] Chọn và tùy chỉnh nhân vật (`WardrobePanel.jsx`, xoay thử 360°, đồng bộ ngoại hình qua Supabase Presence)
 - [ ] Thêm phòng: thư viện, ban công mưa
 - [x] Phòng riêng cho nhóm bạn (vào bằng link mời `?room=…` hoặc tạo mã phòng ở góc trên trái `RoomPopover.jsx`)
 - [ ] Vote bài cho TV quán
