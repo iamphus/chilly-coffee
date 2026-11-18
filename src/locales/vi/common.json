@@ -41,7 +41,57 @@
     "hint": "← → để đổi · Enter để vào quán · Bấm vào nhân vật để chọn",
     "change": "Đổi sang nhân vật này",
     "cancel": "Huỷ",
-    "hintChange": "← → để đổi · Enter để chọn · Esc để huỷ"
+    "hintChange": "← → để đổi · Enter để chọn · Esc để huỷ",
+    "wardrobe": {
+      "toggle": "Phối đồ",
+      "title": "Tủ đồ nhân vật",
+      "customBadge": "Đã phối",
+      "shuffle": "Ngẫu nhiên",
+      "reset": "Mặc định",
+      "spinHint": "Kéo ngang trên nhân vật để xoay 360°",
+      "tabs": {
+        "hair": "Tóc",
+        "outfit": "Áo",
+        "bottom": "Quần",
+        "acc": "Phụ kiện"
+      },
+      "hairColor": "Màu tóc",
+      "topColor": "Màu áo",
+      "pantsColor": "Màu quần",
+      "shoeColor": "Màu giày",
+      "skinTone": "Màu da",
+      "hairs": {
+        "short": "Tóc ngắn",
+        "bob": "Đầu nấm",
+        "long": "Tóc dài",
+        "bun": "Búi cao",
+        "pony": "Đuôi ngựa",
+        "twin": "Buộc hai bên",
+        "curly": "Tóc xoăn",
+        "buzz": "Cắt sát"
+      },
+      "outfits": {
+        "hoodie": "Áo hoodie",
+        "cardigan": "Áo cardigan",
+        "overalls": "Quần yếm",
+        "sweater": "Áo len khăn",
+        "shirt": "Áo sơ mi",
+        "tee": "Áo thun",
+        "coat": "Áo khoác dài"
+      },
+      "pantsKinds": {
+        "long": "Quần dài",
+        "shorts": "Quần đùi"
+      },
+      "accessories": {
+        "glasses": "Kính tròn",
+        "headphones": "Tai nghe chụp",
+        "cap": "Mũ lưỡi trai",
+        "beret": "Mũ nồi",
+        "backpack": "Ba lô",
+        "tie": "Cà vạt"
+      }
+    }
   },
   "characters": {
     "guest_headphones": "Đeo tai nghe",

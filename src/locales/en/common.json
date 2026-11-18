@@ -41,7 +41,57 @@
     "hint": "← → to switch · Enter to go in · Click a character to pick",
     "change": "Switch to this character",
     "cancel": "Cancel",
-    "hintChange": "← → to switch · Enter to pick · Esc to cancel"
+    "hintChange": "← → to switch · Enter to pick · Esc to cancel",
+    "wardrobe": {
+      "toggle": "Customize",
+      "title": "Wardrobe",
+      "customBadge": "Custom",
+      "shuffle": "Random",
+      "reset": "Reset",
+      "spinHint": "Drag across the character to spin 360°",
+      "tabs": {
+        "hair": "Hair",
+        "outfit": "Top",
+        "bottom": "Bottom",
+        "acc": "Extras"
+      },
+      "hairColor": "Hair color",
+      "topColor": "Top color",
+      "pantsColor": "Pants color",
+      "shoeColor": "Shoe color",
+      "skinTone": "Skin tone",
+      "hairs": {
+        "short": "Short",
+        "bob": "Bob",
+        "long": "Long",
+        "bun": "High bun",
+        "pony": "Ponytail",
+        "twin": "Twin tails",
+        "curly": "Curly",
+        "buzz": "Buzz cut"
+      },
+      "outfits": {
+        "hoodie": "Hoodie",
+        "cardigan": "Cardigan",
+        "overalls": "Overalls",
+        "sweater": "Scarf sweater",
+        "shirt": "Button shirt",
+        "tee": "T-shirt",
+        "coat": "Long coat"
+      },
+      "pantsKinds": {
+        "long": "Trousers",
+        "shorts": "Shorts"
+      },
+      "accessories": {
+        "glasses": "Round glasses",
+        "headphones": "Headphones",
+        "cap": "Baseball cap",
+        "beret": "Beret",
+        "backpack": "Backpack",
+        "tie": "Necktie"
+      }
+    }
   },
   "characters": {
     "guest_headphones": "Headphones",
