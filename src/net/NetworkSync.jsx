@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { useFocusStore } from '../focus/focusStore.js'
 import { useCafeStore } from '../store.js'
+import { useNetStore } from './netStore.js'
 import { publishState, sendMove, startSession, stopSession } from './session.js'
 
 const MOVE_INTERVAL = 1 / 8 // giây: gửi vị trí tối đa 8 lần/giây khi đang đi
@@ -10,9 +11,10 @@ const MIN_STEP = 0.03 // m
 
 /**
  * Nằm trong cảnh 3D (cần vị trí nhân vật): mở phiên nhiều người, gửi vị trí khi di chuyển,
- * gửi trạng thái (ngồi, laptop, Pomodoro, hành động…) khi thay đổi.
+ * gửi trạng thái (ngồi, laptop, Pomodoro, hành động…) khi thay đổi, tự nối lại khi đổi mã phòng.
  */
 export default function NetworkSync({ gameRef }) {
+  const requestedRoom = useNetStore((state) => state.requestedRoom)
   const last = useRef({ x: 0, z: 0, yaw: 0, moving: false, sentAt: 0, stateAt: 0 })
 
   useEffect(() => {
@@ -20,7 +22,7 @@ export default function NetworkSync({ gameRef }) {
       const { position: p, yaw } = gameRef.current
       return { x: p.x, z: p.z, yaw }
     }
-    startSession(position())
+    startSession(position(), requestedRoom)
     const unsubscribeCafe = useCafeStore.subscribe(() => publishState(position()))
     const unsubscribeFocus = useFocusStore.subscribe(() => publishState(position()))
     return () => {
@@ -28,7 +30,7 @@ export default function NetworkSync({ gameRef }) {
       unsubscribeFocus()
       stopSession()
     }
-  }, [gameRef])
+  }, [gameRef, requestedRoom])
 
   useFrame(({ clock }) => {
     const state = gameRef.current

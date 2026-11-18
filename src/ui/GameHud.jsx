@@ -4,13 +4,17 @@ import { CHARACTER_COLORS } from '../characters/playableCharacters.js'
 import { remainingMs, useFocusStore } from '../focus/focusStore.js'
 import { formatTime } from '../focus/format.js'
 import { useNow } from '../focus/useNow.js'
-import { ACTIONS } from '../player/actionClips.js'
-import { TIME_OPTIONS, useCafeStore } from '../store.js'
-import LaptopScreen from './laptop/LaptopScreen.jsx'
 import { useNetStore } from '../net/netStore.js'
+import { isPrivateRoom } from '../net/roomCode.js'
+import { ACTIONS } from '../player/actionClips.js'
+import { MAX_NICKNAME_LENGTH, TIME_OPTIONS, useCafeStore } from '../store.js'
+import CafeMap from './CafeMap.jsx'
 import ChatPanel from './ChatPanel.jsx'
+import { HEADPHONES_ICON } from './headphonesIcon.jsx'
+import LaptopScreen from './laptop/LaptopScreen.jsx'
 import NameTag from './NameTag.jsx'
 import PeerTags from './PeerTags.jsx'
+import RoomPopover from './RoomPopover.jsx'
 import './gameHud.css'
 
 const isTyping = (target) => target instanceof HTMLElement && (target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName))
@@ -38,6 +42,17 @@ const ICONS = {
   settings: <path d="M4 7h10M18 7h2M4 17h2M10 17h10M14 4v6M6 14v6" />,
   rain: <path d="M7 15a4.5 4.5 0 1 1 1.2-8.85A6 6 0 0 1 19.5 9a3.5 3.5 0 0 1-.5 6.97M8 18l-1 2.5M12 18l-1 2.5M16 18l-1 2.5" />,
   music: <path d="M9 18V6l11-2v12M9 18a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM20 16a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />,
+  headphones: HEADPHONES_ICON,
+  dice: (
+    <>
+      <rect x="4" y="4" width="16" height="16" rx="3" />
+      <circle cx="9" cy="9" r="1" fill="currentColor" />
+      <circle cx="15" cy="9" r="1" fill="currentColor" />
+      <circle cx="12" cy="12" r="1" fill="currentColor" />
+      <circle cx="9" cy="15" r="1" fill="currentColor" />
+      <circle cx="15" cy="15" r="1" fill="currentColor" />
+    </>
+  ),
   seat: <path d="M6 4v9h12V4M5 13h14v3H5zM7 16v4M17 16v4" />,
   laptop: <path d="M5 6h14v9H5zM3 18h18M10 15.5h4" />,
   standUp: <path d="M12 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM9 22l1.5-7.5L8 12V9l4-1 4 1v3l-2.5 2.5L15 22" />,
@@ -86,14 +101,18 @@ function VolumeSlider({ label, value, onChange }) {
   )
 }
 
-/** Cài đặt: chế độ nhẹ, âm lượng, ngày / đêm */
+/** Cài đặt: tên hiển thị, chế độ nhẹ, âm lượng, ngày / đêm */
 function SettingsPopover({ onClose }) {
   const { t } = useTranslation()
   const store = useCafeStore()
+  const nickname = useCafeStore((state) => state.nickname)
+  const setNickname = useCafeStore((state) => state.setNickname)
+  const randomizeNickname = useCafeStore((state) => state.randomizeNickname)
   const lite = useCafeStore((state) => state.lite)
   const setLite = useCafeStore((state) => state.setLite)
   const timeOfDay = useCafeStore((state) => state.timeOfDay)
   const setTimeOfDay = useCafeStore((state) => state.setTimeOfDay)
+  const [nameDraft, setNameDraft] = useState(nickname)
   const panel = useRef(null)
 
   useEffect(() => {
@@ -107,8 +126,43 @@ function SettingsPopover({ onClose }) {
     }
   }, [onClose])
 
+  const commitName = () => {
+    setNameDraft(setNickname(nameDraft))
+  }
+
   return (
     <div ref={panel} className="hud-popover" role="dialog" aria-label={t('game.settings.title')}>
+      <div className="hud-name-field">
+        <label htmlFor="hud-nickname-input">{t('game.settings.nickname')}</label>
+        <div className="hud-name-field__row">
+          <input
+            id="hud-nickname-input"
+            type="text"
+            value={nameDraft}
+            maxLength={MAX_NICKNAME_LENGTH}
+            autoComplete="off"
+            spellCheck={false}
+            onChange={(event) => setNameDraft(event.target.value)}
+            onBlur={commitName}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter') {
+                event.preventDefault()
+                event.currentTarget.blur()
+              }
+            }}
+          />
+          <button
+            type="button"
+            className="hud-name-field__dice"
+            onClick={() => setNameDraft(randomizeNickname())}
+            aria-label={t('select.randomName')}
+            title={t('select.randomName')}
+          >
+            <Icon name="dice" />
+          </button>
+        </div>
+      </div>
+
       <label className="hud-switch">
         <input type="checkbox" checked={lite} onChange={(event) => setLite(event.target.checked)} />
         <span>
@@ -140,7 +194,10 @@ export default function GameHud() {
   const store = useCafeStore()
   const { cameraMode, toast, seat, laptopOpen, nearbySeat, action, characterId } = store
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const [mapOpen, setMapOpen] = useState(false)
+  const [roomOpen, setRoomOpen] = useState(false)
   const room = useNetStore((state) => state.room)
+  const requestedRoom = useNetStore((state) => state.requestedRoom)
   const connected = useNetStore((state) => state.connected)
   const peerCount = useNetStore((state) => Object.keys(state.peers).length)
 
@@ -161,8 +218,13 @@ export default function GameHud() {
           if (state.laptopOpen) state.closeLaptop()
           else state.openLaptop()
         } else if (state.nearbySeat) state.sitDown(state.nearbySeat)
+      } else if (event.code === 'KeyM' && !state.laptopOpen) {
+        setRoomOpen(false)
+        setMapOpen((open) => !open)
       } else if (event.code === 'KeyR') {
         state.toggleRain()
+      } else if (event.code === 'KeyH') {
+        state.toggleHeadphones()
       } else if (event.code === 'KeyV' && !state.laptopOpen) {
         state.toggleCameraMode()
       } else if (/^Digit[1-4]$/.test(event.code) && !state.seat) {
@@ -176,6 +238,8 @@ export default function GameHud() {
   const modeName = t(`game.camera.${cameraMode}`)
   const toastText =
     toast && t(toast.key, toast.params?.mode ? { mode: t(`game.camera.${toast.params.mode}`) } : toast.params)
+  const activeRoom = room ?? requestedRoom ?? '02'
+  const privateRoom = isPrivateRoom(activeRoom)
 
   return (
     <div className="hud">
@@ -190,15 +254,39 @@ export default function GameHud() {
           <button type="button" className="hud-button" onClick={() => window.location.reload()} aria-label={t('game.exit')} data-label={t('game.exit')}>
             <Icon name="exit" />
           </button>
-          <button type="button" className="hud-button" disabled aria-label={t('game.map')} data-label={t('game.map')}>
-            <Icon name="map" />
-          </button>
-          <span className="hud-room">
-            {t('net.room', { room: room ?? '02' })}
-            <small className={connected ? 'hud-online' : 'hud-online hud-online--off'}>
-              {connected ? t('net.online', { count: peerCount + 1 }) : t('net.connecting')}
-            </small>
-          </span>
+          <div className="hud-popover-anchor">
+            <button
+              type="button"
+              className={mapOpen ? 'hud-button hud-button--on' : 'hud-button'}
+              onClick={() => {
+                setRoomOpen(false)
+                setMapOpen((open) => !open)
+              }}
+              aria-expanded={mapOpen}
+              aria-label={t('game.map')}
+              data-label={mapOpen ? '' : `${t('game.map')} (M)`}
+            >
+              <Icon name="map" />
+            </button>
+            {mapOpen && <CafeMap onClose={() => setMapOpen(false)} />}
+          </div>
+          <div className="hud-popover-anchor">
+            <button
+              type="button"
+              className={roomOpen ? 'hud-room hud-room--btn hud-room--open' : 'hud-room hud-room--btn'}
+              onClick={() => {
+                setMapOpen(false)
+                setRoomOpen((open) => !open)
+              }}
+              aria-expanded={roomOpen}
+            >
+              <span>{privateRoom ? t('net.privateRoom', { room: activeRoom }) : t('net.room', { room: activeRoom })}</span>
+              <small className={connected ? 'hud-online' : 'hud-online hud-online--off'}>
+                {connected ? t('net.online', { count: peerCount + 1 }) : t('net.connecting')}
+              </small>
+            </button>
+            {roomOpen && <RoomPopover onClose={() => setRoomOpen(false)} />}
+          </div>
         </div>
         {!laptopOpen && <TimerChip />}
       </div>
@@ -239,6 +327,16 @@ export default function GameHud() {
           </button>
           <button
             type="button"
+            className={store.headphones ? 'hud-button hud-button--on' : 'hud-button'}
+            onClick={store.toggleHeadphones}
+            aria-pressed={store.headphones}
+            aria-label={t('game.headphones.button')}
+            data-label={`${t(store.headphones ? 'game.headphones.on' : 'game.headphones.off')} (H)`}
+          >
+            <Icon name="headphones" />
+          </button>
+          <button
+            type="button"
             className="hud-button"
             onClick={() => store.setSound({ muted: !store.muted })}
             aria-pressed={store.muted}
@@ -269,9 +367,11 @@ export default function GameHud() {
           aria-label={store.musicOn ? t('game.musicOff') : t('game.musicOn')}
         >
           <Icon name="music" />
-          {store.musicOn && store.nowPlaying
-            ? t('game.nowPlaying', { title: store.nowPlaying.title ?? t('game.trackNumber', { number: store.nowPlaying.index + 1 }) })
-            : t('game.musicShort')}
+          {store.headphones
+            ? t('game.headphones.musicMuted')
+            : store.musicOn && store.nowPlaying
+              ? t('game.nowPlaying', { title: store.nowPlaying.title ?? t('game.trackNumber', { number: store.nowPlaying.index + 1 }) })
+              : t('game.musicShort')}
         </button>
       </div>
 

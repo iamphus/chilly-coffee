@@ -1,9 +1,9 @@
 import { Suspense, useEffect, useState } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { useTranslation } from 'react-i18next'
-import { PLAYABLE_CHARACTERS } from '../../characters/playableCharacters.js'
 import { audioEngine } from '../../audio/audioEngine.js'
-import { useCafeStore } from '../../store.js'
+import { PLAYABLE_CHARACTERS } from '../../characters/playableCharacters.js'
+import { MAX_NICKNAME_LENGTH, useCafeStore } from '../../store.js'
 import CharacterLineup from './CharacterLineup.jsx'
 import './characterSelect.css'
 
@@ -14,7 +14,7 @@ const wrap = (index) => (index + COUNT) % COUNT
 const isTyping = (target) => target instanceof HTMLElement && /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName)
 
 /**
- * Màn chọn nhân vật.
+ * Màn chọn nhân vật (và đặt tên hiển thị).
  * - mode 'enter': sau khi bấm "Vào quán" ở landing. Chọn xong thì dựng cảnh quán phía sau (nút hiện
  *   tiến độ); cảnh sẵn sàng thì màn này mờ dần rồi gỡ hẳn.
  * - mode 'change': đổi nhân vật khi đang ở trong quán (bấm chấm màu ở góc phải); có nút Huỷ / Esc.
@@ -23,6 +23,9 @@ export default function CharacterSelect({ mode = 'enter' }) {
   const changing = mode === 'change'
   const { t } = useTranslation()
   const savedCharacter = useCafeStore((state) => state.characterId)
+  const nickname = useCafeStore((state) => state.nickname)
+  const setNickname = useCafeStore((state) => state.setNickname)
+  const randomizeNickname = useCafeStore((state) => state.randomizeNickname)
   const entered = useCafeStore((state) => state.entered)
   const sceneReady = useCafeStore((state) => state.sceneReady)
   const loadProgress = useCafeStore((state) => state.loadProgress)
@@ -31,12 +34,14 @@ export default function CharacterSelect({ mode = 'enter' }) {
   const closeCharacterChange = useCafeStore((state) => state.closeCharacterChange)
   const finishChoosing = useCafeStore((state) => state.finishChoosing)
   const [selected, setSelected] = useState(() => Math.max(0, PLAYABLE_CHARACTERS.indexOf(savedCharacter)))
+  const [nameDraft, setNameDraft] = useState(nickname)
   const [gone, setGone] = useState(false)
 
   const characterId = PLAYABLE_CHARACTERS[selected]
   const leaving = !changing && entered && sceneReady
   const locked = !changing && entered // đã bấm vào quán, đang chờ dựng cảnh
   const confirm = (id) => {
+    setNickname(nameDraft)
     audioEngine.unlock()
     if (changing) changeCharacter(id)
     else enterCafe(id)
@@ -75,9 +80,9 @@ export default function CharacterSelect({ mode = 'enter' }) {
     ? t('select.change')
     : !entered
       ? t('select.enter')
-    : percent > 0 && percent < 100
-      ? t('landing.loading', { percent })
-      : t('landing.preparing')
+      : percent > 0 && percent < 100
+        ? t('landing.loading', { percent })
+        : t('landing.preparing')
   const name = t(`characters.${characterId}`)
 
   return (
@@ -102,6 +107,45 @@ export default function CharacterSelect({ mode = 'enter' }) {
       </header>
 
       <div className="char-select__panel">
+        <div className="char-select__nickname">
+          <label htmlFor="char-select-nickname">{t('select.nicknameLabel')}</label>
+          <input
+            id="char-select-nickname"
+            type="text"
+            value={nameDraft}
+            maxLength={MAX_NICKNAME_LENGTH}
+            disabled={locked}
+            autoComplete="off"
+            spellCheck={false}
+            placeholder={t('select.nicknamePlaceholder')}
+            onChange={(event) => setNameDraft(event.target.value)}
+            onBlur={() => setNameDraft(setNickname(nameDraft))}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter') {
+                event.preventDefault()
+                event.currentTarget.blur()
+              }
+            }}
+          />
+          <button
+            type="button"
+            className="char-select__dice"
+            onClick={() => setNameDraft(randomizeNickname())}
+            disabled={locked}
+            aria-label={t('select.randomName')}
+            title={t('select.randomName')}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="4" y="4" width="16" height="16" rx="3" />
+              <circle cx="9" cy="9" r="1.2" fill="currentColor" stroke="none" />
+              <circle cx="15" cy="9" r="1.2" fill="currentColor" stroke="none" />
+              <circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none" />
+              <circle cx="9" cy="15" r="1.2" fill="currentColor" stroke="none" />
+              <circle cx="15" cy="15" r="1.2" fill="currentColor" stroke="none" />
+            </svg>
+          </button>
+        </div>
+
         <div className="char-select__picker">
           <button
             type="button"

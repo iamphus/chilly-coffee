@@ -2,7 +2,7 @@
 
 Nov 11, 2026 · @NgTiens · cập nhật tiến độ 16/11/2026
 
-> **Tình trạng (16/11/2026):** web đang chạy công khai tại https://chilly-coffee.pages.dev, tự deploy mỗi khi merge vào `main`. Phần nhiều người của giai đoạn 2 (Supabase Realtime, chat) đã làm trước và đang chạy thật. Giai đoạn 1 còn thiếu cụm YouTube + nút tai nghe + trang chính sách riêng tư, và chưa có người dùng thử.
+> **Tình trạng (16/11/2026):** web đang chạy công khai tại https://chilly-coffee.pages.dev, tự deploy mỗi khi merge vào `main`. Phần nhiều người của giai đoạn 2 (Supabase Realtime, chat) đã làm trước và đang chạy thật. Giai đoạn 1 đã có YouTube, nút tai nghe và trang chính sách riêng tư (18/11/2026); còn thiếu người dùng thử.
 
 ## Tổng quan và mục tiêu
 
@@ -123,7 +123,7 @@ Dự án chia thành 4 giai đoạn. Mỗi giai đoạn phải đạt điều ki
 - [x] Cài Node.js (bản LTS), VS Code, Git
 - [x] Tạo tài khoản GitHub và Cloudflare; tạo repo chilly-coffee
 - [ ] Chọn 10–20 bài lofi CC0 hoặc CC BY, ghi link và giấy phép từng bài vào một bảng (tạm có 4 bài tự tạo bằng AI, ghi nguồn trong `assets/music/README.md`; kiểm tra điều khoản công cụ AI trước khi kiếm tiền)
-- [ ] Tìm âm thanh nền CC0: mưa, máy pha cà phê, cốc chén, tiếng mèo (đã có tiếng đường phố và mưa tự tạo bằng Web Audio, không cần giấy phép; còn máy pha cà phê, cốc chén, mèo)
+- [x] Tìm âm thanh nền: đường phố, mưa, máy pha cà phê và cốc chén đều tự sinh bằng Web Audio (`street.js`, `cafeInside.js`), không cần giấy phép (còn tiếng mèo nếu muốn thêm)
 - [ ] Nhắn xin phép chủ quán gốc vì bố cục quán dựa trên một quán thật
 - [ ] Kiểm tra tên miền Chilly Coffee còn trống không (chưa cần mua)
 - [ ] Lập danh sách 3–5 bạn sẽ dùng thử
@@ -136,12 +136,12 @@ Dự án chia thành 4 giai đoạn. Mỗi giai đoạn phải đạt điều ki
 - [x] Click chọn bàn, camera zoom vào laptop
 - [x] Giao diện laptop: Pomodoro, to-do, ghi chú
 - [x] Pomodoro gửi thông báo trình duyệt khi hết giờ
-- [ ] Trình phát YouTube cho playlist riêng
+- [x] Trình phát YouTube cho playlist riêng (app "Nhạc riêng" trên laptop; dán link playlist / video, lưu trên máy)
 - [x] TV quán phát nhạc tự host, đồng bộ theo đồng hồ; âm thanh khác nhau khi đứng trong hay ngoài quán
-- [ ] Nhạc quán lấy giờ chuẩn từ header `Date` của server (hiện dùng đồng hồ máy người dùng, máy sai giờ sẽ nghe lệch bài); hiện "Đang phát" trên màn hình TV (hiện mới ở thanh điều khiển)
-- [ ] Nút tai nghe + crossfade + hiệu ứng lọc tiếng (cần làm cùng trình phát YouTube)
+- [x] Nhạc quán lấy giờ chuẩn từ header `Date` của server (`radio.js`) để máy sai giờ vẫn nghe đúng đoạn; hiện bài đang phát ở thanh điều khiển và trong app Nhạc trên laptop (còn màn hình TV 3D trong quán nếu muốn vẽ chữ trực tiếp)
+- [x] Nút tai nghe + crossfade + hiệu ứng lọc tiếng (phím H; nhạc quán tắt dần nhưng vẫn chạy ngầm để giữ đồng bộ)
 - [x] Chế độ nhẹ; giảm fps khi ngồi bàn hoặc ẩn tab
-- [ ] Trang chính sách riêng tư (YouTube yêu cầu với trang nhúng)
+- [x] Trang chính sách riêng tư (YouTube yêu cầu với trang nhúng): `/privacy`, tiếng Việt và tiếng Anh
 - [x] Đưa lên mạng
 - [ ] Nhờ 3–5 bạn dùng thử và góp ý
 
@@ -151,7 +151,7 @@ Dự án chia thành 4 giai đoạn. Mỗi giai đoạn phải đạt điều ki
 
 - [ ] Đăng nhập bằng Supabase, lưu to-do và playlist theo tài khoản
 - [x] Server realtime: đồng bộ vị trí, chỗ ngồi, trạng thái (Supabase Realtime; khoá đặt trong `.env.local` khi chạy trên máy và trong biến môi trường của Cloudflare Pages khi chạy thật)
-- [x] Hiện nhân vật người khác, trạng thái trên đầu (còn: tai nghe khi đang đeo)
+- [x] Hiện nhân vật người khác, trạng thái trên đầu, biểu tượng tai nghe khi đang đeo
 - [x] Giới hạn số người mỗi phòng, tự mở phòng mới khi đầy
 - [x] Chat tự do (đổi so với kế hoạch gốc): lọc từ tục, giới hạn tốc độ, nút chặn
 - [ ] Báo cáo hoặc tạm khoá người quấy rối (nút chặn hiện chỉ có tác dụng trên máy người bấm; cần có trước khi chia sẻ link rộng)
@@ -162,7 +162,7 @@ Dự án chia thành 4 giai đoạn. Mỗi giai đoạn phải đạt điều ki
 
 - [ ] Chọn và tùy chỉnh nhân vật
 - [ ] Thêm phòng: thư viện, ban công mưa
-- [ ] Phòng riêng cho nhóm bạn (vào bằng link mời)
+- [x] Phòng riêng cho nhóm bạn (vào bằng link mời `?room=…` hoặc tạo mã phòng ở góc trên trái `RoomPopover.jsx`)
 - [ ] Vote bài cho TV quán
 - [ ] Thống kê Pomodoro cá nhân theo tuần
 - [ ] Bản cho điện thoại (giao diện laptop thu gọn, cảnh 3D nhẹ hơn)

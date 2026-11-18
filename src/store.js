@@ -1,9 +1,11 @@
 import { create } from 'zustand'
 import { DEFAULT_CHARACTER, PLAYABLE_CHARACTERS } from './characters/playableCharacters.js'
+import { cleanMessage } from './net/chatFilter.js'
 import { randomNickname } from './player/nicknames.js'
 
 /** Chế độ camera: 'free' = xoay tự do (mặc định), 'locked' = khóa sau lưng */
 export const CAMERA_MODES = ['locked', 'free']
+export const MAX_NICKNAME_LENGTH = 24
 const CAMERA_MODE_KEY = 'chilly.cameraMode'
 const CHARACTER_KEY = 'chilly.character'
 const NICKNAME_KEY = 'chilly.nickname'
@@ -31,9 +33,13 @@ function save(key, value) {
   }
 }
 
+function sanitizeNickname(raw) {
+  return cleanMessage(raw).slice(0, MAX_NICKNAME_LENGTH).trim()
+}
+
 function loadNickname() {
   try {
-    const saved = localStorage.getItem(NICKNAME_KEY)
+    const saved = sanitizeNickname(localStorage.getItem(NICKNAME_KEY))
     if (saved) return saved
   } catch {
     // dùng tên ngẫu nhiên mới
@@ -81,7 +87,7 @@ export const useCafeStore = create((set, get) => ({
   lite: load(LITE_KEY, ['1', '0'], '0') === '1', // chế độ nhẹ: tắt bóng, độ phân giải 1×
   timeOfDay: load(TIME_KEY, TIME_OPTIONS, 'auto'),
   rain: load(RAIN_KEY, ['1', '0'], '0') === '1', // trời mưa (hạt mưa + tiếng mưa)
-  headphones: false,
+  headphones: false, // đeo tai nghe: nhạc quán tắt, tạp âm nhỏ và trầm, nhạc riêng (YouTube) trên laptop phát
   // Âm thanh (src/audio/): tắt tiếng, bật/tắt nhạc quán, âm lượng nhạc / tạp âm phố (0–1)
   ...loadSound(),
   inside: false, // nhân vật đang ở trong quán (Player cập nhật) → nhạc to, tạp âm phố nhỏ
@@ -93,6 +99,20 @@ export const useCafeStore = create((set, get) => ({
     save(CHARACTER_KEY, characterId)
     set({ characterId, entered: true })
   },
+  setNickname: (raw) => {
+    const nickname = sanitizeNickname(raw) || randomNickname()
+    save(NICKNAME_KEY, nickname)
+    set({ nickname })
+    return nickname
+  },
+  randomizeNickname: () => {
+    const current = get().nickname
+    let nickname = randomNickname()
+    for (let tries = 0; tries < 5 && nickname === current; tries++) nickname = randomNickname()
+    save(NICKNAME_KEY, nickname)
+    set({ nickname })
+    return nickname
+  },
   toggleCameraMode: () => {
     const cameraMode = get().cameraMode === 'locked' ? 'free' : 'locked'
     save(CAMERA_MODE_KEY, cameraMode)
@@ -100,9 +120,24 @@ export const useCafeStore = create((set, get) => ({
   },
   showToast: (key, params) => set(toast(key, params)),
   sitDown: (seat) => set({ seat, seatAt: Date.now(), laptopOpen: false, nearbySeat: null, action: null }),
-  standUp: () => set({ seat: null, seatAt: null, laptopOpen: false }),
+  standUp: () => {
+    // Đang mở laptop nghe tai nghe mà đứng dậy → trình phát YouTube đóng nên tự tháo tai nghe để nghe lại nhạc quán
+    const takeOff = get().laptopOpen && get().headphones
+    set({
+      seat: null,
+      seatAt: null,
+      laptopOpen: false,
+      ...(takeOff ? { headphones: false, ...toast('game.headphones.off') } : {}),
+    })
+  },
   openLaptop: () => set((state) => (state.seat ? { laptopOpen: true } : {})),
-  closeLaptop: () => set({ laptopOpen: false }),
+  closeLaptop: () => {
+    const takeOff = get().laptopOpen && get().headphones
+    set({
+      laptopOpen: false,
+      ...(takeOff ? { headphones: false, ...toast('game.headphones.off') } : {}),
+    })
+  },
   toggleAction: (action) => set((state) => ({ action: state.action === action ? null : action })),
   openCharacterChange: () => set({ changingCharacter: true, action: null }),
   closeCharacterChange: () => set({ changingCharacter: false }),
@@ -127,5 +162,9 @@ export const useCafeStore = create((set, get) => ({
     save(TIME_KEY, timeOfDay)
     set({ timeOfDay })
   },
-  toggleHeadphones: () => set((state) => ({ headphones: !state.headphones })),
+  setHeadphones: (headphones) => {
+    if (get().headphones === headphones) return
+    set({ headphones, ...toast(headphones ? 'game.headphones.on' : 'game.headphones.off') })
+  },
+  toggleHeadphones: () => get().setHeadphones(!get().headphones),
 }))

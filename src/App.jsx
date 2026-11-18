@@ -6,11 +6,24 @@ import Landing from './ui/Landing.jsx'
 
 const CafeCanvas = lazy(loadCafeCanvas)
 const CharacterSelect = lazy(loadCharacterSelect)
+const PrivacyPage = lazy(() => import('./pages/privacy/PrivacyPage.jsx'))
+
+// Trang phụ không cần thư viện định tuyến: Cloudflare Pages (không có 404.html) và Vite dev
+// đều trả index.html cho mọi đường dẫn, ở đây chọn trang theo pathname.
+const IS_PRIVACY_PAGE = window.location.pathname.replace(/\/+$/, '') === '/privacy'
 
 export default function App() {
   const choosing = useCafeStore((state) => state.choosing)
   const changingCharacter = useCafeStore((state) => state.changingCharacter)
   const entered = useCafeStore((state) => state.entered)
+
+  if (IS_PRIVACY_PAGE) {
+    return (
+      <Suspense fallback={null}>
+        <PrivacyPage />
+      </Suspense>
+    )
+  }
 
   return (
     <>

@@ -1,6 +1,7 @@
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { tagAnchors, useNetStore } from '../net/netStore.js'
+import HeadphonesBadge from './HeadphonesBadge.jsx'
 import { statusText, useFollowAnchor } from './tagHelpers.js'
 
 function PeerTag({ id, peer }) {
@@ -13,10 +14,11 @@ function PeerTag({ id, peer }) {
       <p ref={bubble} className="chat-bubble" hidden />
       <div className="name-tag name-tag--peer">
         <span className={`name-tag__dot name-tag__dot--${peer.status ?? 'idle'}`} />
-        <span>
+        <span className="name-tag__text">
           {peer.name}
           {status && <small>{status}</small>}
         </span>
+        {peer.headphones && <HeadphonesBadge />}
       </div>
     </div>
   )

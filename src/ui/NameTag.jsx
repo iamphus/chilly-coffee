@@ -4,12 +4,14 @@ import { remainingMs, useFocusStore } from '../focus/focusStore.js'
 import { useNetStore } from '../net/netStore.js'
 import { nameTagAnchor } from '../player/nameTagAnchor.js'
 import { useCafeStore } from '../store.js'
+import HeadphonesBadge from './HeadphonesBadge.jsx'
 import { statusText, useFollowAnchor } from './tagHelpers.js'
 
 /** Bảng tên trên đầu nhân vật người chơi: chấm "Tôi" + tên + trạng thái, bong bóng khi mình chat. */
 export default function NameTag() {
   const { t } = useTranslation()
   const nickname = useCafeStore((state) => state.nickname)
+  const headphones = useCafeStore((state) => state.headphones)
   const selfId = useNetStore((state) => state.selfId)
   const focus = useFocusStore()
   const getAnchor = useCallback(() => nameTagAnchor, [])
@@ -24,10 +26,11 @@ export default function NameTag() {
       <p ref={bubble} className="chat-bubble chat-bubble--self" hidden />
       <div className="name-tag">
         <span className="name-tag__me">{t('game.me')}</span>
-        <span>
+        <span className="name-tag__text">
           {nickname}
           {status && <small>{status}</small>}
         </span>
+        {headphones && <HeadphonesBadge />}
       </div>
     </div>
   )

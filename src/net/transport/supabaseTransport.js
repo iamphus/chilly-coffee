@@ -1,12 +1,13 @@
 // Kết nối qua Supabase Realtime: Presence (ai đang trong phòng + trạng thái) và Broadcast (vị trí, chat).
-// Không lưu gì vào cơ sở dữ liệu. Phòng đầy (MAX_PER_ROOM) thì tự chuyển sang phòng kế tiếp.
+// Không lưu gì vào cơ sở dữ liệu. Phòng công khai đầy (MAX_PER_ROOM) thì tự chuyển sang phòng kế tiếp;
+// nếu có `requestedRoom` (link mời / phòng riêng) thì vào thẳng đúng phòng đó.
 import { createClient } from '@supabase/supabase-js'
+import { PUBLIC_ROOMS } from '../roomCode.js'
 
 export const MAX_PER_ROOM = 20
-const ROOMS = ['02', '03', '04', '05', '06']
 const PRESENCE_MIN_GAP_MS = 1000 // Supabase giới hạn tần suất cập nhật presence
 
-export function createSupabaseTransport({ url, anonKey, selfId, initialState }) {
+export function createSupabaseTransport({ url, anonKey, selfId, initialState, requestedRoom = null }) {
   const client = createClient(url, anonKey, { realtime: { params: { eventsPerSecond: 12 } } })
   let channel = null
   let state = initialState
@@ -35,8 +36,8 @@ export function createSupabaseTransport({ url, anonKey, selfId, initialState }) 
     channel.track(state)
   }
 
-  function join(index) {
-    room = ROOMS[index]
+  function joinRoom(targetRoom, fallbackIndex = -1) {
+    room = targetRoom
     let checkedCapacity = false
     channel = client.channel(`chilly-room-${room}`, {
       config: { broadcast: { self: false }, presence: { key: selfId } },
@@ -44,12 +45,12 @@ export function createSupabaseTransport({ url, anonKey, selfId, initialState }) 
     channel
       .on('presence', { event: 'sync' }, () => {
         const peers = peersFrom(channel.presenceState())
-        // Lần đồng bộ đầu: phòng đã đủ người thì sang phòng sau
+        // Phòng công khai tự chọn: lần đồng bộ đầu mà đã đủ người thì sang phòng kế tiếp
         if (!checkedCapacity) {
           checkedCapacity = true
-          if (Object.keys(peers).length >= MAX_PER_ROOM && index < ROOMS.length - 1) {
+          if (fallbackIndex >= 0 && Object.keys(peers).length >= MAX_PER_ROOM && fallbackIndex < PUBLIC_ROOMS.length - 1) {
             client.removeChannel(channel)
-            join(index + 1)
+            joinRoom(PUBLIC_ROOMS[fallbackIndex + 1], fallbackIndex + 1)
             return
           }
           handlers.onStatus?.({ connected: true, room })
@@ -71,7 +72,8 @@ export function createSupabaseTransport({ url, anonKey, selfId, initialState }) 
     },
     connect(nextHandlers) {
       handlers = nextHandlers
-      join(0)
+      if (requestedRoom) joinRoom(requestedRoom, -1)
+      else joinRoom(PUBLIC_ROOMS[0], 0)
     },
     updateState(next) {
       state = next

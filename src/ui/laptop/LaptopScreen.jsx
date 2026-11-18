@@ -3,17 +3,47 @@ import { useTranslation } from 'react-i18next'
 import { remainingMs, useFocusStore } from '../../focus/focusStore.js'
 import { formatTime } from '../../focus/format.js'
 import { useNow } from '../../focus/useNow.js'
+import { useYoutubeStore } from '../../audio/youtube/youtubeStore.js'
 import { useCafeStore } from '../../store.js'
+import { HEADPHONES_ICON } from '../headphonesIcon.jsx'
+import MusicApp from './MusicApp.jsx'
 import NotesApp from './NotesApp.jsx'
 import PomodoroApp from './PomodoroApp.jsx'
 import TodoApp from './TodoApp.jsx'
+import YoutubePlayer from './YoutubePlayer.jsx'
 import './laptop.css'
 
 const APPS = [
   { key: 'pomodoro', Component: PomodoroApp, icon: <path d="M12 7v5l3 2M12 21a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM9 2h6" /> },
   { key: 'todo', Component: TodoApp, icon: <path d="M9 6h11M9 12h11M9 18h11M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2" /> },
   { key: 'notes', Component: NotesApp, icon: <path d="M6 3h9l4 4v14H6zM14 3v5h5M9 13h7M9 17h5" /> },
+  { key: 'music', Component: MusicApp, icon: HEADPHONES_ICON },
 ]
+
+/** Cột bên phải: trình phát YouTube (luôn hiển thị khi đã có link) + nút tai nghe */
+function PlayerDock() {
+  const { t } = useTranslation()
+  const headphones = useCafeStore((state) => state.headphones)
+  const toggleHeadphones = useCafeStore((state) => state.toggleHeadphones)
+  const sourceKey = useYoutubeStore((state) => (state.source ? `${state.source.type}:${state.source.id}` : ''))
+  return (
+    <aside className="laptop-player" aria-label={t('laptop.music.playerLabel')}>
+      <YoutubePlayer key={sourceKey} />
+      <button
+        type="button"
+        className={headphones ? 'laptop-player__toggle laptop-player__toggle--on' : 'laptop-player__toggle'}
+        onClick={toggleHeadphones}
+        aria-pressed={headphones}
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          {HEADPHONES_ICON}
+        </svg>
+        {headphones ? t('laptop.music.listening') : t('laptop.music.putOnHint')}
+        <kbd>H</kbd>
+      </button>
+    </aside>
+  )
+}
 
 /** Đồng hồ nhỏ trên thanh trên cùng của laptop */
 function Clock() {
@@ -36,12 +66,13 @@ function TimerChip() {
 }
 
 /**
- * Màn hình laptop khi ngồi vào bàn: Pomodoro, việc cần làm, ghi chú.
+ * Màn hình laptop khi ngồi vào bàn: Pomodoro, việc cần làm, ghi chú, nhạc riêng.
  * Phủ lên giữa cảnh 3D (camera đang nhìn vào laptop thật trên bàn), xung quanh vẫn thấy quán.
  */
 export default function LaptopScreen() {
   const { t } = useTranslation()
   const closeLaptop = useCafeStore((state) => state.closeLaptop)
+  const hasMusic = useYoutubeStore((state) => Boolean(state.source))
   const [app, setApp] = useState('pomodoro')
   const { Component } = APPS.find((item) => item.key === app)
 
@@ -72,8 +103,11 @@ export default function LaptopScreen() {
             <kbd>Esc</kbd>
           </button>
         </header>
-        <div className="laptop-content">
-          <Component />
+        <div className="laptop-body">
+          <div className="laptop-content">
+            <Component />
+          </div>
+          {hasMusic && <PlayerDock />}
         </div>
       </div>
     </div>
