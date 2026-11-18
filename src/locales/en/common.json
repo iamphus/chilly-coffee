@@ -359,7 +359,7 @@
       {
         "title": "Your music via YouTube",
         "paragraphs": [
-          "The My music app on the laptop uses YouTube API Services (YouTube's official player). The player only loads after you paste a YouTube link, and it uses privacy-enhanced mode (youtube-nocookie.com).",
+          "The My music app on the laptop uses YouTube API Services (YouTube's official player). The player only loads after you paste a YouTube link yourself.",
           "Once the player loads, Google / YouTube may collect data and store cookies on your device under their own policies. Chilly Coffee does not access your YouTube account or watch history; it only reads the playback state (playing, paused, which track) to adjust the volume and resume next time.",
           "By using My music you agree to YouTube's Terms of Service."
         ],

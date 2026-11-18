@@ -524,6 +524,10 @@
   text-align: center;
 }
 
+.youtube-player__status--loading {
+  pointer-events: none;
+}
+
 .youtube-player__status--error {
   background: #2b221c;
 }

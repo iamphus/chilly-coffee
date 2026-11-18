@@ -359,7 +359,7 @@
       {
         "title": "Nhạc riêng qua YouTube",
         "paragraphs": [
-          "App Nhạc riêng trên laptop dùng YouTube API Services (trình phát YouTube chính thức). Trình phát chỉ được tải khi bạn đã dán link YouTube, và dùng chế độ tăng cường quyền riêng tư (youtube-nocookie.com).",
+          "App Nhạc riêng trên laptop dùng YouTube API Services (trình phát YouTube chính thức). Trình phát chỉ được tải sau khi bạn tự dán link YouTube vào.",
           "Khi trình phát được tải, Google / YouTube có thể thu thập dữ liệu và lưu cookie trên máy bạn theo chính sách của họ. Chilly Coffee không truy cập tài khoản YouTube hay lịch sử xem của bạn, và chỉ đọc trạng thái phát (đang phát, tạm dừng, bài thứ mấy) để điều chỉnh âm lượng và nghe tiếp lần sau.",
           "Khi dùng nhạc riêng, bạn đồng ý với Điều khoản dịch vụ của YouTube."
         ],
