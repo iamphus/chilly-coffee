@@ -162,7 +162,12 @@ export default function Landing() {
           >
             {t('landing.enter')}
           </button>
-          <p className="landing__note">{t('landing.note')}</p>
+          <p className="landing__note">
+            {t('landing.note')} ·{' '}
+            <a className="landing__privacy" href="/privacy">
+              {t('landing.privacy')}
+            </a>
+          </p>
         </div>
 
         <ul className="landing__features">

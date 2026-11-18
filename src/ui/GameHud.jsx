@@ -9,6 +9,7 @@ import { TIME_OPTIONS, useCafeStore } from '../store.js'
 import LaptopScreen from './laptop/LaptopScreen.jsx'
 import { useNetStore } from '../net/netStore.js'
 import ChatPanel from './ChatPanel.jsx'
+import { HEADPHONES_ICON } from './headphonesIcon.jsx'
 import NameTag from './NameTag.jsx'
 import PeerTags from './PeerTags.jsx'
 import './gameHud.css'
@@ -38,6 +39,7 @@ const ICONS = {
   settings: <path d="M4 7h10M18 7h2M4 17h2M10 17h10M14 4v6M6 14v6" />,
   rain: <path d="M7 15a4.5 4.5 0 1 1 1.2-8.85A6 6 0 0 1 19.5 9a3.5 3.5 0 0 1-.5 6.97M8 18l-1 2.5M12 18l-1 2.5M16 18l-1 2.5" />,
   music: <path d="M9 18V6l11-2v12M9 18a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM20 16a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />,
+  headphones: HEADPHONES_ICON,
   seat: <path d="M6 4v9h12V4M5 13h14v3H5zM7 16v4M17 16v4" />,
   laptop: <path d="M5 6h14v9H5zM3 18h18M10 15.5h4" />,
   standUp: <path d="M12 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM9 22l1.5-7.5L8 12V9l4-1 4 1v3l-2.5 2.5L15 22" />,
@@ -163,6 +165,8 @@ export default function GameHud() {
         } else if (state.nearbySeat) state.sitDown(state.nearbySeat)
       } else if (event.code === 'KeyR') {
         state.toggleRain()
+      } else if (event.code === 'KeyH') {
+        state.toggleHeadphones()
       } else if (event.code === 'KeyV' && !state.laptopOpen) {
         state.toggleCameraMode()
       } else if (/^Digit[1-4]$/.test(event.code) && !state.seat) {
@@ -239,6 +243,16 @@ export default function GameHud() {
           </button>
           <button
             type="button"
+            className={store.headphones ? 'hud-button hud-button--on' : 'hud-button'}
+            onClick={store.toggleHeadphones}
+            aria-pressed={store.headphones}
+            aria-label={t('game.headphones.button')}
+            data-label={`${t(store.headphones ? 'game.headphones.on' : 'game.headphones.off')} (H)`}
+          >
+            <Icon name="headphones" />
+          </button>
+          <button
+            type="button"
             className="hud-button"
             onClick={() => store.setSound({ muted: !store.muted })}
             aria-pressed={store.muted}
@@ -269,9 +283,11 @@ export default function GameHud() {
           aria-label={store.musicOn ? t('game.musicOff') : t('game.musicOn')}
         >
           <Icon name="music" />
-          {store.musicOn && store.nowPlaying
-            ? t('game.nowPlaying', { title: store.nowPlaying.title ?? t('game.trackNumber', { number: store.nowPlaying.index + 1 }) })
-            : t('game.musicShort')}
+          {store.headphones
+            ? t('game.headphones.musicMuted')
+            : store.musicOn && store.nowPlaying
+              ? t('game.nowPlaying', { title: store.nowPlaying.title ?? t('game.trackNumber', { number: store.nowPlaying.index + 1 }) })
+              : t('game.musicShort')}
         </button>
       </div>
 

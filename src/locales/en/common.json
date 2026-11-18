@@ -25,7 +25,8 @@
         "title": "Sit side by side",
         "text": "Work alongside others in the café. No chat, no camera."
       }
-    }
+    },
+    "privacy": "Privacy policy"
   },
   "select": {
     "title": "Choose your character",
@@ -98,7 +99,13 @@
       "off": "Rain stopped"
     },
     "openLaptop": "Open laptop",
-    "standUp": "Stand up"
+    "standUp": "Stand up",
+    "headphones": {
+      "button": "Put on / take off headphones",
+      "on": "Headphones on",
+      "off": "Headphones off",
+      "musicMuted": "Headphones on · café radio muted"
+    }
   },
   "laptop": {
     "label": "Laptop screen",
@@ -106,7 +113,8 @@
     "apps": {
       "pomodoro": "Pomodoro",
       "todo": "To-dos",
-      "notes": "Notes"
+      "notes": "Notes",
+      "music": "My music"
     },
     "pomodoro": {
       "focus": "Focus",
@@ -135,7 +143,33 @@
       "label": "Notes",
       "autosave": "Saved on this device"
     },
-    "close": "Close laptop"
+    "close": "Close laptop",
+    "music": {
+      "saved": "Saved on this device",
+      "lead": "Paste a YouTube playlist or video link. Put on headphones to listen: the café radio fades out and the street gets quieter. Take them off and your music stops.",
+      "linkLabel": "YouTube link",
+      "save": "Save",
+      "replace": "Change link",
+      "invalid": "That doesn't look right. Paste a YouTube video or playlist link, e.g. youtube.com/playlist?list=…",
+      "empty": "No music yet. Paste a link above and the player will appear on the side.",
+      "type": {
+        "playlist": "Playlist",
+        "video": "Video"
+      },
+      "putOn": "Put on headphones",
+      "takeOff": "Take off headphones",
+      "putOnHint": "Put on headphones to listen",
+      "listening": "Listening on headphones",
+      "remove": "Remove link",
+      "playerLabel": "Music player",
+      "skipped": "Skipped a video that can't play here, moving to the next one.",
+      "legal": "The player is provided by YouTube; by using it you agree to YouTube's Terms of Service.",
+      "status": {
+        "loading": "Loading the YouTube player…",
+        "error": "Couldn't load the YouTube player. Check your connection or ad blocker, then close and reopen the laptop.",
+        "unavailable": "This video can't be played here (it was removed or embedding is disabled). Try another link."
+      }
+    }
   },
   "error": {
     "title": "Something went wrong in the café",
@@ -150,7 +184,8 @@
     "status": {
       "focus": "Focusing",
       "break": "On a break",
-      "pomodoros": "{{count}} Pomodoros"
+      "pomodoros": "{{count}} Pomodoros",
+      "headphones": "Wearing headphones"
     },
     "chat": {
       "label": "Café chat",
@@ -164,5 +199,105 @@
       "tooFast": "You're sending too fast, wait a moment.",
       "offline": "Not connected yet, try again soon."
     }
+  },
+  "privacy": {
+    "linkLabel": "Privacy policy",
+    "metaTitle": "Privacy policy – Chilly Coffee",
+    "metaDescription": "What Chilly Coffee keeps on your device, what it shares with people in the café, and how the YouTube player works.",
+    "back": "Back to Chilly Coffee",
+    "switchLanguage": "Tiếng Việt",
+    "switchLanguageCode": "vi",
+    "title": "Privacy policy",
+    "updated": "Last updated: 16 November 2026",
+    "intro": "Chilly Coffee is a 3D café in your browser for studying and working. This page explains what the site stores, where it sends it and what you can do about it. In short: no account, no ads, no tracking or analytics.",
+    "sections": [
+      {
+        "title": "Data that stays on your device",
+        "paragraphs": [
+          "The following is kept in your browser's storage (localStorage, sessionStorage) on your own device and is never sent to a server:"
+        ],
+        "items": [
+          "Your to-dos, notes and Pomodoro timer",
+          "Your display name and chosen character",
+          "Settings: volume, lite mode, rain, day / night, camera mode",
+          "The YouTube playlist or video link you paste and where you're up to",
+          "A random ID for the current session (gone when you close the tab)"
+        ],
+        "after": [
+          "To delete everything, clear the site data for chilly-coffee.pages.dev in your browser's settings."
+        ]
+      },
+      {
+        "title": "Sitting in the café with others",
+        "paragraphs": [
+          "So people can see each other in the café, the site sends the following to everyone in the same room through Supabase's realtime service:"
+        ],
+        "items": [
+          "Your display name, character, position and facing direction",
+          "The seat you are at, whether your laptop is open, and actions (waving, drinking…)",
+          "Your Pomodoro status (focus / break, today's count) and whether you're wearing headphones",
+          "Chat messages you send"
+        ],
+        "after": [
+          "This is only relayed to people who are online. It is not stored in a database and is gone when you leave. Other people can still read your messages, so please don't share personal information in chat.",
+          "Your to-dos, notes and music link are never sent anywhere."
+        ],
+        "links": [
+          {
+            "label": "Supabase privacy policy",
+            "href": "https://supabase.com/privacy"
+          }
+        ]
+      },
+      {
+        "title": "Your music via YouTube",
+        "paragraphs": [
+          "The My music app on the laptop uses YouTube API Services (YouTube's official player). The player only loads after you paste a YouTube link, and it uses privacy-enhanced mode (youtube-nocookie.com).",
+          "Once the player loads, Google / YouTube may collect data and store cookies on your device under their own policies. Chilly Coffee does not access your YouTube account or watch history; it only reads the playback state (playing, paused, which track) to adjust the volume and resume next time.",
+          "By using My music you agree to YouTube's Terms of Service."
+        ],
+        "links": [
+          {
+            "label": "YouTube Terms of Service",
+            "href": "https://www.youtube.com/t/terms"
+          },
+          {
+            "label": "Google Privacy Policy",
+            "href": "https://policies.google.com/privacy"
+          }
+        ]
+      },
+      {
+        "title": "Hosting",
+        "paragraphs": [
+          "The site is hosted on Cloudflare Pages. Like any web server, Cloudflare processes your IP address and technical browser information to deliver the page and protect against attacks.",
+          "Fonts, café music and 3D models are served with the site itself, not from Google Fonts or other third parties."
+        ],
+        "links": [
+          {
+            "label": "Cloudflare privacy policy",
+            "href": "https://www.cloudflare.com/privacypolicy/"
+          }
+        ]
+      },
+      {
+        "title": "Browser notifications",
+        "paragraphs": [
+          "If you allow it, the Pomodoro timer sends a browser notification when time is up. Notifications are created on your device, and you can turn them off in your browser's settings at any time."
+        ]
+      },
+      {
+        "title": "Changes and contact",
+        "paragraphs": [
+          "When new features are added (for example sign-in), this page will be updated and the date at the top changed. For questions or to report a problem, open an issue on the project's GitHub."
+        ],
+        "links": [
+          {
+            "label": "GitHub: iamphus/chilly-coffee",
+            "href": "https://github.com/iamphus/chilly-coffee/issues"
+          }
+        ]
+      }
+    ]
   }
 }

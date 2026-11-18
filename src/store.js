@@ -81,7 +81,7 @@ export const useCafeStore = create((set, get) => ({
   lite: load(LITE_KEY, ['1', '0'], '0') === '1', // chế độ nhẹ: tắt bóng, độ phân giải 1×
   timeOfDay: load(TIME_KEY, TIME_OPTIONS, 'auto'),
   rain: load(RAIN_KEY, ['1', '0'], '0') === '1', // trời mưa (hạt mưa + tiếng mưa)
-  headphones: false,
+  headphones: false, // đeo tai nghe: nhạc quán tắt, tạp âm nhỏ và trầm, nhạc riêng (YouTube) trên laptop phát
   // Âm thanh (src/audio/): tắt tiếng, bật/tắt nhạc quán, âm lượng nhạc / tạp âm phố (0–1)
   ...loadSound(),
   inside: false, // nhân vật đang ở trong quán (Player cập nhật) → nhạc to, tạp âm phố nhỏ
@@ -127,5 +127,9 @@ export const useCafeStore = create((set, get) => ({
     save(TIME_KEY, timeOfDay)
     set({ timeOfDay })
   },
-  toggleHeadphones: () => set((state) => ({ headphones: !state.headphones })),
+  setHeadphones: (headphones) => {
+    if (get().headphones === headphones) return
+    set({ headphones, ...toast(headphones ? 'game.headphones.on' : 'game.headphones.off') })
+  },
+  toggleHeadphones: () => get().setHeadphones(!get().headphones),
 }))

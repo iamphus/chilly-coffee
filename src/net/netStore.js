@@ -23,7 +23,7 @@ export const useNetStore = create((set) => ({
   kind: null, // 'supabase' | 'local'
   room: null,
   connected: false,
-  peers: {}, // id → { name, character, seat, sitAt, laptopOpen, action, status, pomodoros, x, z, yaw }
+  peers: {}, // id → { name, character, seat, sitAt, laptopOpen, action, headphones, status, pomodoros, x, z, yaw }
   messages: [], // { key, from, name, text, at, self }
   blocked: {}, // id → tên (chặn trong phiên này)
   chatOpen: false,

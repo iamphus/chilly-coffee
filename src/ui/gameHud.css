@@ -435,9 +435,29 @@
   white-space: nowrap;
 }
 
-.name-tag > span:last-child {
+.name-tag__text {
   display: flex;
   flex-direction: column;
+}
+
+.name-tag__headphones {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #2b221c;
+  color: #fff;
+}
+
+.name-tag__headphones svg {
+  width: 13px;
+  height: 13px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .name-tag small {

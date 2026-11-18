@@ -25,6 +25,7 @@ export function selfState(position) {
     sitAt: cafe.seatAt ?? null,
     laptopOpen: cafe.laptopOpen,
     action: cafe.action,
+    headphones: cafe.headphones, // "đừng làm phiền"
     status: focus.running && remainingMs(focus) > 0 ? focus.mode : 'idle', // 'focus' | 'break' | 'idle'
     pomodoros: focus.completedToday,
     x: position ? Math.round(position.x * 10) / 10 : 0,

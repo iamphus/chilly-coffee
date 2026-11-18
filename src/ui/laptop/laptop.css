@@ -362,6 +362,221 @@
   background: #fffdf7;
 }
 
+/* Thân màn hình: ứng dụng bên trái, trình phát nhạc riêng bên phải (khi đã có link) */
+.laptop-body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.laptop-body .laptop-content {
+  min-width: 0;
+}
+
+.laptop-player {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 0 0 auto;
+  width: 356px; /* 16:9 → cao 200px: đúng mức tối thiểu 200×200 của trình phát YouTube */
+  padding: 16px 16px 16px 0;
+}
+
+.youtube-player {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  min-height: 200px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #111;
+}
+
+.youtube-player__frame,
+.youtube-player__frame iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.youtube-player__status {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  padding: 16px;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: var(--text-sm);
+  text-align: center;
+}
+
+.youtube-player__status--error {
+  background: #2b221c;
+}
+
+.laptop-player__toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(43, 34, 28, 0.08);
+  color: #2b221c;
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+
+.laptop-player__toggle:hover {
+  background: rgba(43, 34, 28, 0.14);
+}
+
+.laptop-player__toggle--on,
+.laptop-player__toggle--on:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
+.laptop-player__toggle svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.laptop-player__toggle kbd,
+.music__actions kbd {
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.25);
+  font: inherit;
+  font-size: var(--text-xs);
+}
+
+/* Nhạc riêng */
+.music {
+  display: grid;
+  gap: 16px;
+  max-width: 34rem;
+}
+
+.music .laptop-app__header {
+  margin-bottom: 0;
+}
+
+.music__lead,
+.music__legal {
+  margin: 0;
+  color: #5b4b3f;
+  font-size: var(--text-sm);
+  line-height: 1.5;
+}
+
+.music__legal {
+  color: #7a685a;
+  font-size: var(--text-xs);
+}
+
+.music__legal a {
+  color: #8c4f22;
+  font-weight: 700;
+}
+
+.music__form {
+  display: grid;
+  gap: 6px;
+}
+
+.music__label {
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+
+.music__row {
+  display: flex;
+  gap: 8px;
+}
+
+.music__row input {
+  flex: 1;
+  min-width: 0;
+  font: inherit;
+  color: #2b221c;
+  background: #fff;
+  border: 1px solid rgba(43, 34, 28, 0.15);
+  border-radius: 10px;
+  padding: 8px 12px;
+}
+
+.music__row input[aria-invalid='true'] {
+  border-color: #c0392b;
+}
+
+.music__error {
+  margin: 0;
+  color: #b0302a;
+  font-size: var(--text-sm);
+}
+
+.music__current {
+  display: grid;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.music__current p {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0;
+  font-size: var(--text-sm);
+  min-width: 0;
+}
+
+.music__current code {
+  overflow: hidden;
+  color: #7a685a;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.music__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.music__actions .laptop-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Màn hình hẹp: trình phát xuống dưới, vẫn giữ tối thiểu 200px */
+@media (max-width: 860px) {
+  .laptop-body {
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .laptop-body .laptop-content {
+    flex: none;
+    overflow: visible;
+  }
+
+  .laptop-player {
+    width: 100%;
+    padding: 0 16px 16px;
+  }
+}
+
 .visually-hidden {
   position: absolute;
   width: 1px;

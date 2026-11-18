@@ -4,6 +4,7 @@
 //   tạp âm phố (StreetAmbience) ─ gain ─ lọc trầm ┘
 // Ngoài đường: tạp âm to, nhạc nhỏ và trầm (vọng từ trong quán). Trong quán: tạp âm nhỏ và trầm
 // (cửa kính chắn), nhạc to rõ. Chuyển mượt bằng setTargetAtTime.
+// Đeo tai nghe: nhạc quán về 0 (vẫn chạy ngầm để giữ đồng bộ), tạp âm nhỏ và trầm như bị tai nghe chắn.
 import { Radio } from './radio.js'
 import { StreetAmbience } from './street.js'
 
@@ -11,13 +12,15 @@ export const MIX = {
   outside: { music: 0.2, musicCutoff: 650, ambience: 1, ambienceCutoff: 18000 },
   inside: { music: 1, musicCutoff: 18000, ambience: 0.2, ambienceCutoff: 900 },
 }
+export const HEADPHONES = { ambience: 0.35, ambienceCutoff: 650 }
 const MUSIC_LEVEL = 0.55 // âm lượng nhạc gốc khá to, hạ bớt cho êm
 const TRANSITION = 0.6 // giây (hằng số thời gian; ~2 giây là chuyển xong)
+const HEADPHONES_TRANSITION = 0.3 // giây: đeo / tháo tai nghe chuyển xong trong khoảng 1 giây
 
 class AudioEngine {
   context = null
   ready = false
-  state = { inside: false, muted: false, musicOn: true, musicVolume: 0.8, ambienceVolume: 0.8, night: false, rain: false }
+  state = { inside: false, muted: false, musicOn: true, musicVolume: 0.8, ambienceVolume: 0.8, night: false, rain: false, headphones: false }
 
   /** Gọi trong một thao tác của người dùng (bấm nút) để trình duyệt cho phát âm thanh. */
   unlock() {
@@ -65,25 +68,29 @@ class AudioEngine {
   /** Cập nhật trạng thái (vị trí trong/ngoài quán, tắt tiếng, âm lượng, ngày đêm) rồi trộn lại. */
   set(changes) {
     const musicWasOn = this.state.musicOn
+    const headphonesChanged = 'headphones' in changes && changes.headphones !== this.state.headphones
     Object.assign(this.state, changes)
     if (!this.ready) return
     if (this.radio && musicWasOn !== this.state.musicOn) {
       if (this.state.musicOn) this.radio.start()
       else this.radio.stop()
     }
-    this.apply()
+    this.apply(false, headphonesChanged ? HEADPHONES_TRANSITION : TRANSITION)
   }
 
-  apply(immediate = false) {
-    const { inside, muted, musicOn, musicVolume, ambienceVolume, night, rain } = this.state
+  apply(immediate = false, transition = TRANSITION) {
+    const { inside, muted, musicOn, musicVolume, ambienceVolume, night, rain, headphones } = this.state
     const mix = inside ? MIX.inside : MIX.outside
     const now = this.context.currentTime
-    const tau = immediate ? 0.01 : TRANSITION
+    const tau = immediate ? 0.01 : transition
+    const music = musicOn && !headphones ? mix.music * musicVolume * MUSIC_LEVEL : 0
+    const ambience = mix.ambience * ambienceVolume * (headphones ? HEADPHONES.ambience : 1)
+    const ambienceCutoff = headphones ? Math.min(mix.ambienceCutoff, HEADPHONES.ambienceCutoff) : mix.ambienceCutoff
     this.master.gain.setTargetAtTime(muted ? 0 : 1, now, 0.15)
-    this.musicGain.gain.setTargetAtTime(musicOn ? mix.music * musicVolume * MUSIC_LEVEL : 0, now, tau)
+    this.musicGain.gain.setTargetAtTime(music, now, tau)
     this.musicFilter.frequency.setTargetAtTime(mix.musicCutoff, now, tau)
-    this.ambienceGain.gain.setTargetAtTime(mix.ambience * ambienceVolume, now, tau)
-    this.ambienceFilter.frequency.setTargetAtTime(mix.ambienceCutoff, now, tau)
+    this.ambienceGain.gain.setTargetAtTime(ambience, now, tau)
+    this.ambienceFilter.frequency.setTargetAtTime(ambienceCutoff, now, tau)
     this.street.setNight(night)
     this.street.setRain(rain)
   }

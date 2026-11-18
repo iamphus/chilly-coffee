@@ -25,7 +25,8 @@
         "title": "Ngồi cạnh nhau",
         "text": "Cùng làm việc với mọi người trong quán, không chat, không camera."
       }
-    }
+    },
+    "privacy": "Chính sách riêng tư"
   },
   "select": {
     "title": "Chọn nhân vật của bạn",
@@ -98,7 +99,13 @@
       "off": "Trời tạnh"
     },
     "openLaptop": "Mở laptop",
-    "standUp": "Đứng dậy"
+    "standUp": "Đứng dậy",
+    "headphones": {
+      "button": "Đeo / tháo tai nghe",
+      "on": "Đang đeo tai nghe",
+      "off": "Đã tháo tai nghe",
+      "musicMuted": "Đang đeo tai nghe · nhạc quán tắt"
+    }
   },
   "laptop": {
     "label": "Màn hình laptop",
@@ -106,7 +113,8 @@
     "apps": {
       "pomodoro": "Pomodoro",
       "todo": "Việc cần làm",
-      "notes": "Ghi chú"
+      "notes": "Ghi chú",
+      "music": "Nhạc riêng"
     },
     "pomodoro": {
       "focus": "Tập trung",
@@ -135,7 +143,33 @@
       "label": "Ghi chú",
       "autosave": "Tự lưu trên máy này"
     },
-    "close": "Gập máy"
+    "close": "Gập máy",
+    "music": {
+      "saved": "Lưu trên máy này",
+      "lead": "Dán link playlist hoặc video YouTube. Đeo tai nghe để nghe nhạc riêng: nhạc quán tắt dần, tiếng phố nhỏ lại. Tháo tai nghe thì nhạc riêng dừng.",
+      "linkLabel": "Link YouTube",
+      "save": "Lưu",
+      "replace": "Đổi link",
+      "invalid": "Link chưa đúng. Hãy dán link video hoặc playlist YouTube, ví dụ youtube.com/playlist?list=…",
+      "empty": "Chưa có nhạc riêng. Dán link ở trên, trình phát sẽ hiện bên cạnh.",
+      "type": {
+        "playlist": "Playlist",
+        "video": "Video"
+      },
+      "putOn": "Đeo tai nghe",
+      "takeOff": "Tháo tai nghe",
+      "putOnHint": "Đeo tai nghe để nghe",
+      "listening": "Đang nghe qua tai nghe",
+      "remove": "Xoá link",
+      "playerLabel": "Trình phát nhạc riêng",
+      "skipped": "Bỏ qua một video không phát được, chuyển bài tiếp theo.",
+      "legal": "Trình phát do YouTube cung cấp; dùng nhạc riêng là bạn đồng ý với Điều khoản dịch vụ của YouTube.",
+      "status": {
+        "loading": "Đang tải trình phát YouTube…",
+        "error": "Không tải được trình phát YouTube. Kiểm tra mạng hoặc trình chặn quảng cáo rồi gập laptop mở lại.",
+        "unavailable": "Video này không phát được ở đây (đã bị xoá hoặc chủ kênh tắt nhúng). Hãy thử link khác."
+      }
+    }
   },
   "error": {
     "title": "Quán gặp chút trục trặc",
@@ -150,7 +184,8 @@
     "status": {
       "focus": "Đang tập trung",
       "break": "Nghỉ giải lao",
-      "pomodoros": "{{count}} Pomodoro"
+      "pomodoros": "{{count}} Pomodoro",
+      "headphones": "Đang đeo tai nghe"
     },
     "chat": {
       "label": "Trò chuyện trong quán",
@@ -164,5 +199,105 @@
       "tooFast": "Bạn gửi hơi nhanh, đợi chút nhé.",
       "offline": "Chưa kết nối được, thử lại sau nhé."
     }
+  },
+  "privacy": {
+    "linkLabel": "Chính sách riêng tư",
+    "metaTitle": "Chính sách riêng tư – Chilly Coffee",
+    "metaDescription": "Chilly Coffee lưu gì trên máy bạn, gửi gì cho người cùng quán, và trình phát YouTube hoạt động thế nào.",
+    "back": "Về Chilly Coffee",
+    "switchLanguage": "English",
+    "switchLanguageCode": "en",
+    "title": "Chính sách riêng tư",
+    "updated": "Cập nhật lần cuối: 16/11/2026",
+    "intro": "Chilly Coffee là một quán cafe 3D chạy trên trình duyệt để học và làm việc. Trang này giải thích web lưu những gì, gửi đi đâu và bạn có thể làm gì. Tóm tắt: không cần tài khoản, không quảng cáo, không có công cụ theo dõi hay thống kê.",
+    "sections": [
+      {
+        "title": "Dữ liệu chỉ lưu trên máy bạn",
+        "paragraphs": [
+          "Những thứ sau được lưu trong bộ nhớ trình duyệt (localStorage, sessionStorage) trên chính máy bạn, không gửi về máy chủ nào:"
+        ],
+        "items": [
+          "Việc cần làm, ghi chú và thời gian Pomodoro",
+          "Tên hiển thị và nhân vật bạn chọn",
+          "Cài đặt: âm lượng, chế độ nhẹ, mưa, ngày / đêm, góc camera",
+          "Link playlist hoặc video YouTube bạn dán vào và chỗ đang nghe dở",
+          "Một mã ngẫu nhiên cho phiên hiện tại (mất khi đóng tab)"
+        ],
+        "after": [
+          "Muốn xoá hết, hãy xoá dữ liệu trang web của chilly-coffee.pages.dev trong cài đặt trình duyệt."
+        ]
+      },
+      {
+        "title": "Khi ngồi trong quán cùng mọi người",
+        "paragraphs": [
+          "Để mọi người thấy nhau trong quán, web gửi các thông tin sau tới những người đang ở cùng phòng, qua dịch vụ thời gian thực của Supabase:"
+        ],
+        "items": [
+          "Tên hiển thị, nhân vật, vị trí và hướng nhìn trong quán",
+          "Bàn đang ngồi, laptop đang mở hay gập, hành động (vẫy tay, uống nước…)",
+          "Trạng thái Pomodoro (tập trung / nghỉ, số Pomodoro hôm nay) và có đang đeo tai nghe không",
+          "Tin nhắn chat bạn gửi"
+        ],
+        "after": [
+          "Những thông tin này chỉ được chuyển tiếp cho người đang online, không lưu vào cơ sở dữ liệu và mất khi bạn rời quán. Người khác vẫn đọc được tin nhắn của bạn, nên đừng chia sẻ thông tin cá nhân trong chat.",
+          "Việc cần làm, ghi chú và link nhạc riêng không bao giờ được gửi đi."
+        ],
+        "links": [
+          {
+            "label": "Chính sách quyền riêng tư của Supabase",
+            "href": "https://supabase.com/privacy"
+          }
+        ]
+      },
+      {
+        "title": "Nhạc riêng qua YouTube",
+        "paragraphs": [
+          "App Nhạc riêng trên laptop dùng YouTube API Services (trình phát YouTube chính thức). Trình phát chỉ được tải khi bạn đã dán link YouTube, và dùng chế độ tăng cường quyền riêng tư (youtube-nocookie.com).",
+          "Khi trình phát được tải, Google / YouTube có thể thu thập dữ liệu và lưu cookie trên máy bạn theo chính sách của họ. Chilly Coffee không truy cập tài khoản YouTube hay lịch sử xem của bạn, và chỉ đọc trạng thái phát (đang phát, tạm dừng, bài thứ mấy) để điều chỉnh âm lượng và nghe tiếp lần sau.",
+          "Khi dùng nhạc riêng, bạn đồng ý với Điều khoản dịch vụ của YouTube."
+        ],
+        "links": [
+          {
+            "label": "Điều khoản dịch vụ của YouTube",
+            "href": "https://www.youtube.com/t/terms"
+          },
+          {
+            "label": "Chính sách quyền riêng tư của Google",
+            "href": "https://policies.google.com/privacy"
+          }
+        ]
+      },
+      {
+        "title": "Lưu trữ web",
+        "paragraphs": [
+          "Web được lưu trữ trên Cloudflare Pages. Như mọi máy chủ web, Cloudflare xử lý địa chỉ IP và thông tin kỹ thuật của trình duyệt để gửi trang cho bạn và chống tấn công.",
+          "Phông chữ, nhạc quán và mô hình 3D đều nằm cùng web, không tải từ Google Fonts hay dịch vụ bên thứ ba khác."
+        ],
+        "links": [
+          {
+            "label": "Chính sách quyền riêng tư của Cloudflare",
+            "href": "https://www.cloudflare.com/privacypolicy/"
+          }
+        ]
+      },
+      {
+        "title": "Thông báo của trình duyệt",
+        "paragraphs": [
+          "Nếu bạn cho phép, Pomodoro gửi thông báo của trình duyệt khi hết giờ. Thông báo được tạo ngay trên máy bạn; bạn có thể tắt trong cài đặt trình duyệt bất cứ lúc nào."
+        ]
+      },
+      {
+        "title": "Thay đổi và liên hệ",
+        "paragraphs": [
+          "Khi web có thêm tính năng mới (ví dụ đăng nhập), trang này sẽ được cập nhật và ghi ngày ở trên cùng. Có câu hỏi hoặc muốn báo một vấn đề, hãy mở issue trên GitHub của dự án."
+        ],
+        "links": [
+          {
+            "label": "GitHub: iamphus/chilly-coffee",
+            "href": "https://github.com/iamphus/chilly-coffee/issues"
+          }
+        ]
+      }
+    ]
   }
 }
