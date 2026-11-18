@@ -31,6 +31,9 @@
   "select": {
     "title": "Chọn nhân vật của bạn",
     "subtitle": "Bạn sẽ bước vào quán bằng nhân vật này.",
+    "nicknameLabel": "Tên",
+    "nicknamePlaceholder": "Tên hiển thị…",
+    "randomName": "Đổi tên ngẫu nhiên",
     "enter": "Vào quán",
     "previous": "Nhân vật trước",
     "next": "Nhân vật sau",
@@ -76,6 +79,7 @@
     },
     "settings": {
       "title": "Cài đặt",
+      "nickname": "Tên hiển thị",
       "lite": "Chế độ nhẹ",
       "liteHint": "Tắt bóng đổ, giảm độ phân giải, 30 khung hình/giây, ít hạt mưa. Dùng khi máy bị giật.",
       "time": "Thời gian trong quán",
@@ -85,7 +89,7 @@
         "night": "Tối"
       },
       "musicVolume": "Âm lượng nhạc quán",
-      "ambienceVolume": "Âm lượng tiếng phố"
+      "ambienceVolume": "Âm lượng tiếng nền"
     },
     "mute": "Tắt tiếng",
     "unmute": "Bật tiếng",

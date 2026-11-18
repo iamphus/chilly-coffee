@@ -1,9 +1,11 @@
 import { create } from 'zustand'
 import { DEFAULT_CHARACTER, PLAYABLE_CHARACTERS } from './characters/playableCharacters.js'
+import { cleanMessage } from './net/chatFilter.js'
 import { randomNickname } from './player/nicknames.js'
 
 /** Chế độ camera: 'free' = xoay tự do (mặc định), 'locked' = khóa sau lưng */
 export const CAMERA_MODES = ['locked', 'free']
+export const MAX_NICKNAME_LENGTH = 24
 const CAMERA_MODE_KEY = 'chilly.cameraMode'
 const CHARACTER_KEY = 'chilly.character'
 const NICKNAME_KEY = 'chilly.nickname'
@@ -31,9 +33,13 @@ function save(key, value) {
   }
 }
 
+function sanitizeNickname(raw) {
+  return cleanMessage(raw).slice(0, MAX_NICKNAME_LENGTH).trim()
+}
+
 function loadNickname() {
   try {
-    const saved = localStorage.getItem(NICKNAME_KEY)
+    const saved = sanitizeNickname(localStorage.getItem(NICKNAME_KEY))
     if (saved) return saved
   } catch {
     // dùng tên ngẫu nhiên mới
@@ -92,6 +98,20 @@ export const useCafeStore = create((set, get) => ({
   enterCafe: (characterId) => {
     save(CHARACTER_KEY, characterId)
     set({ characterId, entered: true })
+  },
+  setNickname: (raw) => {
+    const nickname = sanitizeNickname(raw) || randomNickname()
+    save(NICKNAME_KEY, nickname)
+    set({ nickname })
+    return nickname
+  },
+  randomizeNickname: () => {
+    const current = get().nickname
+    let nickname = randomNickname()
+    for (let tries = 0; tries < 5 && nickname === current; tries++) nickname = randomNickname()
+    save(NICKNAME_KEY, nickname)
+    set({ nickname })
+    return nickname
   },
   toggleCameraMode: () => {
     const cameraMode = get().cameraMode === 'locked' ? 'free' : 'locked'

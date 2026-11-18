@@ -31,6 +31,9 @@
   "select": {
     "title": "Choose your character",
     "subtitle": "This is who you'll walk into the café as.",
+    "nicknameLabel": "Name",
+    "nicknamePlaceholder": "Display name…",
+    "randomName": "Randomize name",
     "enter": "Enter the café",
     "previous": "Previous character",
     "next": "Next character",
@@ -76,6 +79,7 @@
     },
     "settings": {
       "title": "Settings",
+      "nickname": "Display name",
       "lite": "Lite mode",
       "liteHint": "No shadows, lower resolution, 30 fps, lighter rain. Use it if things feel choppy.",
       "time": "Time in the café",
@@ -85,7 +89,7 @@
         "night": "Night"
       },
       "musicVolume": "Café radio volume",
-      "ambienceVolume": "Street sounds volume"
+      "ambienceVolume": "Ambience volume"
     },
     "mute": "Mute",
     "unmute": "Unmute",
