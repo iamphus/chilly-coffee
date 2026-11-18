@@ -123,7 +123,7 @@ Dự án chia thành 4 giai đoạn. Mỗi giai đoạn phải đạt điều ki
 - [x] Cài Node.js (bản LTS), VS Code, Git
 - [x] Tạo tài khoản GitHub và Cloudflare; tạo repo chilly-coffee
 - [ ] Chọn 10–20 bài lofi CC0 hoặc CC BY, ghi link và giấy phép từng bài vào một bảng (tạm có 4 bài tự tạo bằng AI, ghi nguồn trong `assets/music/README.md`; kiểm tra điều khoản công cụ AI trước khi kiếm tiền)
-- [ ] Tìm âm thanh nền CC0: mưa, máy pha cà phê, cốc chén, tiếng mèo (đã có tiếng đường phố và mưa tự tạo bằng Web Audio, không cần giấy phép; còn máy pha cà phê, cốc chén, mèo)
+- [x] Tìm âm thanh nền: đường phố, mưa, máy pha cà phê và cốc chén đều tự sinh bằng Web Audio (`street.js`, `cafeInside.js`), không cần giấy phép (còn tiếng mèo nếu muốn thêm)
 - [ ] Nhắn xin phép chủ quán gốc vì bố cục quán dựa trên một quán thật
 - [ ] Kiểm tra tên miền Chilly Coffee còn trống không (chưa cần mua)
 - [ ] Lập danh sách 3–5 bạn sẽ dùng thử
@@ -138,7 +138,7 @@ Dự án chia thành 4 giai đoạn. Mỗi giai đoạn phải đạt điều ki
 - [x] Pomodoro gửi thông báo trình duyệt khi hết giờ
 - [x] Trình phát YouTube cho playlist riêng (app "Nhạc riêng" trên laptop; dán link playlist / video, lưu trên máy)
 - [x] TV quán phát nhạc tự host, đồng bộ theo đồng hồ; âm thanh khác nhau khi đứng trong hay ngoài quán
-- [ ] Nhạc quán lấy giờ chuẩn từ header `Date` của server (hiện dùng đồng hồ máy người dùng, máy sai giờ sẽ nghe lệch bài); hiện "Đang phát" trên màn hình TV (hiện mới ở thanh điều khiển)
+- [x] Nhạc quán lấy giờ chuẩn từ header `Date` của server (`radio.js`) để máy sai giờ vẫn nghe đúng đoạn; hiện bài đang phát ở thanh điều khiển và trong app Nhạc trên laptop (còn màn hình TV 3D trong quán nếu muốn vẽ chữ trực tiếp)
 - [x] Nút tai nghe + crossfade + hiệu ứng lọc tiếng (phím H; nhạc quán tắt dần nhưng vẫn chạy ngầm để giữ đồng bộ)
 - [x] Chế độ nhẹ; giảm fps khi ngồi bàn hoặc ẩn tab
 - [x] Trang chính sách riêng tư (YouTube yêu cầu với trang nhúng): `/privacy`, tiếng Việt và tiếng Anh
@@ -162,7 +162,7 @@ Dự án chia thành 4 giai đoạn. Mỗi giai đoạn phải đạt điều ki
 
 - [ ] Chọn và tùy chỉnh nhân vật
 - [ ] Thêm phòng: thư viện, ban công mưa
-- [ ] Phòng riêng cho nhóm bạn (vào bằng link mời)
+- [x] Phòng riêng cho nhóm bạn (vào bằng link mời `?room=…` hoặc tạo mã phòng ở góc trên trái `RoomPopover.jsx`)
 - [ ] Vote bài cho TV quán
 - [ ] Thống kê Pomodoro cá nhân theo tuần
 - [ ] Bản cho điện thoại (giao diện laptop thu gọn, cảnh 3D nhẹ hơn)
