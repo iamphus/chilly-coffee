@@ -100,9 +100,24 @@ export const useCafeStore = create((set, get) => ({
   },
   showToast: (key, params) => set(toast(key, params)),
   sitDown: (seat) => set({ seat, seatAt: Date.now(), laptopOpen: false, nearbySeat: null, action: null }),
-  standUp: () => set({ seat: null, seatAt: null, laptopOpen: false }),
+  standUp: () => {
+    // Đang mở laptop nghe tai nghe mà đứng dậy → trình phát YouTube đóng nên tự tháo tai nghe để nghe lại nhạc quán
+    const takeOff = get().laptopOpen && get().headphones
+    set({
+      seat: null,
+      seatAt: null,
+      laptopOpen: false,
+      ...(takeOff ? { headphones: false, ...toast('game.headphones.off') } : {}),
+    })
+  },
   openLaptop: () => set((state) => (state.seat ? { laptopOpen: true } : {})),
-  closeLaptop: () => set({ laptopOpen: false }),
+  closeLaptop: () => {
+    const takeOff = get().laptopOpen && get().headphones
+    set({
+      laptopOpen: false,
+      ...(takeOff ? { headphones: false, ...toast('game.headphones.off') } : {}),
+    })
+  },
   toggleAction: (action) => set((state) => ({ action: state.action === action ? null : action })),
   openCharacterChange: () => set({ changingCharacter: true, action: null }),
   closeCharacterChange: () => set({ changingCharacter: false }),
