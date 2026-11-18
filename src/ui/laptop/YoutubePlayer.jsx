@@ -6,7 +6,7 @@ import { useCafeStore } from '../../store.js'
 
 // Trình phát YouTube chính thức (IFrame Player API) cho nhạc riêng, theo chính sách YouTube:
 // luôn hiển thị (≥ 200×200 px), giữ nguyên logo / nút / quảng cáo, chỉ phát khi đang đeo tai nghe,
-// dừng khi ẩn tab, bị huỷ khi gập laptop (ghi lại chỗ đang nghe để lần sau nghe tiếp).
+// vẫn phát liên tục khi chuyển sang tab khác để học/làm việc, bị huỷ khi gập laptop (ghi lại chỗ đang nghe).
 // Nơi dùng đặt key theo link (`${type}:${id}`) để đổi link là dựng lại từ đầu.
 const FADE_IN_MS = 600
 const FADE_OUT_MS = 500
@@ -183,22 +183,6 @@ export default function YoutubePlayer() {
 
     return () => clearInterval(state.timer)
   }, [headphones, status])
-
-  // Ẩn tab / thu nhỏ cửa sổ: không phát khi trình phát không còn hiển thị
-  useEffect(() => {
-    const onVisibility = () => {
-      const instance = player.current
-      if (!instance || status !== 'ready') return
-      if (document.hidden) {
-        instance.pauseVideo?.()
-      } else if (useCafeStore.getState().headphones) {
-        instance.unMute?.()
-        instance.playVideo?.()
-      }
-    }
-    document.addEventListener('visibilitychange', onVisibility)
-    return () => document.removeEventListener('visibilitychange', onVisibility)
-  }, [status])
 
   const showStatus = status === 'loading' || status === 'error' || status === 'unavailable'
 
