@@ -56,10 +56,10 @@
     "passerby_jogger": "Jogger"
   },
   "game": {
-    "hint": "W A S D to walk · Click the floor to go there · Drag to look around · Scroll to zoom · V to switch camera · E to sit · R rain · Enter to chat",
+    "hint": "W A S D to walk · Click the floor to go there · M café map · V camera · E sit · H headphones · R rain · Enter chat",
     "me": "Me",
     "exit": "Leave the café",
-    "map": "Map (coming soon)",
+    "map": "Café map",
     "musicShort": "Café radio",
     "changeCharacter": "Change character",
     "sit": "Sit down",
@@ -90,6 +90,25 @@
       },
       "musicVolume": "Café radio volume",
       "ambienceVolume": "Ambience volume"
+    },
+    "mapModal": {
+      "title": "Café map",
+      "freeSeats": "{{count}} free seats",
+      "hint": "Click an empty seat to walk over and sit · M to close",
+      "yourSeat": "Your seat",
+      "occupied": "Occupied",
+      "clickToSit": "Click to sit here",
+      "goingToSeat": "Walking to table {{number}}…",
+      "seatBusy": "Table {{number}} is already taken.",
+      "legendFree": "Empty",
+      "legendPeer": "Others",
+      "zones": {
+        "study": "Study hall",
+        "garden": "Garden",
+        "back": "Back room",
+        "main": "Main room",
+        "street": "Alley"
+      }
     },
     "mute": "Mute",
     "unmute": "Unmute",

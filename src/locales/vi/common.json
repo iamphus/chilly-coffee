@@ -56,10 +56,10 @@
     "passerby_jogger": "Chạy bộ"
   },
   "game": {
-    "hint": "W A S D để đi · Bấm lên sàn để tới đó · Kéo chuột để nhìn quanh · Lăn chuột để phóng to/thu nhỏ · V đổi camera · E ngồi xuống · R mưa · Enter trò chuyện",
+    "hint": "W A S D để đi · Bấm lên sàn để tới đó · M sơ đồ quán · V đổi camera · E ngồi xuống · H tai nghe · R mưa · Enter trò chuyện",
     "me": "Tôi",
     "exit": "Rời quán",
-    "map": "Bản đồ (sắp có)",
+    "map": "Sơ đồ quán",
     "musicShort": "Nhạc quán",
     "changeCharacter": "Đổi nhân vật",
     "sit": "Ngồi xuống",
@@ -90,6 +90,25 @@
       },
       "musicVolume": "Âm lượng nhạc quán",
       "ambienceVolume": "Âm lượng tiếng nền"
+    },
+    "mapModal": {
+      "title": "Sơ đồ quán",
+      "freeSeats": "Còn {{count}} bàn trống",
+      "hint": "Bấm vào bàn trống để tự đi tới ngồi · phím M đóng",
+      "yourSeat": "Bàn của bạn",
+      "occupied": "Đang có người ngồi",
+      "clickToSit": "Bấm để tới ngồi",
+      "goingToSeat": "Đang đi tới bàn {{number}}…",
+      "seatBusy": "Bàn {{number}} đang có người ngồi.",
+      "legendFree": "Trống",
+      "legendPeer": "Cùng phòng",
+      "zones": {
+        "study": "Phòng lớn",
+        "garden": "Sân vườn",
+        "back": "Phòng sau",
+        "main": "Phòng chính",
+        "street": "Đầu hẻm"
+      }
     },
     "mute": "Tắt tiếng",
     "unmute": "Bật tiếng",

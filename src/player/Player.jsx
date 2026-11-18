@@ -12,6 +12,7 @@ import { useCafeStore } from '../store.js'
 import { createActionClips } from './actionClips.js'
 import { dampAngle } from './gameState.js'
 import { findPath, isBlocked } from './nav.js'
+import { playerBridge } from './playerBridge.js'
 import { readAxes, useKeyboard } from './useKeyboard.js'
 
 const WALK_SPEED = 1.6 // m/s
@@ -130,6 +131,32 @@ export default function Player({ gameRef, colliders }) {
   useEffect(() => {
     gameRef.current.height = height
   }, [gameRef, height])
+
+  // Cho sơ đồ quán 2D (CafeMap) ra lệnh đi tới một điểm hoặc một bàn trống (kể cả khi đang ngồi bàn khác)
+  useEffect(() => {
+    playerBridge.walkTo = (tx, tz, seatName = null) => {
+      const store = useCafeStore.getState()
+      if (store.changingCharacter) return false
+      if (store.seat) {
+        if (store.seat === seatName) return true
+        store.standUp()
+      }
+      // Đợi hiệu ứng đứng dậy trả lại vị trí đứng cạnh ghế (nếu vừa đứng dậy) rồi tìm đường
+      queueMicrotask(() => {
+        const { position } = gameRef.current
+        const route = findPath(position.x, position.z, tx, tz, 0.85)
+        if (!route?.length) return
+        pendingSeat.current = seatName ? { name: seatName, x: tx, z: tz } : null
+        path.current = route
+        const [endX, endZ] = route.at(-1)
+        setDestination(new Vector3(endX, position.y, endZ))
+      })
+      return true
+    }
+    return () => {
+      playerBridge.walkTo = null
+    }
+  }, [gameRef])
 
   useEffect(() => {
     const mixer = new AnimationMixer(model)
@@ -326,6 +353,9 @@ export default function Player({ gameRef, colliders }) {
     }
 
     state.moving = speed !== 0
+    playerBridge.x = position.x
+    playerBridge.z = position.z
+    playerBridge.yaw = state.yaw
     const inside = Boolean(store.seat) || isInside(position)
     if (inside !== store.inside) useCafeStore.setState({ inside })
 

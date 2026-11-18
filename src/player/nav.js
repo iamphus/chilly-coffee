@@ -16,6 +16,9 @@ const toCell = (x, z) => [Math.floor((z - z0) / cell), Math.floor((x - x0) / cel
 const toWorld = (r, c) => [x0 + (c + 0.5) * cell, z0 + (r + 0.5) * cell]
 const blockedRC = (r, c) => r < 0 || c < 0 || r >= H || c >= W || grid[r * W + c] === 1
 
+/** Thông tin lưới đi lại để vẽ sơ đồ quán 2D (CafeMap). */
+export const NAV_GRID = { x0, z0, cell, w: W, h: H, data: grid }
+
 /** Ô (x, z) có bị chặn không (ngoài lưới cũng tính là chặn). */
 export const isBlocked = (x, z) => blockedRC(...toCell(x, z))
 
