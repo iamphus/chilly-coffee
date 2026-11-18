@@ -215,6 +215,11 @@ export function isPresetAppearance(appearance) {
   )
 }
 
+/** Nếu người chơi giữ nguyên mẫu gốc thì ẩn NPC trùng mẫu đó; đã tự phối đồ khác đi thì giữ nguyên NPC. */
+export function excludedNpcIds(appearance) {
+  return isPresetAppearance(appearance) ? [appearance.base] : []
+}
+
 const ACC_SHORT = { glasses: 'g', headphones: 'h', cap: 'c', beret: 'r', backpack: 'b', tie: 't' }
 const SHORT_TO_ACC = Object.fromEntries(Object.entries(ACC_SHORT).map(([k, v]) => [v, k]))
 

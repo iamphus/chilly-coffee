@@ -3,6 +3,7 @@ import { useThree } from '@react-three/fiber'
 import { useGLTF } from '@react-three/drei'
 import cafeUrl from '../../assets/cafe/cafe.glb?url'
 import { audioEngine } from '../audio/audioEngine.js'
+import { excludedNpcIds } from '../characters/appearance.js'
 import NetworkSync from '../net/NetworkSync.jsx'
 import RemotePlayers from '../net/remote/RemotePlayers.jsx'
 import { createColliders } from '../player/colliders.js'
@@ -24,7 +25,7 @@ import Surroundings from './surroundings/Surroundings.jsx'
 
 
 export default function Scene() {
-  const characterId = useCafeStore((state) => state.characterId)
+  const appearance = useCafeStore((state) => state.appearance)
   const lite = useCafeStore((state) => state.lite)
   const timeOfDay = effectiveTimeOfDay(useCafeStore((state) => state.timeOfDay))
   const rain = useCafeStore((state) => state.rain)
@@ -42,8 +43,8 @@ export default function Scene() {
     return () => delete window.__chilly
   }, [gl])
 
-  // Nhân vật người chơi không xuất hiện thêm trong khách / người đi đường
-  const exclude = useMemo(() => [characterId], [characterId])
+  // Nhân vật người chơi (nếu giữ nguyên mẫu gốc) không xuất hiện thêm trong khách / người đi đường
+  const exclude = useMemo(() => excludedNpcIds(appearance), [appearance])
 
   return (
     <>

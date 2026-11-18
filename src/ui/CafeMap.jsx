@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { excludedNpcIds } from '../characters/appearance.js'
 import { peerMotion, useNetStore } from '../net/netStore.js'
 import { isBlocked, NAV_GRID } from '../player/nav.js'
 import { playerBridge } from '../player/playerBridge.js'
@@ -84,7 +85,7 @@ function getFloorplanCanvas() {
  */
 export default function CafeMap({ onClose }) {
   const { t } = useTranslation()
-  const characterId = useCafeStore((state) => state.characterId)
+  const appearance = useCafeStore((state) => state.appearance)
   const mySeat = useCafeStore((state) => state.seat)
   const showToast = useCafeStore((state) => state.showToast)
   const peers = useNetStore((state) => state.peers)
@@ -94,11 +95,11 @@ export default function CafeMap({ onClose }) {
 
   const { npcSeats, peerSeats } = useMemo(() => {
     const pSeats = new Set(Object.values(peers).map((peer) => peer.seat).filter(Boolean))
-    const nSeats = occupiedSeats([characterId])
+    const nSeats = occupiedSeats(excludedNpcIds(appearance))
     for (const s of pSeats) nSeats.delete(s)
     if (mySeat) nSeats.delete(mySeat)
     return { npcSeats: nSeats, peerSeats: pSeats }
-  }, [characterId, mySeat, peers])
+  }, [appearance, mySeat, peers])
 
   useEffect(() => {
     const onKey = (event) => {

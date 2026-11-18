@@ -302,7 +302,10 @@ export default function GameHud() {
             aria-label={t('game.changeCharacter')}
             data-label={t('game.changeCharacter')}
           >
-            <span className="hud-dot" style={{ background: CHARACTER_COLORS[characterId] }} />
+            <span
+              className="hud-dot"
+              style={{ background: store.appearance?.top ? `#${store.appearance.top}` : CHARACTER_COLORS[characterId] }}
+            />
           </button>
           {!laptopOpen && (
             <button

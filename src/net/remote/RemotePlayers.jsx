@@ -3,7 +3,9 @@ import { useFrame } from '@react-three/fiber'
 import { useGLTF } from '@react-three/drei'
 import { AnimationClip, AnimationMixer, Box3, LoopRepeat, Vector3 } from 'three'
 import cafeUrl from '../../../assets/cafe/cafe.glb?url'
+import { decodeAppearance } from '../../characters/appearance.js'
 import { CHARACTER_URLS, CLIPS } from '../../characters/characterAssets.js'
+import { getCustomCharacter } from '../../characters/customCharacter.js'
 import { DEFAULT_CHARACTER } from '../../characters/playableCharacters.js'
 import { createActionClips } from '../../player/actionClips.js'
 import { dampAngle } from '../../player/gameState.js'
@@ -21,7 +23,8 @@ const TAG_MAX_DISTANCE = 18 // m: xa hơn thì ẩn bảng tên
 /** Một người chơi khác: nhân vật đã chọn, đi lại mượt theo vị trí nhận được, ngồi / mở laptop / hành động. */
 function RemotePlayer({ id, peer }) {
   const characterId = CHARACTER_URLS[peer.character] ? peer.character : DEFAULT_CHARACTER
-  const { scene, animations } = useGLTF(CHARACTER_URLS[characterId])
+  const appearance = useMemo(() => decodeAppearance(peer.look, characterId), [peer.look, characterId])
+  const { scene, animations, nodeId } = useMemo(() => getCustomCharacter(appearance, characterId), [appearance, characterId])
   const { scene: cafe } = useGLTF(cafeUrl)
   const group = useRef(null)
   const animation = useRef(null)
@@ -46,7 +49,7 @@ function RemotePlayer({ id, peer }) {
       walk: AnimationClip.findByName(animations, CLIPS.WALK),
       type: AnimationClip.findByName(animations, CLIPS.TYPE),
       seatedDrink: AnimationClip.findByName(animations, CLIPS.DRINK),
-      ...createActionClips(characterId, animations),
+      ...createActionClips(nodeId, animations),
     }
     const actions = Object.fromEntries(Object.entries(clips).map(([key, clip]) => [key, mixer.clipAction(clip).setLoop(LoopRepeat, Infinity)]))
     actions.idle.play()
@@ -55,7 +58,7 @@ function RemotePlayer({ id, peer }) {
       mixer.stopAllAction()
       mixer.uncacheRoot(model)
     }
-  }, [model, animations, characterId])
+  }, [model, animations, nodeId])
 
   // Vị trí ban đầu = vị trí trong trạng thái (không trượt từ gốc toạ độ vào)
   useEffect(() => {

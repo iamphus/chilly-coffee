@@ -3,7 +3,9 @@ import { useFrame, useThree } from '@react-three/fiber'
 import { useGLTF } from '@react-three/drei'
 import { AnimationClip, AnimationMixer, Box3, LoopRepeat, Raycaster, Vector2, Vector3 } from 'three'
 import cafeUrl from '../../assets/cafe/cafe.glb?url'
-import { CHARACTER_URLS, CLIPS } from '../characters/characterAssets.js'
+import { excludedNpcIds } from '../characters/appearance.js'
+import { CLIPS } from '../characters/characterAssets.js'
+import { getCustomCharacter } from '../characters/customCharacter.js'
 import { occupiedSeats } from '../scene/guestList.js'
 import Laptop from '../scene/Laptop.jsx'
 import { SEAT_NAMES, laptopPoses, seatPose, seatYaw } from '../scene/seating.js'
@@ -85,9 +87,10 @@ function stepWithCollision(position, dx, dz) {
  */
 export default function Player({ gameRef, colliders }) {
   const characterId = useCafeStore((state) => state.characterId)
+  const appearance = useCafeStore((state) => state.appearance)
   const seat = useCafeStore((state) => state.seat)
   const laptopOpen = useCafeStore((state) => state.laptopOpen)
-  const { scene, animations } = useGLTF(CHARACTER_URLS[characterId])
+  const { scene, animations, nodeId } = useMemo(() => getCustomCharacter(appearance, characterId), [appearance, characterId])
   const { scene: cafe } = useGLTF(cafeUrl)
   const camera = useThree((state) => state.camera)
   const domElement = useThree((state) => state.gl.domElement)
@@ -119,13 +122,13 @@ export default function Player({ gameRef, colliders }) {
       .join(','),
   )
   const freeSeats = useMemo(() => {
-    const taken = occupiedSeats([characterId])
+    const taken = occupiedSeats(excludedNpcIds(appearance))
     for (const name of peerSeats.split(',')) if (name) taken.add(name)
     return SEAT_NAMES.filter((name) => !taken.has(name)).map((name) => {
       const { position } = seatPose(name)
       return { name, x: position[0], z: position[2] }
     })
-  }, [characterId, peerSeats])
+  }, [appearance, peerSeats])
   const laptop = useMemo(() => (seat ? laptopPoses(cafe, [seat])[0] : null), [cafe, seat])
 
   useEffect(() => {
@@ -160,7 +163,7 @@ export default function Player({ gameRef, colliders }) {
 
   useEffect(() => {
     const mixer = new AnimationMixer(model)
-    const extra = createActionClips(characterId, animations)
+    const extra = createActionClips(nodeId, animations)
     const clips = {
       idle: AnimationClip.findByName(animations, CLIPS.STAND),
       walk: AnimationClip.findByName(animations, CLIPS.WALK),
@@ -178,7 +181,7 @@ export default function Player({ gameRef, colliders }) {
       mixer.uncacheRoot(model)
       animation.current = null
     }
-  }, [model, animations, characterId])
+  }, [model, animations, nodeId])
 
   // Ngồi xuống / đứng dậy theo store.seat
   useEffect(() => {
