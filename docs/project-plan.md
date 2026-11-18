@@ -2,7 +2,7 @@
 
 Nov 11, 2026 · @NgTiens · cập nhật tiến độ 16/11/2026
 
-> **Tình trạng (16/11/2026):** web đang chạy công khai tại https://chilly-coffee.pages.dev, tự deploy mỗi khi merge vào `main`. Phần nhiều người của giai đoạn 2 (Supabase Realtime, chat) đã làm trước và đang chạy thật. Giai đoạn 1 còn thiếu cụm YouTube + nút tai nghe + trang chính sách riêng tư, và chưa có người dùng thử.
+> **Tình trạng (16/11/2026):** web đang chạy công khai tại https://chilly-coffee.pages.dev, tự deploy mỗi khi merge vào `main`. Phần nhiều người của giai đoạn 2 (Supabase Realtime, chat) đã làm trước và đang chạy thật. Giai đoạn 1 đã có YouTube, nút tai nghe và trang chính sách riêng tư (18/11/2026); còn thiếu người dùng thử.
 
 ## Tổng quan và mục tiêu
 
@@ -136,12 +136,12 @@ Dự án chia thành 4 giai đoạn. Mỗi giai đoạn phải đạt điều ki
 - [x] Click chọn bàn, camera zoom vào laptop
 - [x] Giao diện laptop: Pomodoro, to-do, ghi chú
 - [x] Pomodoro gửi thông báo trình duyệt khi hết giờ
-- [ ] Trình phát YouTube cho playlist riêng
+- [x] Trình phát YouTube cho playlist riêng (app "Nhạc riêng" trên laptop; dán link playlist / video, lưu trên máy)
 - [x] TV quán phát nhạc tự host, đồng bộ theo đồng hồ; âm thanh khác nhau khi đứng trong hay ngoài quán
 - [ ] Nhạc quán lấy giờ chuẩn từ header `Date` của server (hiện dùng đồng hồ máy người dùng, máy sai giờ sẽ nghe lệch bài); hiện "Đang phát" trên màn hình TV (hiện mới ở thanh điều khiển)
-- [ ] Nút tai nghe + crossfade + hiệu ứng lọc tiếng (cần làm cùng trình phát YouTube)
+- [x] Nút tai nghe + crossfade + hiệu ứng lọc tiếng (phím H; nhạc quán tắt dần nhưng vẫn chạy ngầm để giữ đồng bộ)
 - [x] Chế độ nhẹ; giảm fps khi ngồi bàn hoặc ẩn tab
-- [ ] Trang chính sách riêng tư (YouTube yêu cầu với trang nhúng)
+- [x] Trang chính sách riêng tư (YouTube yêu cầu với trang nhúng): `/privacy`, tiếng Việt và tiếng Anh
 - [x] Đưa lên mạng
 - [ ] Nhờ 3–5 bạn dùng thử và góp ý
 
@@ -151,7 +151,7 @@ Dự án chia thành 4 giai đoạn. Mỗi giai đoạn phải đạt điều ki
 
 - [ ] Đăng nhập bằng Supabase, lưu to-do và playlist theo tài khoản
 - [x] Server realtime: đồng bộ vị trí, chỗ ngồi, trạng thái (Supabase Realtime; khoá đặt trong `.env.local` khi chạy trên máy và trong biến môi trường của Cloudflare Pages khi chạy thật)
-- [x] Hiện nhân vật người khác, trạng thái trên đầu (còn: tai nghe khi đang đeo)
+- [x] Hiện nhân vật người khác, trạng thái trên đầu, biểu tượng tai nghe khi đang đeo
 - [x] Giới hạn số người mỗi phòng, tự mở phòng mới khi đầy
 - [x] Chat tự do (đổi so với kế hoạch gốc): lọc từ tục, giới hạn tốc độ, nút chặn
 - [ ] Báo cáo hoặc tạm khoá người quấy rối (nút chặn hiện chỉ có tác dụng trên máy người bấm; cần có trước khi chia sẻ link rộng)
