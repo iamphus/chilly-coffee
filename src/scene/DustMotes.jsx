@@ -3,12 +3,11 @@ import { useFrame } from '@react-three/fiber'
 import { AdditiveBlending, BufferAttribute, BufferGeometry } from 'three'
 import { glowTexture } from './glowTexture.js'
 
-// Hạt bụi sáng bay chậm trong quán, bắt ánh đèn vàng. Hai vùng: phòng chính và phòng làm việc lớn.
 const ROOMS = [
   { min: [-3.4, 0.4, -2.4], max: [3.0, 2.4, 2.7], count: 90 },
   { min: [-3.0, 0.4, -12.4], max: [3.0, 2.4, -6.6], count: 70 },
 ]
-const DRIFT = 0.12 // m: biên độ trôi
+const DRIFT = 0.12
 const SPEED = 0.25
 
 function seededRandom(seed) {
@@ -19,7 +18,7 @@ function seededRandom(seed) {
   }
 }
 
-export default function DustMotes({ opacity }) {
+export default function DustMotes({ opacity = 0.35, atmosphereRef = null }) {
   const points = useRef(null)
   const { geometry, base, phases } = useMemo(() => {
     const random = seededRandom(42)
@@ -41,9 +40,15 @@ export default function DustMotes({ opacity }) {
   }, [])
 
   useFrame(({ clock }) => {
-    if (!points.current) return
+    const node = points.current
+    if (!node) return
+    const currentOpacity = atmosphereRef?.current ? atmosphereRef.current.values.dust : opacity
+    node.visible = currentOpacity > 0.004
+    if (!node.visible) return
+    node.material.opacity = currentOpacity
+
     const t = clock.elapsedTime * SPEED
-    const positions = points.current.geometry.attributes.position
+    const positions = node.geometry.attributes.position
     for (let i = 0; i < phases.length; i++) {
       const p = phases[i]
       positions.array[i * 3] = base[i * 3] + Math.sin(t + p) * DRIFT
@@ -53,9 +58,8 @@ export default function DustMotes({ opacity }) {
     positions.needsUpdate = true
   })
 
-  if (opacity <= 0) return null
   return (
-    <points ref={points} geometry={geometry} renderOrder={3}>
+    <points ref={points} geometry={geometry} visible={opacity > 0.004} renderOrder={3}>
       <pointsMaterial
         map={glowTexture()}
         color="#ffd9a8"

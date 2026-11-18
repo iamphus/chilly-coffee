@@ -7,19 +7,17 @@ import WaterFeatures from './WaterFeatures.jsx'
 
 /**
  * Khung cảnh bên ngoài quán: công viên có đài phun nước bên kia đường, vườn hồ sen bên kia hẻm,
- * hàng cây, đèn công viên, đồi xa, bầu trời (trăng sao buổi tối, mây ban ngày).
- * Bố cục ở layout.js. Toàn bộ vẽ bằng instancing, không thêm đèn thật (trừ ánh trăng trong Lighting).
- * Người chơi chưa đi vào công viên được (nằm ngoài lưới đi lại nav.json), chỉ để ngắm.
+ * hàng cây, đèn công viên, đồi xa, bầu trời (trăng sao buổi tối, mây ban ngày / nắng chiều).
  */
-export default function Surroundings({ preset, lite = false }) {
+export default function Surroundings({ preset, atmosphereRef = null, lite = false }) {
   return (
     <>
-      <SkyDome preset={preset} />
+      <SkyDome preset={preset} atmosphereRef={atmosphereRef} />
       <Ground />
       <Garden />
-      <ParkFixtures preset={preset} />
+      <ParkFixtures preset={preset} atmosphereRef={atmosphereRef} />
       <WaterFeatures />
-      {!lite && <Fireflies opacity={preset.fireflies} />}
+      {!lite && <Fireflies opacity={preset.fireflies} atmosphereRef={atmosphereRef} />}
     </>
   )
 }

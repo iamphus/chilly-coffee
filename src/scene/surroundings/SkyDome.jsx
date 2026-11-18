@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { AdditiveBlending, BackSide, BufferAttribute, Color, SphereGeometry } from 'three'
 import { glowTexture } from '../glowTexture.js'
@@ -16,37 +16,22 @@ function seeded(seed) {
   }
 }
 
-/** Bầu trời chuyển màu từ chân trời lên đỉnh (màu theo đỉnh của hình cầu), không bị sương che. */
-function useGradientSphere(top, horizon) {
-  return useMemo(() => {
-    const geometry = new SphereGeometry(RADIUS, 32, 16)
-    const positions = geometry.attributes.position
-    const colors = new Float32Array(positions.count * 3)
-    const topColor = new Color(top)
-    const horizonColor = new Color(horizon)
-    const mixed = new Color()
-    for (let i = 0; i < positions.count; i++) {
-      const height = Math.max(0, positions.getY(i) / RADIUS) // dưới chân trời giữ màu chân trời
-      mixed.copy(horizonColor).lerp(topColor, Math.pow(height, 0.55))
-      mixed.toArray(colors, i * 3)
-    }
-    geometry.setAttribute('color', new BufferAttribute(colors, 3))
-    return geometry
-  }, [top, horizon])
-}
+const mixedScratch = new Color()
+const topScratch = new Color()
+const horizonScratch = new Color()
 
-function useStars() {
-  return useMemo(() => {
-    const random = seeded(7)
-    const positions = new Float32Array(STAR_COUNT * 3)
-    for (let i = 0; i < STAR_COUNT; i++) {
-      const angle = random() * Math.PI * 2
-      const height = 0.12 + random() * 0.88 // chỉ nửa trên bầu trời
-      const ring = Math.sqrt(1 - height * height)
-      positions.set([Math.cos(angle) * ring * (RADIUS - 2), height * (RADIUS - 2), Math.sin(angle) * ring * (RADIUS - 2)], i * 3)
-    }
-    return positions
-  }, [])
+function paintSkyColors(geometry, topColor, horizonColor) {
+  const positions = geometry.attributes.position
+  const colorAttr = geometry.attributes.color
+  const arr = colorAttr.array
+  for (let i = 0; i < positions.count; i++) {
+    const height = Math.max(0, positions.getY(i) / RADIUS)
+    mixedScratch.copy(horizonColor).lerp(topColor, Math.pow(height, 0.55))
+    arr[i * 3] = mixedScratch.r
+    arr[i * 3 + 1] = mixedScratch.g
+    arr[i * 3 + 2] = mixedScratch.b
+  }
+  colorAttr.needsUpdate = true
 }
 
 const CLOUDS = (() => {
@@ -66,15 +51,76 @@ const CLOUDS = (() => {
   return blobs
 })()
 
-/** Bầu trời đi theo camera: dải màu, sao và trăng buổi tối, mây ban ngày. */
-export default function SkyDome({ preset }) {
+/**
+ * Bầu trời đi theo camera: dải màu chân trời → đỉnh trời, sao & trăng buổi tối, mây ban ngày / hồng cam lúc hoàng hôn.
+ * Mọi lớp được gắn sẵn từ đầu (ẩn bằng visible khi opacity ≈ 0) để chuyển giờ mượt 60 fps không giật.
+ */
+export default function SkyDome({ preset, atmosphereRef = null }) {
   const group = useRef(null)
-  const sphere = useGradientSphere(preset.skyTop, preset.skyHorizon)
-  const stars = useStars()
+  const starsRef = useRef(null)
+  const moonHaloRef = useRef(null)
+  const moonDiscRef = useRef(null)
+  const cloudsRef = useRef(null)
+  const lastVersionRef = useRef(-1)
 
-  useFrame(({ camera }) => group.current?.position.copy(camera.position))
+  const sphere = useMemo(() => {
+    const geometry = new SphereGeometry(RADIUS, 32, 16)
+    geometry.setAttribute('color', new BufferAttribute(new Float32Array(geometry.attributes.position.count * 3), 3))
+    return geometry
+  }, [])
+
+  useEffect(() => {
+    if (atmosphereRef?.current) return
+    paintSkyColors(sphere, topScratch.set(preset.skyTop), horizonScratch.set(preset.skyHorizon))
+  }, [atmosphereRef, preset.skyHorizon, preset.skyTop, sphere])
+
+  const stars = useMemo(() => {
+    const random = seeded(7)
+    const positions = new Float32Array(STAR_COUNT * 3)
+    for (let i = 0; i < STAR_COUNT; i++) {
+      const angle = random() * Math.PI * 2
+      const height = 0.12 + random() * 0.88
+      const ring = Math.sqrt(1 - height * height)
+      positions.set([Math.cos(angle) * ring * (RADIUS - 2), height * (RADIUS - 2), Math.sin(angle) * ring * (RADIUS - 2)], i * 3)
+    }
+    return positions
+  }, [])
+
+  useFrame(({ camera }) => {
+    group.current?.position.copy(camera.position)
+    const atmo = atmosphereRef?.current
+    if (!atmo || lastVersionRef.current === atmo.version) return
+    lastVersionRef.current = atmo.version
+
+    paintSkyColors(sphere, atmo.colors.skyTop, atmo.colors.skyHorizon)
+
+    const starVis = atmo.values.stars
+    if (starsRef.current) {
+      starsRef.current.visible = starVis > 0.004
+      starsRef.current.material.opacity = 0.85 * starVis
+    }
+    if (moonHaloRef.current) {
+      moonHaloRef.current.visible = starVis > 0.004
+      moonHaloRef.current.material.opacity = 0.45 * starVis
+    }
+    if (moonDiscRef.current) {
+      moonDiscRef.current.visible = starVis > 0.004
+      moonDiscRef.current.material.opacity = starVis
+    }
+
+    const cloudVis = atmo.values.clouds
+    if (cloudsRef.current) {
+      cloudsRef.current.visible = cloudVis > 0.004
+      cloudsRef.current.material.opacity = cloudVis
+      cloudsRef.current.material.color.copy(atmo.colors.cloudColor)
+      cloudsRef.current.material.emissive.copy(atmo.colors.cloudColor)
+    }
+  })
 
   const moon = MOON_DIRECTION.map((value) => value * (RADIUS - 6))
+  const initStars = preset.stars ?? 0
+  const initClouds = preset.clouds ?? 0
+  const initCloudColor = preset.cloudColor ?? '#ffffff'
 
   return (
     <>
@@ -83,30 +129,63 @@ export default function SkyDome({ preset }) {
           <meshBasicMaterial vertexColors side={BackSide} fog={false} depthWrite={false} toneMapped={false} />
         </mesh>
 
-        {preset.stars > 0 && (
-          <>
-            <points renderOrder={-9}>
-              <bufferGeometry>
-                <bufferAttribute attach="attributes-position" args={[stars, 3]} />
-              </bufferGeometry>
-              <pointsMaterial color="#fff6e0" size={1.6} sizeAttenuation={false} transparent opacity={0.85 * preset.stars} fog={false} depthWrite={false} toneMapped={false} />
-            </points>
-            {/* Trăng: quầng sáng lớn + đĩa sáng nhỏ */}
-            <sprite position={moon} scale={16} renderOrder={-8}>
-              <spriteMaterial map={glowTexture()} color="#9fb2ff" transparent opacity={0.45} blending={AdditiveBlending} fog={false} depthWrite={false} toneMapped={false} />
-            </sprite>
-            <sprite position={moon} scale={4.2} renderOrder={-7}>
-              <spriteMaterial map={glowTexture()} color="#fff8e6" transparent opacity={1} fog={false} depthWrite={false} toneMapped={false} />
-            </sprite>
-          </>
-        )}
+        <points ref={starsRef} visible={initStars > 0.004} renderOrder={-9}>
+          <bufferGeometry>
+            <bufferAttribute attach="attributes-position" args={[stars, 3]} />
+          </bufferGeometry>
+          <pointsMaterial
+            color="#fff6e0"
+            size={1.6}
+            sizeAttenuation={false}
+            transparent
+            opacity={0.85 * initStars}
+            fog={false}
+            depthWrite={false}
+            toneMapped={false}
+          />
+        </points>
+
+        <sprite ref={moonHaloRef} visible={initStars > 0.004} position={moon} scale={16} renderOrder={-8}>
+          <spriteMaterial
+            map={glowTexture()}
+            color="#9fb2ff"
+            transparent
+            opacity={0.45 * initStars}
+            blending={AdditiveBlending}
+            fog={false}
+            depthWrite={false}
+            toneMapped={false}
+          />
+        </sprite>
+        <sprite ref={moonDiscRef} visible={initStars > 0.004} position={moon} scale={4.2} renderOrder={-7}>
+          <spriteMaterial
+            map={glowTexture()}
+            color="#fff8e6"
+            transparent
+            opacity={initStars}
+            fog={false}
+            depthWrite={false}
+            toneMapped={false}
+          />
+        </sprite>
       </group>
 
-      {preset.clouds > 0 && (
-        <Instances items={CLOUDS} material={{ color: '#ffffff', emissive: '#ffffff', emissiveIntensity: 0.35, roughness: 1, flatShading: true, fog: false, transparent: true, opacity: preset.clouds }}>
-          <icosahedronGeometry args={[1, 1]} />
-        </Instances>
-      )}
+      <Instances
+        ref={cloudsRef}
+        items={CLOUDS}
+        material={{
+          color: initCloudColor,
+          emissive: initCloudColor,
+          emissiveIntensity: 0.35,
+          roughness: 1,
+          flatShading: true,
+          fog: false,
+          transparent: true,
+          opacity: initClouds,
+        }}
+      >
+        <icosahedronGeometry args={[1, 1]} />
+      </Instances>
     </>
   )
 }

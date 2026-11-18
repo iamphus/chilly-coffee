@@ -53,8 +53,9 @@ const fragmentShader = /* glsl */ `
   }
 `
 
-export default function Rain({ count = 6000, color = '#c4d2e2', opacity = 0.62 }) {
+export default function Rain({ active = true, count = 6000, color = '#c4d2e2', opacity = 0.62 }) {
   const lines = useRef(null)
+  const blendRef = useRef(active ? 1 : 0)
   const geometry = useMemo(() => {
     let state = 12345
     const random = () => (state = (state * 16807) % 2147483647) / 2147483647
@@ -85,15 +86,27 @@ export default function Rain({ count = 6000, color = '#c4d2e2', opacity = 0.62 }
     [color, opacity],
   )
 
-  useFrame(({ camera, clock }) => {
-    const material = lines.current?.material
-    if (!material) return
+  useFrame(({ camera, clock }, dt) => {
+    const node = lines.current
+    if (!node) return
+    const goal = active ? 1 : 0
+    const diff = goal - blendRef.current
+    if (Math.abs(diff) > 0.002) {
+      blendRef.current += diff * (1 - Math.exp(-Math.min(dt, 0.1) / 0.45))
+    } else {
+      blendRef.current = goal
+    }
+    node.visible = blendRef.current > 0.004
+    if (!node.visible) return
+
+    const material = node.material
+    material.uniforms.uOpacity.value = opacity * blendRef.current
     material.uniforms.uTime.value = clock.elapsedTime
     material.uniforms.uCenter.value = camera.position.toArray()
   })
 
   return (
-    <lineSegments ref={lines} geometry={geometry} frustumCulled={false} renderOrder={4}>
+    <lineSegments ref={lines} geometry={geometry} visible={active} frustumCulled={false} renderOrder={4}>
       <shaderMaterial vertexShader={vertexShader} fragmentShader={fragmentShader} uniforms={uniforms} transparent depthWrite={false} />
     </lineSegments>
   )

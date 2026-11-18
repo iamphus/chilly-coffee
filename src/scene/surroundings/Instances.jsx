@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef } from 'react'
+import { useImperativeHandle, useLayoutEffect, useRef } from 'react'
 import { Color, Euler, Matrix4, Quaternion, Vector3 } from 'three'
 
 const matrix = new Matrix4()
@@ -14,9 +14,11 @@ const color = new Color()
  * children: hình học (vd. <boxGeometry />), material: props cho vật liệu;
  * basic: dùng meshBasicMaterial (không chịu ánh sáng: quầng đèn, vệt sáng) thay cho meshStandardMaterial.
  */
-export default function Instances({ items, children, material, basic = false, castShadow = false, receiveShadow = false, renderOrder }) {
+export default function Instances({ items, children, material, basic = false, castShadow = false, receiveShadow = false, renderOrder, ref }) {
   const mesh = useRef(null)
   const hasColor = items.some((item) => item.color)
+
+  useImperativeHandle(ref, () => mesh.current, [])
 
   useLayoutEffect(() => {
     const instanced = mesh.current
