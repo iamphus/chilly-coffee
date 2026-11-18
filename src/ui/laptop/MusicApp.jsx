@@ -4,7 +4,7 @@ import { parseYoutubeUrl } from '../../audio/youtube/parseYoutubeUrl.js'
 import { useYoutubeStore } from '../../audio/youtube/youtubeStore.js'
 import { useCafeStore } from '../../store.js'
 
-/** Nhạc riêng: dán link playlist / video YouTube; đeo tai nghe để nghe (trình phát nằm cạnh, xem YoutubePlayer). */
+/** Nhạc trên laptop: thông tin đài nhạc chung của quán + dán link playlist / video YouTube riêng. */
 export default function MusicApp() {
   const { t } = useTranslation()
   const source = useYoutubeStore((state) => state.source)
@@ -12,6 +12,9 @@ export default function MusicApp() {
   const clearSource = useYoutubeStore((state) => state.clearSource)
   const headphones = useCafeStore((state) => state.headphones)
   const toggleHeadphones = useCafeStore((state) => state.toggleHeadphones)
+  const musicOn = useCafeStore((state) => state.musicOn)
+  const nowPlaying = useCafeStore((state) => state.nowPlaying)
+  const setSound = useCafeStore((state) => state.setSound)
   const [draft, setDraft] = useState('')
   const [invalid, setInvalid] = useState(false)
   const inputId = useId()
@@ -29,12 +32,38 @@ export default function MusicApp() {
     setInvalid(false)
   }
 
+  const radioTitle = nowPlaying
+    ? nowPlaying.artist
+      ? `${nowPlaying.title ?? t('game.trackNumber', { number: nowPlaying.index + 1 })} — ${nowPlaying.artist}`
+      : (nowPlaying.title ?? t('game.trackNumber', { number: nowPlaying.index + 1 }))
+    : t('laptop.music.radioWaiting')
+
   return (
     <section className="music" aria-labelledby="music-title">
       <header className="laptop-app__header">
         <h2 id="music-title">{t('laptop.apps.music')}</h2>
         <span>{t('laptop.music.saved')}</span>
       </header>
+
+      <div className="music__radio">
+        <div className="music__radio-info">
+          <span className="music__radio-label">{t('laptop.music.radioTitle')}</span>
+          <strong>
+            {headphones
+              ? t('game.headphones.musicMuted')
+              : musicOn
+                ? radioTitle
+                : t('laptop.music.radioOff')}
+          </strong>
+        </div>
+        <button
+          type="button"
+          className="laptop-button"
+          onClick={() => (headphones ? toggleHeadphones() : setSound({ musicOn: !musicOn }))}
+        >
+          {headphones ? t('laptop.music.listenCafe') : musicOn ? t('game.musicOff') : t('game.musicOn')}
+        </button>
+      </div>
 
       <p className="music__lead">{t('laptop.music.lead')}</p>
 

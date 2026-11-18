@@ -146,6 +146,10 @@
     "close": "Gập máy",
     "music": {
       "saved": "Lưu trên máy này",
+      "radioTitle": "Đài phát của quán",
+      "radioWaiting": "Đang dò đài…",
+      "radioOff": "Đang tắt",
+      "listenCafe": "Nghe nhạc quán",
       "lead": "Dán link playlist hoặc video YouTube. Đeo tai nghe để nghe nhạc riêng: nhạc quán tắt dần, tiếng phố nhỏ lại. Tháo tai nghe thì nhạc riêng dừng.",
       "linkLabel": "Link YouTube",
       "save": "Lưu",

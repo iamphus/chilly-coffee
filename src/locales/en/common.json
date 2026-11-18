@@ -146,6 +146,10 @@
     "close": "Close laptop",
     "music": {
       "saved": "Saved on this device",
+      "radioTitle": "Café radio",
+      "radioWaiting": "Tuning in…",
+      "radioOff": "Turned off",
+      "listenCafe": "Listen to café",
       "lead": "Paste a YouTube playlist or video link. Put on headphones to listen: the café radio fades out and the street gets quieter. Take them off and your music stops.",
       "linkLabel": "YouTube link",
       "save": "Save",

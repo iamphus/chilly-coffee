@@ -1,10 +1,11 @@
 // Nhạc quán phát như một đài radio đồng bộ theo đồng hồ: coi danh sách bài là một đài đã phát liên tục
-// từ mốc EPOCH, nên mọi máy (đồng hồ đúng) cùng nghe một bài, cùng một giây — không cần server.
+// từ mốc EPOCH, nên mọi máy cùng nghe một bài, cùng một giây — không cần server riêng.
+// Để tránh lệch khi đồng hồ máy người dùng chạy sai, lấy giờ chuẩn từ header `Date` của chính trang web.
 import { TRACKS } from './tracks.js'
 
 const EPOCH = Date.UTC(2026, 0, 1) / 1000 // giây
 const RESYNC_EVERY_MS = 30_000
-const MAX_DRIFT = 3 // giây: lệch hơn thì nhảy về đúng chỗ
+const MAX_DRIFT = 2.5 // giây: lệch hơn thì nhảy về đúng chỗ
 
 function loadDuration(url) {
   return new Promise((resolve) => {
@@ -16,6 +17,25 @@ function loadDuration(url) {
   })
 }
 
+/** Độ lệch (giây) giữa giờ server (header HTTP Date) và đồng hồ máy. Không đọc được thì dùng 0. */
+async function fetchClockOffset() {
+  try {
+    const sentAt = Date.now()
+    const response = await fetch(window.location.origin + '/', { method: 'HEAD', cache: 'no-store' })
+    const receivedAt = Date.now()
+    const raw = response.headers.get('date')
+    if (!raw) return 0
+    const serverMs = Date.parse(raw)
+    if (!Number.isFinite(serverMs)) return 0
+    const localMidMs = (sentAt + receivedAt) / 2
+    const diffSec = (serverMs - localMidMs) / 1000
+    // Nếu lệch dưới 1.5 giây thì coi như đồng hồ máy đã chuẩn (bỏ qua độ trễ làm tròn 1 giây của HTTP Date)
+    return Math.abs(diffSec) < 1.5 ? 0 : diffSec
+  } catch {
+    return 0
+  }
+}
+
 export class Radio {
   constructor(onTrackChange) {
     this.element = new Audio()
@@ -23,20 +43,25 @@ export class Radio {
     this.onTrackChange = onTrackChange
     this.tracks = []
     this.current = -1
+    this.clockOffset = 0
     this.timer = null
     this.element.addEventListener('ended', () => this.sync(true))
   }
 
-  /** Đọc thời lượng các bài (cần để tính đang phát bài nào). Trả về false nếu không có bài nào. */
+  /** Đọc thời lượng các bài và giờ chuẩn server. Trả về false nếu không có bài nào. */
   async prepare() {
-    const durations = await Promise.all(TRACKS.map((track) => loadDuration(track.url)))
+    const [durations, offset] = await Promise.all([
+      Promise.all(TRACKS.map((track) => loadDuration(track.url))),
+      fetchClockOffset(),
+    ])
+    this.clockOffset = offset
     this.tracks = TRACKS.map((track, i) => ({ ...track, duration: durations[i] })).filter((track) => track.duration > 0)
     this.total = this.tracks.reduce((sum, track) => sum + track.duration, 0)
     return this.tracks.length > 0
   }
 
-  /** Bài và giây đang phát theo đồng hồ. */
-  position(now = Date.now() / 1000) {
+  /** Bài và giây đang phát theo đồng hồ đã bù độ lệch. */
+  position(now = Date.now() / 1000 + this.clockOffset) {
     let offset = (((now - EPOCH) % this.total) + this.total) % this.total
     for (let i = 0; i < this.tracks.length; i++) {
       if (offset < this.tracks[i].duration) return { index: i, offset }
