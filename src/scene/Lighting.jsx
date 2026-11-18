@@ -3,7 +3,7 @@ import { useFrame } from '@react-three/fiber'
 import { Environment } from '@react-three/drei'
 import { Color, LinearSRGBColorSpace, Object3D } from 'three'
 import cafeMeta from '../../assets/cafe/cafe.meta.json'
-import { LIGHTING_PRESETS } from './lightingPresets.js'
+import { LIGHTING_PRESETS, SUN_TARGET } from './lightingPresets.js'
 import { useRoomEnvironmentMap } from './useRoomEnvironmentMap.js'
 
 /*
@@ -11,15 +11,14 @@ import { useRoomEnvironmentMap } from './useRoomEnvironmentMap.js'
  * - Giữ TẤT CẢ nguồn sáng (kể cả đèn ánh trăng) luôn gắn trong cảnh từ khung hình đầu tiên, chỉ đổi cường độ về 0
  *   khi ban ngày. Nhờ đó số lượng đèn trong shader không bao giờ đổi → chuyển Ngày / Nắng chiều / Tối không bao giờ
  *   biên dịch lại shader WebGL (0 ms khựng).
- * - Ngân sách hiệu năng: chỉ 1 đèn đổ bóng (mặt trời).
+ * - Ngân sách hiệu năng: chỉ 1 đèn đổ bóng (mặt trời ban ngày, tự chuyển thành ánh trăng bạc dịu vào ban đêm).
  */
 const LEGACY_SCALE = Math.PI
 
 const linear = (hex) => new Color().setHex(hex, LinearSRGBColorSpace)
 
-const DEFAULT_SUN_POS = [-6, 10, 3]
-const SUN_TARGET = [0, 0, -4.5]
-const SUN_SHADOW_EXTENT = 13
+const DEFAULT_SUN_POS = [-7.5, 13.8, 14.5]
+const SUN_SHADOW_EXTENT = 17.5
 
 const SPOTS = [
   [0, 3.15, 0.2],
@@ -73,6 +72,7 @@ export default function Lighting({ preset = LIGHTING_PRESETS.day, atmosphereRef 
       sunRef.current.intensity = v.sun * LEGACY_SCALE
       sunRef.current.color.copy(c.sunColor)
       sunRef.current.position.set(atmo.sunPosition[0], atmo.sunPosition[1], atmo.sunPosition[2])
+      sunRef.current.shadow.radius = v.shadowRadius || 1.8
     }
     for (let i = 0; i < spotRefs.current.length; i++) {
       if (spotRefs.current[i]) spotRefs.current[i].intensity = v.spot * LEGACY_SCALE
@@ -111,13 +111,15 @@ export default function Lighting({ preset = LIGHTING_PRESETS.day, atmosphereRef 
         target={sunTarget}
         castShadow={shadows}
         shadow-mapSize={[2048, 2048]}
-        shadow-bias={-0.0005}
+        shadow-bias={-0.0003}
+        shadow-normalBias={0.02}
+        shadow-radius={preset.shadowRadius ?? 1.8}
         shadow-camera-left={-SUN_SHADOW_EXTENT}
         shadow-camera-right={SUN_SHADOW_EXTENT}
         shadow-camera-top={SUN_SHADOW_EXTENT}
         shadow-camera-bottom={-SUN_SHADOW_EXTENT}
         shadow-camera-near={1}
-        shadow-camera-far={40}
+        shadow-camera-far={55}
       />
 
       {SPOTS.map(([x, y, z], i) => (

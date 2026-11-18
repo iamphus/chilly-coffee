@@ -2,10 +2,11 @@ import { useEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { AdditiveBlending, BackSide, BufferAttribute, Color, SphereGeometry } from 'three'
 import { glowTexture } from '../glowTexture.js'
+import { MOON_DIRECTION, SUN_TARGET } from '../lightingPresets.js'
 import Instances from './Instances.jsx'
 
 const RADIUS = 62 // nhỏ hơn camera.far (80); bầu trời luôn đi theo camera nên không bao giờ chạm tới
-const MOON_DIRECTION = [-0.45, 0.42, 0.79] // cùng phía với ánh trăng trong Lighting.jsx
+const SUN_DISTANCE = RADIUS - 7
 const STAR_COUNT = 420
 
 function seeded(seed) {
@@ -34,6 +35,15 @@ function paintSkyColors(geometry, topColor, horizonColor) {
   colorAttr.needsUpdate = true
 }
 
+function sunSkyOffset(sunPosition) {
+  const sp = sunPosition ?? [-7.5, 13.8, 14.5]
+  const dx = sp[0] - SUN_TARGET[0]
+  const dy = sp[1] - SUN_TARGET[1]
+  const dz = sp[2] - SUN_TARGET[2]
+  const len = Math.hypot(dx, dy, dz) || 1
+  return [(dx / len) * SUN_DISTANCE, (dy / len) * SUN_DISTANCE, (dz / len) * SUN_DISTANCE]
+}
+
 const CLOUDS = (() => {
   const random = seeded(11)
   const blobs = []
@@ -52,12 +62,15 @@ const CLOUDS = (() => {
 })()
 
 /**
- * Bầu trời đi theo camera: dải màu chân trời → đỉnh trời, sao & trăng buổi tối, mây ban ngày / hồng cam lúc hoàng hôn.
+ * Bầu trời đi theo camera: dải màu chân trời → đỉnh trời, vầng mặt trời xoay theo đúng giờ nắng,
+ * sao & trăng buổi tối, mây ban ngày / hồng cam lúc hoàng hôn.
  * Mọi lớp được gắn sẵn từ đầu (ẩn bằng visible khi opacity ≈ 0) để chuyển giờ mượt 60 fps không giật.
  */
 export default function SkyDome({ preset, atmosphereRef = null }) {
   const group = useRef(null)
   const starsRef = useRef(null)
+  const sunHaloRef = useRef(null)
+  const sunDiscRef = useRef(null)
   const moonHaloRef = useRef(null)
   const moonDiscRef = useRef(null)
   const cloudsRef = useRef(null)
@@ -94,6 +107,20 @@ export default function SkyDome({ preset, atmosphereRef = null }) {
 
     paintSkyColors(sphere, atmo.colors.skyTop, atmo.colors.skyHorizon)
 
+    const sunVis = atmo.values.sunGlow
+    const [sx, sy, sz] = sunSkyOffset(atmo.sunPosition)
+    if (sunHaloRef.current) {
+      sunHaloRef.current.visible = sunVis > 0.004
+      sunHaloRef.current.position.set(sx, sy, sz)
+      sunHaloRef.current.material.opacity = 0.52 * sunVis
+      sunHaloRef.current.material.color.copy(atmo.colors.sunColor)
+    }
+    if (sunDiscRef.current) {
+      sunDiscRef.current.visible = sunVis > 0.004
+      sunDiscRef.current.position.set(sx, sy, sz)
+      sunDiscRef.current.material.opacity = 0.95 * sunVis
+    }
+
     const starVis = atmo.values.stars
     if (starsRef.current) {
       starsRef.current.visible = starVis > 0.004
@@ -117,7 +144,10 @@ export default function SkyDome({ preset, atmosphereRef = null }) {
     }
   })
 
+  const sun = sunSkyOffset(preset.sunPosition)
   const moon = MOON_DIRECTION.map((value) => value * (RADIUS - 6))
+  const initSunGlow = preset.sunGlow ?? 0
+  const initSunColor = preset.sunColor ?? '#fff4e0'
   const initStars = preset.stars ?? 0
   const initClouds = preset.clouds ?? 0
   const initCloudColor = preset.cloudColor ?? '#ffffff'
@@ -144,6 +174,31 @@ export default function SkyDome({ preset, atmosphereRef = null }) {
             toneMapped={false}
           />
         </points>
+
+        <sprite ref={sunHaloRef} visible={initSunGlow > 0.004} position={sun} scale={28} renderOrder={-8}>
+          <spriteMaterial
+            map={glowTexture()}
+            color={initSunColor}
+            transparent
+            opacity={0.52 * initSunGlow}
+            blending={AdditiveBlending}
+            fog={false}
+            depthWrite={false}
+            toneMapped={false}
+          />
+        </sprite>
+        <sprite ref={sunDiscRef} visible={initSunGlow > 0.004} position={sun} scale={5.2} renderOrder={-7}>
+          <spriteMaterial
+            map={glowTexture()}
+            color="#fffdf2"
+            transparent
+            opacity={0.95 * initSunGlow}
+            blending={AdditiveBlending}
+            fog={false}
+            depthWrite={false}
+            toneMapped={false}
+          />
+        </sprite>
 
         <sprite ref={moonHaloRef} visible={initStars > 0.004} position={moon} scale={16} renderOrder={-8}>
           <spriteMaterial

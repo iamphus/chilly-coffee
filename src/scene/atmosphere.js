@@ -9,6 +9,9 @@ const NUM_FIELDS = [
   'environment',
   'hemisphere',
   'sun',
+  'shadowRadius',
+  'sunbeam',
+  'sunGlow',
   'spot',
   'lampMultiplier',
   'lampGlow',
@@ -35,8 +38,9 @@ export function createAtmosphere(initialPreset) {
   const values = {}
   const targets = {}
   for (const key of NUM_FIELDS) {
-    values[key] = initialPreset[key]
-    targets[key] = initialPreset[key]
+    const initVal = initialPreset[key] ?? 0
+    values[key] = initVal
+    targets[key] = initVal
   }
 
   return {
@@ -52,7 +56,7 @@ export function createAtmosphere(initialPreset) {
 }
 
 export function setAtmosphereTarget(atmo, preset) {
-  for (const key of NUM_FIELDS) atmo.targets[key] = preset[key]
+  for (const key of NUM_FIELDS) atmo.targets[key] = preset[key] ?? 0
   for (const key of COLOR_FIELDS) atmo.targetColors[key].set(preset[key])
   const sp = preset.sunPosition ?? [-6, 10, 3]
   atmo.targetSunPosition[0] = sp[0]
