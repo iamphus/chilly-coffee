@@ -19,7 +19,7 @@ const CAMERA = {
 
 const LIMITED_FPS = 30
 
-/** Vẽ đều {fps} khung hình/giây (dùng với frameloop="demand") để đỡ nóng máy khi ngồi bàn hoặc ở chế độ nhẹ. */
+/** Vẽ đều {fps} khung hình/giây (dùng với frameloop="demand") để đỡ nóng máy ở chế độ nhẹ. */
 function FrameLimiter({ fps }) {
   const invalidate = useThree((state) => state.invalidate)
   useEffect(() => {
@@ -70,8 +70,7 @@ export default function CafeCanvas() {
   const { t } = useTranslation()
   const sceneReady = useCafeStore((state) => state.sceneReady)
   const lite = useCafeStore((state) => state.lite)
-  const laptopOpen = useCafeStore((state) => state.laptopOpen)
-  const limited = lite || laptopOpen // chế độ nhẹ hoặc khi mở laptop: khóa 30fps demand loop để tiết kiệm pin & GPU
+  const limited = lite // chỉ chế độ nhẹ mới khoá 30 khung hình/giây (mở laptop vẫn chạy mượt, xem 2e91fad)
 
   return (
     <>
