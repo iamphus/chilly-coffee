@@ -43,7 +43,7 @@ function Swatches({ colors, value, onPick, label }) {
 /**
  * Tủ đồ phối trang phục 3D trực tiếp: kiểu tóc, kiểu áo, quần dài/ngắn, giày, màu da và phụ kiện.
  */
-export default function WardrobePanel({ appearance, onChange, disabled = false }) {
+export default function WardrobePanel({ appearance, onChange, disabled = false, ref }) {
   const { t } = useTranslation()
   const [tab, setTab] = useState('hair')
 
@@ -69,7 +69,7 @@ export default function WardrobePanel({ appearance, onChange, disabled = false }
   const unmodified = isPresetAppearance(appearance)
 
   return (
-    <aside className="wardrobe" aria-label={t('select.wardrobe.title')}>
+    <aside ref={ref} className="wardrobe" aria-label={t('select.wardrobe.title')}>
       <div className="wardrobe__header">
         <strong>{t('select.wardrobe.title')}</strong>
         <div className="wardrobe__quick">
