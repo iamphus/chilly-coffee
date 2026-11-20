@@ -413,5 +413,13 @@
         ]
       }
     ]
+  },
+  "language": {
+    "label": "Language",
+    "change": "Change language",
+    "names": {
+      "vi": "Tiếng Việt",
+      "en": "English"
+    }
   }
 }

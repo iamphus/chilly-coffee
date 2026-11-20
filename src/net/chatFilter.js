@@ -18,7 +18,9 @@ const BANNED = [
 ]
 
 const escape = (word) => word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/ /g, '\\s+')
-const PATTERN = new RegExp(`(?<![\\p{L}\\p{N}])(?:${BANNED.map(escape).join('|')})(?![\\p{L}\\p{N}])`, 'giu')
+// Cụm dài đứng trước: regex thử các nhánh theo thứ tự, nếu 'đụ' đứng trước 'đụ má' thì chỉ che được '** má'
+const BY_LENGTH = [...BANNED].sort((a, b) => b.length - a.length)
+const PATTERN = new RegExp(`(?<![\\p{L}\\p{N}])(?:${BY_LENGTH.map(escape).join('|')})(?![\\p{L}\\p{N}])`, 'giu')
 
 /** Làm sạch tin nhắn trước khi gửi và khi nhận. Trả về '' nếu không còn gì. */
 export function cleanMessage(raw) {

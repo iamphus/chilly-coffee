@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { CHARACTER_COLORS } from '../characters/playableCharacters.js'
 import { remainingMs, useFocusStore } from '../focus/focusStore.js'
 import { formatTime } from '../focus/format.js'
+import { LANGUAGES } from '../i18n.js'
 import { useNow } from '../focus/useNow.js'
 import { useNetStore } from '../net/netStore.js'
 import { isPrivateRoom } from '../net/roomCode.js'
@@ -101,9 +102,9 @@ function VolumeSlider({ label, value, onChange }) {
   )
 }
 
-/** Cài đặt: tên hiển thị, chế độ nhẹ, âm lượng, ngày / đêm */
+/** Cài đặt: tên hiển thị, chế độ nhẹ, âm lượng, ngày / đêm, ngôn ngữ */
 function SettingsPopover({ onClose }) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const store = useCafeStore()
   const nickname = useCafeStore((state) => state.nickname)
   const setNickname = useCafeStore((state) => state.setNickname)
@@ -178,6 +179,15 @@ function SettingsPopover({ onClose }) {
           <label key={option}>
             <input type="radio" name="time-of-day" value={option} checked={timeOfDay === option} onChange={() => setTimeOfDay(option)} />
             <span>{t(`game.settings.timeOptions.${option}`)}</span>
+          </label>
+        ))}
+      </fieldset>
+      <fieldset className="hud-segmented">
+        <legend>{t('language.label')}</legend>
+        {LANGUAGES.map((option) => (
+          <label key={option}>
+            <input type="radio" name="language" value={option} checked={i18n.resolvedLanguage === option} onChange={() => i18n.changeLanguage(option)} />
+            <span lang={option}>{t(`language.names.${option}`)}</span>
           </label>
         ))}
       </fieldset>

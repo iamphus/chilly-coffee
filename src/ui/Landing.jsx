@@ -6,6 +6,7 @@ import landingPoster from '../../assets/video/landing-poster.jpg'
 import { loadCafeCanvas } from '../scene/loadCafeCanvas.js'
 import { loadCharacterSelect } from './characterSelect/loadCharacterSelect.js'
 import { audioEngine } from '../audio/audioEngine.js'
+import { LANGUAGES } from '../i18n.js'
 import { useCafeStore } from '../store.js'
 
 const LEAVE_DURATION_MS = 700 // khớp với transition của .landing--leaving trong styles.css
@@ -90,7 +91,8 @@ function usePrefetchCafe() {
 
 /** Màn hình đầu tiên: video quảng cáo quán chạy nền, giới thiệu và nút "Vào quán". */
 export default function Landing() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const otherLanguage = LANGUAGES.find((language) => language !== i18n.resolvedLanguage) ?? LANGUAGES[0]
   const choosing = useCafeStore((state) => state.choosing)
   const openCharacterSelect = useCafeStore((state) => state.openCharacterSelect)
   const [gone, setGone] = useState(false)
@@ -143,6 +145,15 @@ export default function Landing() {
         <CupLogo />
         <span className="landing__brand">Chilly Coffee</span>
         <span className="pill">{t('landing.badge')}</span>
+        <button
+          type="button"
+          className="landing__language"
+          lang={otherLanguage}
+          title={t('language.change')}
+          onClick={() => i18n.changeLanguage(otherLanguage)}
+        >
+          {t(`language.names.${otherLanguage}`)}
+        </button>
       </header>
 
       <main className="landing__hero">
