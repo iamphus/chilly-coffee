@@ -59,7 +59,7 @@ const FEATURE_ICONS = {
 const FEATURES = [
   { key: 'focus' },
   { key: 'music' },
-  { key: 'together', soon: true },
+  { key: 'together' }, // đã có: ngồi cùng phòng + chat chữ (đặt soon: true cho mục nào chưa làm xong)
 ]
 
 /**
@@ -143,7 +143,7 @@ export default function Landing() {
 
       <header className="landing__header">
         <CupLogo />
-        <span className="landing__brand">Chilly Coffee</span>
+        <span className="landing__brand">Chilly Coffee</span>{' '}
         <span className="pill">{t('landing.badge')}</span>
         <button
           type="button"
@@ -190,7 +190,12 @@ export default function Landing() {
               <div>
                 <h2 className="feature__title">
                   {t(`landing.features.${key}.title`)}
-                  {soon && <span className="pill pill--soft">{t('landing.soon')}</span>}
+                  {soon && (
+                    <>
+                      {' '}
+                      <span className="pill pill--soft">{t('landing.soon')}</span>
+                    </>
+                  )}
                 </h2>
                 <p className="feature__text">{t(`landing.features.${key}.text`)}</p>
               </div>

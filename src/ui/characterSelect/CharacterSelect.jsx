@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useState } from 'react'
+import { Suspense, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { useTranslation } from 'react-i18next'
 import { audioEngine } from '../../audio/audioEngine.js'
@@ -41,6 +41,11 @@ export default function CharacterSelect({ mode = 'enter' }) {
   const [customizing, setCustomizing] = useState(() => !isPresetAppearance(savedAppearance))
   const [nameDraft, setNameDraft] = useState(nickname)
   const [gone, setGone] = useState(false)
+  const rootRef = useRef(null)
+  const headerRef = useRef(null)
+  const wardrobeRef = useRef(null)
+  const panelRef = useRef(null)
+  const layoutRef = useRef(null) // vị trí tủ đồ cho camera (xem CameraRig)
 
   const characterId = PLAYABLE_CHARACTERS[selected]
   const leaving = !changing && entered && sceneReady
@@ -80,6 +85,34 @@ export default function CharacterSelect({ mode = 'enter' }) {
     return () => window.removeEventListener('keydown', onKey)
   })
 
+  // Tủ đồ ở cột phải (màn ngang) hay là ngăn kéo dưới (màn dọc / hẹp, theo CSS): báo cho camera
+  // phần trống còn lại để đặt nhân vật vào đó. Đo lại khi đổi kích thước cửa sổ, đổi tab tủ đồ…
+  useLayoutEffect(() => {
+    const root = rootRef.current
+    const wardrobe = wardrobeRef.current
+    if (!customizing || !root || !wardrobe) {
+      layoutRef.current = null
+      return undefined
+    }
+    const measure = () => {
+      const box = root.getBoundingClientRect()
+      const drawer = wardrobe.getBoundingClientRect()
+      const header = headerRef.current?.getBoundingClientRect()
+      const offCenter = drawer.left + drawer.width / 2 - (box.left + box.width / 2)
+      layoutRef.current =
+        offCenter > box.width * 0.1
+          ? { layout: 'side' }
+          : { layout: 'drawer', top: (header ? header.bottom : box.top) - box.top, bottom: drawer.top - box.top }
+    }
+    measure()
+    const observer = new ResizeObserver(measure)
+    for (const element of [root, wardrobe, headerRef.current, panelRef.current]) if (element) observer.observe(element)
+    return () => {
+      observer.disconnect()
+      layoutRef.current = null
+    }
+  }, [customizing])
+
   useEffect(() => {
     if (!leaving) return undefined
     const timer = setTimeout(() => {
@@ -103,7 +136,7 @@ export default function CharacterSelect({ mode = 'enter' }) {
   const modified = !isPresetAppearance(appearance)
 
   return (
-    <div className={leaving ? 'char-select char-select--leaving' : 'char-select'}>
+    <div ref={rootRef} className={leaving ? 'char-select char-select--leaving' : 'char-select'}>
       <Canvas
         className="char-select__canvas"
         dpr={[1, 1.5]}
@@ -114,18 +147,18 @@ export default function CharacterSelect({ mode = 'enter' }) {
         }}
       >
         <Suspense fallback={null}>
-          <CharacterLineup selected={selected} onSelect={pickPreset} appearance={appearance} customizing={customizing} />
+          <CharacterLineup selected={selected} onSelect={pickPreset} appearance={appearance} customizing={customizing} layoutRef={layoutRef} />
         </Suspense>
       </Canvas>
 
-      <header className="char-select__header">
+      <header ref={headerRef} className="char-select__header">
         <h1>{t('select.title')}</h1>
         <p>{t('select.subtitle')}</p>
       </header>
 
-      {customizing && <WardrobePanel appearance={appearance} onChange={setAppearance} disabled={locked} />}
+      {customizing && <WardrobePanel ref={wardrobeRef} appearance={appearance} onChange={setAppearance} disabled={locked} />}
 
-      <div className="char-select__panel">
+      <div ref={panelRef} className="char-select__panel">
         <div className="char-select__top-row">
           <div className="char-select__nickname">
             <label htmlFor="char-select-nickname">{t('select.nicknameLabel')}</label>
