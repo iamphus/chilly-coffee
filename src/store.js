@@ -35,8 +35,10 @@ function save(key, value) {
   }
 }
 
+/** Trả về '' nếu tên không dùng được (rỗng, hoặc sau khi che từ tục chỉ còn '**' / ký hiệu) để gán tên ngẫu nhiên. */
 function sanitizeNickname(raw) {
-  return cleanMessage(raw).slice(0, MAX_NICKNAME_LENGTH).trim()
+  const cleaned = cleanMessage(raw).slice(0, MAX_NICKNAME_LENGTH).trim()
+  return /[\p{L}\p{N}]/u.test(cleaned) ? cleaned : ''
 }
 
 function loadNickname() {

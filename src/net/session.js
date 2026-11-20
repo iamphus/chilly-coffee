@@ -55,9 +55,10 @@ export function sendMove(move) {
 export function sendChat(raw) {
   const text = cleanMessage(raw)
   if (!text) return 'empty'
-  if (!transport) return 'offline'
-  if (!limiter.allow()) return 'tooFast'
   const net = useNetStore.getState()
+  // Kênh rớt (mất mạng, Supabase CHANNEL_ERROR / TIMED_OUT) thì không ai nhận được: báo offline thay vì hiện tin như đã gửi
+  if (!transport || !net.connected) return 'offline'
+  if (!limiter.allow()) return 'tooFast'
   const at = Date.now()
   transport.sendChat({ text, at })
   net.addMessage({ key: `${net.selfId}-${at}`, from: net.selfId, name: useCafeStore.getState().nickname, text, at, self: true })

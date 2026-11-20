@@ -40,7 +40,7 @@ export default function Guests({ exclude = [] }) {
   return (
     <>
       {guests.map((guest) => (
-        <Character key={guest.seat} id={guest.id} clip={guest.clip} startTime={guest.startTime} {...seatPose(guest.seat)} />
+        <Character key={guest.seat} id={guest.id} clip={guest.clip} startTime={guest.startTime} castShadow={false} {...seatPose(guest.seat)} />
       ))}
       {laptops.map(({ seat, ...pose }) => (
         <Laptop key={`laptop-${seat}`} {...pose} />
@@ -53,6 +53,7 @@ export default function Guests({ exclude = [] }) {
           timeScale={barista.timeScale}
           position={barista.position}
           rotation={[0, barista.yaw, 0]}
+          castShadow={false}
         />
       ))}
     </>

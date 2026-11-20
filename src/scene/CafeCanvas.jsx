@@ -70,7 +70,8 @@ export default function CafeCanvas() {
   const { t } = useTranslation()
   const sceneReady = useCafeStore((state) => state.sceneReady)
   const lite = useCafeStore((state) => state.lite)
-  const limited = lite // chỉ chế độ nhẹ mới khoá 30 khung hình/giây (ngồi laptop vẫn chạy mượt)
+  const laptopOpen = useCafeStore((state) => state.laptopOpen)
+  const limited = lite || laptopOpen // chế độ nhẹ hoặc khi mở laptop: khóa 30fps demand loop để tiết kiệm pin & GPU
 
   return (
     <>

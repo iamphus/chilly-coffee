@@ -159,6 +159,28 @@ button:focus-visible {
   gap: 10px;
 }
 
+.landing__language {
+  margin-left: auto;
+  padding: 6px 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(var(--scrim), 0.35);
+  color: var(--text-primary);
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.landing__language:hover {
+  background: rgba(246, 238, 227, 0.12);
+}
+
+.landing__language:focus-visible {
+  outline: 2px solid var(--accent-soft);
+  outline-offset: 3px;
+}
+
 .landing__brand {
   font-size: var(--text-lg);
   font-weight: 800;
