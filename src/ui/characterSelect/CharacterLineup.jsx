@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import { ContactShadows, Environment } from '@react-three/drei'
+import { Vector3 } from 'three'
 import Character from '../../characters/Character.jsx'
 import { CLIPS, preloadCharacters } from '../../characters/characterAssets.js'
 import CustomCharacter from '../../characters/CustomCharacter.jsx'
@@ -12,6 +13,10 @@ const STEP_FORWARD = 0.45 // người đang chọn bước lên trước
 const MOVE_TAU = 0.12 // giây
 const CAMERA = { height: 1.0, distance: 4.6, lookHeight: 0.28 }
 const CLOSEUP_CAMERA = { height: 0.88, distance: 3.1, lookHeight: 0.42 }
+// Khung bao gần đúng của nhân vật chibi (m), dùng để đặt nhân vật vào phần trống phía trên ngăn kéo tủ đồ
+const CHARACTER_HEIGHT = 1.15
+const CHARACTER_HALF_WIDTH = 0.42
+const FOCUS_FILL = 0.92 // nhân vật chiếm tối đa 92% vùng trống
 
 const xOf = (index) => (index - (PLAYABLE_CHARACTERS.length - 1) / 2) * SPACING
 const ease = (dt) => 1 - Math.exp(-dt / MOVE_TAU)
@@ -68,8 +73,22 @@ function SelectionRing({ selected }) {
   )
 }
 
-/** Camera trượt ngang theo nhân vật đang chọn; khi mở tủ đồ thì tiến lại gần và dịch khung sang phải một chút. */
-function CameraRig({ selected, customizing }) {
+const projected = new Vector3()
+
+/** Toạ độ pixel (chưa áp view offset) của một điểm trong cảnh. */
+function toPixels(camera, size, x, y, z) {
+  projected.set(x, y, z).project(camera)
+  return { x: ((projected.x + 1) / 2) * size.width, y: ((1 - projected.y) / 2) * size.height }
+}
+
+/**
+ * Camera trượt ngang theo nhân vật đang chọn; khi mở tủ đồ thì tiến lại gần.
+ * - Tủ đồ ở cột phải (màn ngang): dịch điểm nhìn sang phải để nhân vật nằm thoáng ở bên trái.
+ * - Tủ đồ là ngăn kéo dưới (màn dọc / hẹp): thu nhỏ và đẩy nhân vật vào phần trống phía trên ngăn kéo
+ *   bằng view offset (không đổi góc camera), để tủ đồ không che mặt nhân vật.
+ * layoutRef.current: null (đóng tủ đồ) | { layout: 'side' } | { layout: 'drawer', top, bottom } (px trong canvas).
+ */
+function CameraRig({ selected, customizing, layoutRef }) {
   const state = useRef({
     x: xOf(selected),
     y: CAMERA.height,
@@ -77,12 +96,13 @@ function CameraRig({ selected, customizing }) {
     lookX: xOf(selected),
     lookY: CAMERA.lookHeight,
   })
+  const view = useRef({ x: 0, y: 0, scale: 1 })
 
   useFrame(({ camera, size }, dt) => {
     const k = ease(dt)
+    const layout = customizing ? layoutRef?.current : null
     const preset = customizing ? CLOSEUP_CAMERA : CAMERA
-    // Màn hình rộng: khi mở tủ đồ ở cột phải, dịch điểm nhìn sang phải để nhân vật nằm thoáng ở bên trái
-    const shiftX = customizing && size.width > 860 ? 0.48 : 0
+    const shiftX = layout?.layout === 'side' ? 0.48 : 0
     const targetX = xOf(selected) + shiftX
     const s = state.current
     s.x += (targetX - s.x) * k
@@ -92,6 +112,37 @@ function CameraRig({ selected, customizing }) {
     s.lookY += (preset.lookHeight - s.lookY) * k
     camera.position.set(s.x, s.y, s.z)
     camera.lookAt(s.lookX, s.lookY, customizing ? STEP_FORWARD * 0.6 : 0)
+
+    // Khung nhìn đích: mặc định là cả canvas (x = y = 0, scale = 1)
+    let target = { x: 0, y: 0, scale: 1 }
+    if (layout?.layout === 'drawer' && layout.bottom > layout.top) {
+      camera.clearViewOffset()
+      camera.updateMatrixWorld()
+      const cx = xOf(selected)
+      const top = toPixels(camera, size, cx, CHARACTER_HEIGHT, STEP_FORWARD)
+      const feet = toPixels(camera, size, cx, 0, STEP_FORWARD)
+      const left = toPixels(camera, size, cx - CHARACTER_HALF_WIDTH, CHARACTER_HEIGHT / 2, STEP_FORWARD)
+      const right = toPixels(camera, size, cx + CHARACTER_HALF_WIDTH, CHARACTER_HEIGHT / 2, STEP_FORWARD)
+      const focusHeight = layout.bottom - layout.top
+      // Chỉ thu nhỏ (scale ≥ 1), không phóng to hơn khung cận cảnh gốc
+      const scale = Math.max(1, (feet.y - top.y) / (focusHeight * FOCUS_FILL), (right.x - left.x) / (size.width * FOCUS_FILL))
+      const charX = (left.x + right.x) / 2
+      const charY = (top.y + feet.y) / 2
+      // Điểm giữa nhân vật (charX, charY) phải hiện ở giữa vùng trống (size.width / 2, giữa top–bottom)
+      target = { x: charX - (size.width / 2) * scale, y: charY - ((layout.top + layout.bottom) / 2) * scale, scale }
+    }
+
+    const v = view.current
+    v.x += (target.x - v.x) * k
+    v.y += (target.y - v.y) * k
+    v.scale += (target.scale - v.scale) * k
+    const settled = Math.abs(v.x) < 0.5 && Math.abs(v.y) < 0.5 && Math.abs(v.scale - 1) < 0.001
+    // setViewOffset / clearViewOffset đã tự cập nhật projection matrix
+    if (target.scale === 1 && target.x === 0 && settled) {
+      if (camera.view?.enabled) camera.clearViewOffset()
+    } else {
+      camera.setViewOffset(size.width, size.height, v.x, v.y, size.width * v.scale, size.height * v.scale)
+    }
   })
   return null
 }
@@ -135,7 +186,7 @@ function TurntableDrag({ turntableYawRef, selected }) {
 }
 
 /** Hàng nhân vật để chọn: người đang chọn bước lên trước và vẫy tay; bấm vào ai thì chọn người đó. */
-export default function CharacterLineup({ selected, onSelect, appearance, customizing = false }) {
+export default function CharacterLineup({ selected, onSelect, appearance, customizing = false, layoutRef }) {
   const envMap = useRoomEnvironmentMap()
   const turntableYawRef = useRef(0)
 
@@ -160,7 +211,7 @@ export default function CharacterLineup({ selected, onSelect, appearance, custom
       ))}
       <SelectionRing selected={selected} />
       <ContactShadows position={[0, 0, 0.2]} scale={16} blur={2.4} far={1.4} opacity={0.5} resolution={512} />
-      <CameraRig selected={selected} customizing={customizing} />
+      <CameraRig selected={selected} customizing={customizing} layoutRef={layoutRef} />
       <TurntableDrag turntableYawRef={turntableYawRef} selected={selected} />
     </>
   )

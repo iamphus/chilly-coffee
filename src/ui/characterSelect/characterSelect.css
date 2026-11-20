@@ -4,9 +4,10 @@
   position: fixed;
   inset: 0;
   z-index: 12; /* trên landing (10) và cảnh quán đang dựng phía sau */
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  /* 3 hàng: tiêu đề / vùng giữa (nhân vật, tủ đồ) / bảng chọn. Tủ đồ chỉ nằm trong hàng giữa nên không đè lên nút */
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  row-gap: 12px;
   padding: clamp(20px, 4vh, 40px) var(--gutter);
   background:
     radial-gradient(55% 45% at 50% 58%, rgba(255, 190, 120, 0.22), transparent 70%),
@@ -38,6 +39,14 @@
   position: relative; /* nằm trên canvas */
   text-align: center;
   pointer-events: none;
+}
+
+.char-select__header {
+  grid-row: 1;
+}
+
+.char-select__panel {
+  grid-row: 3;
 }
 
 .char-select__header h1 {
@@ -107,16 +116,20 @@
   stroke-linejoin: round;
 }
 
-/* Tủ đồ phối trang phục 3D */
+/* Tủ đồ phối trang phục 3D: cột phải của hàng giữa; thấp quá thì cuộn bên trong */
 .wardrobe {
-  position: absolute;
-  right: var(--gutter);
-  top: 50%;
-  translate: 0 -54%;
+  position: relative;
+  grid-row: 2;
+  justify-self: end;
+  align-self: center;
   z-index: 3;
   display: grid;
+  align-content: start;
   gap: 12px;
-  width: min(344px, calc(100vw - 32px));
+  width: min(344px, 100%);
+  max-height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 16px;
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 20px;
@@ -251,15 +264,14 @@
   text-align: center;
 }
 
-@media (max-width: 860px) {
+/* Màn dọc / hẹp: không đủ chỗ cho cột bên cạnh nhân vật, tủ đồ thành ngăn kéo sát trên bảng chọn.
+   Camera (CameraRig) tự thu nhỏ và đặt nhân vật vào phần trống phía trên ngăn kéo. */
+@media (max-width: 640px), (max-width: 860px) and (max-aspect-ratio: 1/1) {
   .wardrobe {
-    position: relative;
-    right: auto;
-    top: auto;
-    translate: none;
-    align-self: center;
-    max-height: 42vh;
-    overflow-y: auto;
+    justify-self: center;
+    align-self: end;
+    width: min(520px, 100%);
+    max-height: min(36vh, 100%);
   }
 }
 
